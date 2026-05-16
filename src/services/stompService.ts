@@ -1,6 +1,4 @@
-// services/stompService.ts
 import { Client, type StompSubscription } from "@stomp/stompjs";
-import { useConfigStore } from "../stores/useConfigStore";
 import { convertProtbuf } from "./protoService";
 import type {
   INSPanelConfig,
@@ -8,14 +6,19 @@ import type {
   NSPanelRoomEntitiesPage,
   NSPanelRoomStatus,
 } from "../proto/bundle";
+import { useConfigStore } from "../stores/useConfigStore";
 import { useRoomsStore } from "../stores/useRoomsStore";
 import { useEntityPagesStore } from "../stores/useEntityPagesStore";
 import { useScenePagesStore } from "../stores/useScenePagesStore";
 import { useLightsStore } from "../stores/useLightsStore";
+import { useGlobalRoomStore } from "../stores/useGlobalRoomStore";
+
+const MANAGER_ADDRESS = import.meta.env.VITE_STOMP_MANAGER_ADDRESS;
+const PORT = import.meta.env.VITE_STOMP_MANAGER_PORT;
 
 type SubLevel =
   | "config"
-  | "allRoomStatus"
+  | "globalRoom"
   | "rooms"
   | "entityPages"
   | "lights"
@@ -23,7 +26,7 @@ type SubLevel =
 
 const subscriptions: Record<SubLevel, Record<string, StompSubscription>> = {
   config: {},
-  allRoomStatus: {},
+  globalRoom: {},
   rooms: {},
   entityPages: {},
   lights: {},
@@ -33,13 +36,13 @@ const subscriptions: Record<SubLevel, Record<string, StompSubscription>> = {
 let client: Client | null = null;
 
 export const stompService = {
-  // 1. Initialize the connection
+  //Initialize the connection
   init: () => {
-    if (client) return; // Prevent multiple clients
+    if (client) return;
 
     client = new Client({
       webSocketFactory: () => {
-        return new WebSocket("ws://192.168.32.201:8011/websocket/stomp");
+        return new WebSocket(`ws://${MANAGER_ADDRESS}:${PORT}/websocket/stomp`);
       },
       reconnectDelay: 5000,
       onConnect: () => {
@@ -54,7 +57,21 @@ export const stompService = {
     client.activate();
   },
 
-  // 2. The Global Config Subscription
+  newConfigCleanUp: () => {
+    //Every time new config arrives remove all dependant subscriptions and reset stores
+    stompService.cleanup("globalRoom");
+    stompService.cleanup("rooms");
+    stompService.cleanup("entityPages");
+    stompService.cleanup("lights");
+    stompService.cleanup("scenePages");
+
+    useGlobalRoomStore.getState().resetGlobalRoom();
+    useRoomsStore.getState().resetRooms();
+    useEntityPagesStore.getState().resetEntityPages();
+    useLightsStore.getState().resetLights();
+    useScenePagesStore.getState().resetScenePages();
+  },
+
   subscribeToConfig: () => {
     if (!client?.connected || subscriptions.config["main"]) return;
     console.log("Subscribing to config");
@@ -68,21 +85,14 @@ export const stompService = {
         console.log("Received New Config");
 
         if (configData && configData.roomInfos) {
+          stompService.newConfigCleanUp();
           useConfigStore.getState().setConfig(configData);
-        }
 
-        // clean all previous subscriptions when new config arrives
-        stompService.cleanup("rooms");
-        stompService.cleanup("entityPages");
-        stompService.cleanup("lights");
-        stompService.cleanup("scenePages");
-
-        //remove data from stores as well.
-
-        if (configData?.roomInfos) {
+          console.log(
+            "Starting subscriptions to global room, rooms, entityPages and ScenePages",
+          );
+          stompService.subscribeToGlobalRoom();
           //Loop through roomInfo object containing entityPages, scenesPages and room ids to start subscriptions
-          console.log("Subscribing to rooms, entityPages and ScenePages");
-
           for (const room of configData.roomInfos) {
             const { roomId, entityPageIds, scenePageIds } = room;
 
@@ -104,6 +114,28 @@ export const stompService = {
     );
     subscriptions.config["main"] = sub;
   },
+
+  subscribeToGlobalRoom: () => {
+    if (!client?.connected || subscriptions.globalRoom["main"])
+      return console.log(
+        "Client not connected or room subscription exists since before.",
+      );
+
+    const sub = client.subscribe(
+      `mqtt/nspanel/mqttmanager_${MANAGER_ADDRESS}/all_rooms_status`,
+      (message) => {
+        const allRoomState = convertProtbuf<NSPanelRoomStatus>(
+          message,
+          "NSPanelRoomStatus",
+        );
+        if (allRoomState) {
+          useGlobalRoomStore.getState().setGlobalRoom(allRoomState);
+        }
+      },
+    );
+    subscriptions.globalRoom["main"] = sub;
+  },
+
   subscribeToRoom: (id: number) => {
     if (!client?.connected || subscriptions.rooms[id])
       return console.log(
@@ -111,7 +143,7 @@ export const stompService = {
       );
 
     const sub = client.subscribe(
-      `mqtt/nspanel/mqttmanager_192.168.32.201/room/${id}/state`,
+      `mqtt/nspanel/mqttmanager_${MANAGER_ADDRESS}/room/${id}/state`,
       (message) => {
         const roomData = convertProtbuf<NSPanelRoomStatus>(
           message,
@@ -133,7 +165,7 @@ export const stompService = {
       );
 
     const sub = client.subscribe(
-      `mqtt/nspanel/mqttmanager_192.168.32.201/entity_pages/${id}/state`,
+      `mqtt/nspanel/mqttmanager_${MANAGER_ADDRESS}/entity_pages/${id}/state`,
       (message) => {
         const entityPageData = convertProtbuf<NSPanelRoomEntitiesPage>(
           message,
@@ -162,7 +194,7 @@ export const stompService = {
       );
 
     const sub = client.subscribe(
-      `mqtt/nspanel/mqttmanager_192.168.32.201/entity_pages/${id}/state`,
+      `mqtt/nspanel/mqttmanager_${MANAGER_ADDRESS}/entity_pages/${id}/state`,
       (message) => {
         const scenePageData = convertProtbuf<NSPanelRoomEntitiesPage>(
           message,
@@ -195,7 +227,7 @@ export const stompService = {
     subscriptions.lights[mqttTopic] = sub;
   },
 
-  // 3. The Unified Cleanup Function
+  //Function used to remove subsciptions
   cleanup: (level?: SubLevel) => {
     if (level) {
       const category = subscriptions[level];

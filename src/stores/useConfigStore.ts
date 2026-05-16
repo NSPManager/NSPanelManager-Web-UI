@@ -8,7 +8,6 @@ interface ConfigState {
   roomOrder: string[];
   currentRoomId: string | null;
 
-  // Actions
   setConfig: (newConfig: INSPanelConfig) => void;
   setCurrentRoom: (roomId: string) => void;
   resetConfig: () => void;
@@ -23,7 +22,7 @@ export const useConfigStore = create<ConfigState>()(
       currentRoomId: null,
 
       setConfig: (newConfig) => {
-        // Extract the room order from the config immediately
+        // Extract the room order from the config
         const order =
           newConfig.roomInfos?.map((room) => String(room.roomId)) || [];
 
@@ -32,7 +31,6 @@ export const useConfigStore = create<ConfigState>()(
             config: newConfig,
             isLoaded: true,
             roomOrder: order,
-            // Set default room if it's the first time loading
             currentRoomId: String(newConfig.defaultRoom) || order[0] || null,
           },
           false,
