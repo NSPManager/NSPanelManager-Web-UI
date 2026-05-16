@@ -9,7 +9,7 @@ interface ConfigState {
   currentRoomId: string | null;
 
   setConfig: (newConfig: INSPanelConfig) => void;
-  setCurrentRoom: (roomId: string) => void;
+  setCurrentRoom: () => void;
   resetConfig: () => void;
 }
 
@@ -38,8 +38,19 @@ export const useConfigStore = create<ConfigState>()(
         );
       },
 
-      setCurrentRoom: (roomId) =>
-        set({ currentRoomId: roomId }, false, "setCurrentRoom"),
+      setCurrentRoom: () => {
+        const roomOrder = useConfigStore.getState().roomOrder;
+        const currentRoom = useConfigStore.getState().currentRoomId;
+        if (currentRoom) {
+          const currentRoomIndex = roomOrder.indexOf(currentRoom);
+          const nextRoomIndex = (currentRoomIndex + 1) % roomOrder.length;
+          set(
+            { currentRoomId: roomOrder[nextRoomIndex] },
+            false,
+            "setCurrentRoom",
+          );
+        }
+      },
 
       resetConfig: () =>
         set(

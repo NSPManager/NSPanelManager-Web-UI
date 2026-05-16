@@ -3,6 +3,8 @@ import { useEffect } from "react";
 import { stompService } from "./services/stompService";
 import { useConfigStore } from "./stores/useConfigStore";
 import { useRoomsStore } from "./stores/useRoomsStore";
+import { ChevronDown, SlidersVertical, Sun } from "lucide-react";
+import MainPage from "./pages/mainPage";
 
 function App() {
   const currentRoomId = useConfigStore((state) => state.currentRoomId);
@@ -19,14 +21,6 @@ function App() {
     };
   }, []);
 
-  // 3. Handle the "Not Ready" states
-  if (!currentRoomId) return <div>No room selected in config.</div>;
-  if (!currentRoom) return <div>Waiting for room data...</div>;
-
-  return (
-    <div>
-      <h1>Active Room: {currentRoom.name}</h1>
-    </div>
-  );
+  return <MainPage />;
 }
 export default App;
