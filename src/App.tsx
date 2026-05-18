@@ -1,17 +1,9 @@
 // App.tsx
 import { useEffect } from "react";
 import { stompService } from "./services/stompService";
-import { useConfigStore } from "./stores/useConfigStore";
-import { useRoomsStore } from "./stores/useRoomsStore";
-import { ChevronDown, SlidersVertical, Sun } from "lucide-react";
 import MainPage from "./pages/mainPage";
 
 function App() {
-  const currentRoomId = useConfigStore((state) => state.currentRoomId);
-  const currentRoom = useRoomsStore((state) =>
-    currentRoomId ? state.rooms[currentRoomId] : null,
-  );
-
   useEffect(() => {
     stompService.init();
 
@@ -21,6 +13,18 @@ function App() {
     };
   }, []);
 
-  return <MainPage />;
+  return (
+    <div className="relative h-screen w-full bg-black text-white overflow-hidden">
+      {/* Row 1 */}
+      {/* 1. The Background Layer */}
+      <div
+        className="absolute inset-0 z-0 bg-cover bg-center opacity-70"
+        style={{
+          backgroundImage: `url('https://images.unsplash.com/photo-1548913344-66177da9425e?q=80&w=1173&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')`,
+        }}
+      />
+      <MainPage />
+    </div>
+  );
 }
 export default App;

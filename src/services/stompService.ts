@@ -11,7 +11,6 @@ import { useRoomsStore } from "../stores/useRoomsStore";
 import { useEntityPagesStore } from "../stores/useEntityPagesStore";
 import { useScenePagesStore } from "../stores/useScenePagesStore";
 import { useLightsStore } from "../stores/useLightsStore";
-import { useGlobalRoomStore } from "../stores/useGlobalRoomStore";
 
 const MANAGER_ADDRESS = import.meta.env.VITE_STOMP_MANAGER_ADDRESS;
 const PORT = import.meta.env.VITE_STOMP_MANAGER_PORT;
@@ -65,7 +64,6 @@ export const stompService = {
     stompService.cleanup("lights");
     stompService.cleanup("scenePages");
 
-    useGlobalRoomStore.getState().resetGlobalRoom();
     useRoomsStore.getState().resetRooms();
     useEntityPagesStore.getState().resetEntityPages();
     useLightsStore.getState().resetLights();
@@ -129,7 +127,7 @@ export const stompService = {
           "NSPanelRoomStatus",
         );
         if (allRoomState) {
-          useGlobalRoomStore.getState().setGlobalRoom(allRoomState);
+          useRoomsStore.getState().setGlobalRoom(allRoomState);
         }
       },
     );
