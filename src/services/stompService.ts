@@ -1,16 +1,18 @@
 import { Client, type StompSubscription } from "@stomp/stompjs";
 import { convertProtbuf } from "./protoService";
-import type {
-  INSPanelConfig,
-  NSPanelEntityState,
-  NSPanelRoomEntitiesPage,
-  NSPanelRoomStatus,
+import {
+  NSPanelMQTTManagerCommand,
+  type INSPanelConfig,
+  type NSPanelEntityState,
+  type NSPanelRoomEntitiesPage,
+  type NSPanelRoomStatus,
 } from "../proto/bundle";
 import { useConfigStore } from "../stores/useConfigStore";
 import { useRoomsStore } from "../stores/useRoomsStore";
 import { useEntityPagesStore } from "../stores/useEntityPagesStore";
 import { useScenePagesStore } from "../stores/useScenePagesStore";
 import { useLightsStore } from "../stores/useLightsStore";
+import type { LightType } from "../types";
 
 const MANAGER_ADDRESS = import.meta.env.VITE_STOMP_MANAGER_ADDRESS;
 const PORT = import.meta.env.VITE_STOMP_MANAGER_PORT;
@@ -242,5 +244,32 @@ export const stompService = {
       });
       console.log("Reached total cleanup");
     }
+  },
+  sendMainPageLightCommand(
+    type: LightType,
+    brightness: number,
+    context: { nspanelId: number; roomId: number; isGlobal: boolean },
+  ) {
+    const payload = {
+      nspanelId: context.nspanelId,
+      firstPageTurnOn: {
+        affectLights: type, // 1 for Table, 2 for Ceiling
+        selectedRoom: context.roomId,
+        global: context.isGlobal,
+        hasBrightnessValue: true,
+        hasKelvinValue: false,
+        brightnessSliderValue: brightness,
+        kelvinSliderValue: 0,
+      },
+    };
+    const buffer = NSPanelMQTTManagerCommand.encode(payload).finish();
+
+    // 3. Publish
+    if (!client?.connected) return;
+
+    client.publish({
+      destination: "mqtt/nspanel/mqttmanager_192.168.32.201/command",
+      binaryBody: buffer,
+    });
   },
 };

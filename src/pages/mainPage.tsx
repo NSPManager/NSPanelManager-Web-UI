@@ -2,6 +2,7 @@ import { ChevronDown, SlidersVertical, Sun } from "lucide-react";
 import { useConfigStore } from "../stores/useConfigStore";
 import { useRoomsStore } from "../stores/useRoomsStore";
 import { useUIStore } from "../stores/useUIStore";
+import { LightType } from "../types";
 
 function MainPage() {
   const mainPagemode = useUIStore((state) => state.mainPageMode);
@@ -31,12 +32,9 @@ function MainPage() {
       </div>
       {/* Row 2 ceiling, table, brightness, colortemp */}
       <div
-        // onClick={() =>
-        //   sendLightCommand(
-        //     2,
-        //     rooms[currentRoom]?.ceilingLightsDimLevel > 0 ? "OFF" : "ON",
-        //   )
-        // }
+        onClick={() =>
+          useRoomsStore.getState().handleLightToggle(LightType.CEILING)
+        }
         className="flex flex-col p-4 border-1 rounded-xl items-center justify-center"
       >
         <div className="flex justify-center">
@@ -73,12 +71,9 @@ function MainPage() {
         </div>
       </div>
       <div
-        // onClick={() =>
-        //   sendLightCommand(
-        //     1,
-        //     rooms[currentRoom]?.tableLightsDimLevel > 0 ? "OFF" : "ON",
-        //   )
-        // }
+        onClick={() =>
+          useRoomsStore.getState().handleLightToggle(LightType.TABLE)
+        }
         className="flex flex-col p-4 border-1 rounded-xl items-center justify-center"
       >
         <div className="flex justify-center">
