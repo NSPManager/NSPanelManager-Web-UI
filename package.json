@@ -11,6 +11,7 @@
     "build:proto": "pbjs -t static-module -w es6 -o src/proto/bundle.js src/proto/*.proto && pbts -o src/proto/bundle.d.ts src/proto/bundle.js"
   },
   "dependencies": {
+    "@radix-ui/react-slider": "^1.3.6",
     "@stomp/stompjs": "^7.3.0",
     "@tailwindcss/vite": "^4.2.4",
     "lucide-react": "^1.14.0",

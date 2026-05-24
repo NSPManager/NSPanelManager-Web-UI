@@ -34,6 +34,12 @@ const subscriptions: Record<SubLevel, Record<string, StompSubscription>> = {
   scenePages: {},
 };
 
+interface LightCommandOptions {
+  brightness?: number;
+  colorTemp?: number;
+  rgb?: string;
+}
+
 let client: Client | null = null;
 
 export const stompService = {
@@ -245,21 +251,23 @@ export const stompService = {
       console.log("Reached total cleanup");
     }
   },
+
   sendMainPageLightCommand(
     type: LightType,
-    brightness: number,
+    options: LightCommandOptions,
     context: { nspanelId: number; roomId: number; isGlobal: boolean },
   ) {
+    const { brightness, colorTemp } = options;
     const payload = {
       nspanelId: context.nspanelId,
       firstPageTurnOn: {
         affectLights: type, // 1 for Table, 2 for Ceiling
         selectedRoom: context.roomId,
         global: context.isGlobal,
-        hasBrightnessValue: true,
-        hasKelvinValue: false,
-        brightnessSliderValue: brightness,
-        kelvinSliderValue: 0,
+        hasBrightnessValue: brightness !== undefined,
+        hasKelvinValue: colorTemp !== undefined,
+        brightnessSliderValue: brightness ?? 0,
+        kelvinSliderValue: colorTemp ?? 0,
       },
     };
     const buffer = NSPanelMQTTManagerCommand.encode(payload).finish();

@@ -20,7 +20,7 @@ function App() {
       <div
         className="absolute inset-0 z-0 bg-cover bg-center opacity-70"
         style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1548913344-66177da9425e?q=80&w=1173&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')`,
+          backgroundImage: `url('https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwallpaperaccess.com%2Ffull%2F4789491.jpg&f=1&nofb=1&ipt=af63d75377544ab6623b868a488a3334e53b820e7e91a15247bdd25964544af2')`,
         }}
       />
       <MainPage />

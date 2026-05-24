@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
 import type { NSPanelRoomStatus } from "../proto/bundle";
-import { LightType } from "../types";
+import { LightType, SliderType } from "../types";
 import { useUIStore } from "./useUIStore";
 import { stompService } from "../services/stompService";
 import { useConfigStore } from "./useConfigStore";
@@ -15,6 +15,7 @@ interface RoomsState {
   setGlobalRoom: (roomData: NSPanelRoomStatus) => void;
   resetRooms: () => void;
   handleLightToggle: (lightType: LightType) => void;
+  handleLightSlider: (value: number, sliderType: SliderType) => void;
 }
 
 export const useRoomsStore = create<RoomsState>()(
@@ -71,11 +72,57 @@ export const useRoomsStore = create<RoomsState>()(
             : activeData.numCeilingLightsOn > 0;
 
         const brightness = isCurrentlyOn ? 0 : config.defaultLightBrightess;
-        stompService.sendMainPageLightCommand(lightType, brightness, {
-          isGlobal: mainPageMode === "allLights",
-          nspanelId: config?.nspanelId,
-          roomId: Number(currentRoomId),
-        });
+        stompService.sendMainPageLightCommand(
+          lightType,
+          { brightness: brightness },
+          {
+            isGlobal: mainPageMode === "allLights",
+            nspanelId: config?.nspanelId,
+            roomId: Number(currentRoomId),
+          },
+        );
+      },
+      handleLightSlider: (value, sliderType) => {
+        const { config, currentRoomId } = useConfigStore.getState();
+        const { rooms, globalRoom } = get();
+        const mainPageMode = useUIStore.getState().mainPageMode;
+
+        const activeData =
+          mainPageMode === "allLights"
+            ? globalRoom
+            : currentRoomId !== null
+              ? rooms[currentRoomId]
+              : null;
+        if (!activeData || !config?.nspanelId) return;
+
+        let lightType: LightType;
+        if (
+          activeData.numCeilingLightsOn > 0 &&
+          activeData.numTableLightsOn === 0
+        ) {
+          lightType = LightType.CEILING;
+        } else if (
+          activeData.numTableLightsOn > 0 &&
+          activeData.numCeilingLightsOn === 0
+        ) {
+          lightType = LightType.TABLE;
+        } else {
+          lightType = LightType.ALL;
+        }
+
+        stompService.sendMainPageLightCommand(
+          lightType,
+          {
+            brightness:
+              sliderType === SliderType.BRIGHTNESS ? value : undefined,
+            colorTemp: sliderType === SliderType.COLORTEMP ? value : undefined,
+          },
+          {
+            isGlobal: mainPageMode === "allLights",
+            nspanelId: config?.nspanelId,
+            roomId: Number(currentRoomId),
+          },
+        );
       },
     }),
     { name: "RoomsStore" },
