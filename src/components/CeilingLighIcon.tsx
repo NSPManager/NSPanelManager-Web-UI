@@ -1,9 +1,8 @@
 interface Props {
-  size?: number;
   className?: string;
   isOn: boolean;
 }
-function CeilingLightIcon({ size, className, isOn }: Props) {
+function CeilingLightIcon({ className, isOn }: Props) {
   return (
     <svg
       viewBox="0 0 94.71 191.38"

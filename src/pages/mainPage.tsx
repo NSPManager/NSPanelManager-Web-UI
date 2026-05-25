@@ -28,6 +28,7 @@ function MainPage() {
 
   return (
     <div className="relative z-10 grid h-full w-full grid-cols-4 grid-rows-[auto_1fr_auto] gap-2 p-2">
+      {/* Row 1 */}
       <div className="flex col-span-4 border-1 h-20 rounded-xl">
         <div className="flex flex-1 items-center justify-center h-full">
           <SlidersVertical />

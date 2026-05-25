@@ -276,7 +276,7 @@ export const stompService = {
     if (!client?.connected) return;
 
     client.publish({
-      destination: "mqtt/nspanel/mqttmanager_192.168.32.201/command",
+      destination: `mqtt/nspanel/mqttmanager_${MANAGER_ADDRESS}/command`,
       binaryBody: buffer,
     });
   },

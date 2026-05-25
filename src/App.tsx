@@ -15,7 +15,6 @@ function App() {
 
   return (
     <div className="relative h-screen w-full bg-black text-white overflow-hidden">
-      {/* Row 1 */}
       {/* 1. The Background Layer */}
       <div
         className="absolute inset-0 z-0 bg-cover bg-center opacity-70"

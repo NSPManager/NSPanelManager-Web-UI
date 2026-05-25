@@ -1,5 +1,5 @@
 import type { IMessage } from "@stomp/stompjs";
-import root, { NSPanelMQTTManagerCommand } from "../proto/bundle.js";
+import root from "../proto/bundle.js";
 
 export type protoMessage =
   | "NSPanelConfig"

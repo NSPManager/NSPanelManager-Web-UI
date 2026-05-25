@@ -1,10 +1,9 @@
 interface Props {
-  size?: number;
   className?: string;
   isOn: boolean;
 }
 
-function TableLightIcon({ className, isOn, size }: Props) {
+function TableLightIcon({ className, isOn }: Props) {
   return (
     <svg
       width="100%"

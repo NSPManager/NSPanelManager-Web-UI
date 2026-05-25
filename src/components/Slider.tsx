@@ -1,12 +1,12 @@
 import * as RadixSlider from "@radix-ui/react-slider";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type JSX } from "react";
 import { useRoomsStore } from "../stores/useRoomsStore";
 import { SliderType } from "../types";
 
 interface SliderProps {
   value: number;
   sliderType: SliderType;
-  icon: any;
+  icon: JSX.Element;
 }
 
 function Slider({ value, sliderType, icon }: SliderProps) {
