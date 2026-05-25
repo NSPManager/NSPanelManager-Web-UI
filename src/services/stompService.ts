@@ -34,7 +34,7 @@ const subscriptions: Record<SubLevel, Record<string, StompSubscription>> = {
   scenePages: {},
 };
 
-interface LightCommandOptions {
+export interface LightCommandOptions {
   brightness?: number;
   colorTemp?: number;
   rgb?: string;

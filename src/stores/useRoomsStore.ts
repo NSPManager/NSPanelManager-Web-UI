@@ -4,7 +4,10 @@ import { devtools } from "zustand/middleware";
 import type { NSPanelRoomStatus } from "../proto/bundle";
 import { LightType, SliderType } from "../types";
 import { useUIStore } from "./useUIStore";
-import { stompService } from "../services/stompService";
+import {
+  stompService,
+  type LightCommandOptions,
+} from "../services/stompService";
 import { useConfigStore } from "./useConfigStore";
 
 interface RoomsState {
@@ -95,34 +98,28 @@ export const useRoomsStore = create<RoomsState>()(
               : null;
         if (!activeData || !config?.nspanelId) return;
 
-        let lightType: LightType;
-        if (
-          activeData.numCeilingLightsOn > 0 &&
-          activeData.numTableLightsOn === 0
-        ) {
-          lightType = LightType.CEILING;
-        } else if (
-          activeData.numTableLightsOn > 0 &&
-          activeData.numCeilingLightsOn === 0
-        ) {
-          lightType = LightType.TABLE;
-        } else {
-          lightType = LightType.ALL;
-        }
+        const isCeilingOn = activeData.numCeilingLightsOn > 0;
+        const isTableOn = activeData.numTableLightsOn > 0;
 
-        stompService.sendMainPageLightCommand(
-          lightType,
-          {
-            brightness:
-              sliderType === SliderType.BRIGHTNESS ? value : undefined,
-            colorTemp: sliderType === SliderType.COLORTEMP ? value : undefined,
-          },
-          {
-            isGlobal: mainPageMode === "allLights",
-            nspanelId: config?.nspanelId,
-            roomId: Number(currentRoomId),
-          },
-        );
+        const key = `${isCeilingOn}-${isTableOn}`;
+
+        const typeMap: Record<string, LightType> = {
+          ["true-false"]: LightType.CEILING,
+          ["false-true"]: LightType.TABLE,
+          ["true-true"]: LightType.ALL,
+          ["false-false"]: LightType.ALL,
+        };
+        const lightType = typeMap[key];
+
+        const options: LightCommandOptions = {};
+        if (sliderType === SliderType.BRIGHTNESS) options.brightness = value;
+        if (sliderType === SliderType.COLORTEMP) options.colorTemp = value;
+
+        stompService.sendMainPageLightCommand(lightType, options, {
+          isGlobal: mainPageMode === "allLights",
+          nspanelId: config?.nspanelId,
+          roomId: Number(currentRoomId),
+        });
       },
     }),
     { name: "RoomsStore" },
