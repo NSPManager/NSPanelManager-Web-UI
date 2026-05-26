@@ -3,11 +3,13 @@ import { devtools } from "zustand/middleware";
 import type { INSPanelConfig } from "../proto/bundle";
 
 interface ConfigState {
+  virtualMac: string | null;
   config: INSPanelConfig | null;
   isLoaded: boolean;
   roomOrder: string[];
   currentRoomId: string | null;
 
+  setVirtualMac: () => void;
   setConfig: (newConfig: INSPanelConfig) => void;
   setCurrentRoom: () => void;
   resetConfig: () => void;
@@ -16,10 +18,22 @@ interface ConfigState {
 export const useConfigStore = create<ConfigState>()(
   devtools(
     (set) => ({
+      virtualMac: null,
       config: null,
       isLoaded: false,
       roomOrder: [],
       currentRoomId: null,
+
+      setVirtualMac: () => {
+        let virtualMac = localStorage.getItem("nspanel_virtual_mac");
+        if (!virtualMac) {
+          //TODO create function to randomize a mac-address
+          virtualMac = "AA:BB:CC:AA:BB:CC";
+        }
+        set({ virtualMac }, false, "setVirtualMac");
+        localStorage.setItem("nspanel_virtual_mac", virtualMac);
+        console.log("Setting virtual mac address");
+      },
 
       setConfig: (newConfig) => {
         // Extract the room order from the config

@@ -54,7 +54,11 @@ export const stompService = {
       reconnectDelay: 5000,
       onConnect: () => {
         console.log("STOMP Connected");
-        stompService.subscribeToConfig();
+        const virtualMac = useConfigStore.getState().virtualMac;
+        if (!virtualMac) return;
+        stompService.sendRegisterCommand(virtualMac);
+        stompService.subscribeToConfig(virtualMac);
+        stompService.sendNSPanelStatus(virtualMac, "online");
       },
       onStompError: (frame) => {
         console.error("Broker reported error: " + frame.headers["message"]);
@@ -62,6 +66,44 @@ export const stompService = {
     });
 
     client.activate();
+  },
+
+  sendRegisterCommand(virtualMac: string) {
+    const registerCommand = {
+      command: "register_request",
+      mac_origin: virtualMac,
+      friendly_name: "Browser7",
+      version: "1.0.1",
+      md5_firmware: "",
+      md5_data_file: "",
+      md5_tft_file: "",
+      address: "192.168.32.24",
+    };
+
+    if (!client?.connected) return;
+
+    client.publish({
+      destination: "mqtt/nspanel/mqttmanager/command",
+      body: JSON.stringify(registerCommand), // Sends as a text string
+      headers: { "content-type": "text/plain" },
+    });
+  },
+
+  sendNSPanelStatus(mac: string, state: "online" | "offline") {
+    const payload = {
+      mac: mac,
+      state: state,
+    };
+
+    // Convert the object to a JSON string
+    const jsonBody = JSON.stringify(payload);
+
+    if (!client?.connected) return;
+
+    client.publish({
+      destination: `mqtt/nspanel/${mac}/status`,
+      body: jsonBody, // Use 'body' for strings/JSON instead of 'binaryBody'
+    });
   },
 
   newConfigCleanUp: () => {
@@ -78,11 +120,11 @@ export const stompService = {
     useScenePagesStore.getState().resetScenePages();
   },
 
-  subscribeToConfig: () => {
+  subscribeToConfig: (macAddress: string) => {
     if (!client?.connected || subscriptions.config["main"]) return;
-    console.log("Subscribing to config");
+    console.log("Subscribing to config", macAddress);
     const sub = client.subscribe(
-      "mqtt/nspanel/CC:CC:CC:CC:CC:CC/config",
+      `mqtt/nspanel/${macAddress}/config`,
       (message) => {
         const configData = convertProtbuf<INSPanelConfig>(
           message,
@@ -281,3 +323,11 @@ export const stompService = {
     });
   },
 };
+
+// TODO
+// send online status to manager
+// stomptopic: mqtt/nspanel/mac-address/status
+// {
+// 	"mac":	"24:D7:EB:0E:3D:58",
+// 	"state":	"online"
+// }

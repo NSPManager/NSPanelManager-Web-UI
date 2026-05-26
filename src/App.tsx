@@ -2,9 +2,11 @@
 import { useEffect } from "react";
 import { stompService } from "./services/stompService";
 import MainPage from "./pages/mainPage";
+import { useConfigStore } from "./stores/useConfigStore";
 
 function App() {
   useEffect(() => {
+    useConfigStore.getState().setVirtualMac();
     stompService.init();
 
     return () => {
