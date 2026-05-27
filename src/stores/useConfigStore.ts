@@ -1,15 +1,17 @@
 import { create } from "zustand";
-import { devtools } from "zustand/middleware";
+import { devtools, persist } from "zustand/middleware";
 import type { INSPanelConfig } from "../proto/bundle";
+import { generateFriendlyName, generateRandomMac } from "../utils/utils";
 
 interface ConfigState {
-  virtualMac: string | null;
+  virtualMac: string;
+  friendlyName: string;
   config: INSPanelConfig | null;
   isLoaded: boolean;
   roomOrder: string[];
   currentRoomId: string | null;
 
-  setVirtualMac: () => void;
+  initialize: () => void;
   setConfig: (newConfig: INSPanelConfig) => void;
   setCurrentRoom: () => void;
   resetConfig: () => void;
@@ -17,67 +19,83 @@ interface ConfigState {
 
 export const useConfigStore = create<ConfigState>()(
   devtools(
-    (set) => ({
-      virtualMac: null,
-      config: null,
-      isLoaded: false,
-      roomOrder: [],
-      currentRoomId: null,
+    persist(
+      (set, get) => {
+        return {
+          virtualMac: "",
+          friendlyName: "",
+          config: null,
+          isLoaded: false,
+          roomOrder: [],
+          currentRoomId: null,
 
-      setVirtualMac: () => {
-        let virtualMac = localStorage.getItem("nspanel_virtual_mac");
-        if (!virtualMac) {
-          //TODO create function to randomize a mac-address
-          virtualMac = "AA:BB:CC:AA:BB:CC";
-        }
-        set({ virtualMac }, false, "setVirtualMac");
-        localStorage.setItem("nspanel_virtual_mac", virtualMac);
-        console.log("Setting virtual mac address");
-      },
+          initialize: () => {
+            const state = get();
 
-      setConfig: (newConfig) => {
-        // Extract the room order from the config
-        const order =
-          newConfig.roomInfos?.map((room) => String(room.roomId)) || [];
+            if (!state.virtualMac) {
+              const mac = generateRandomMac();
 
-        set(
-          {
-            config: newConfig,
-            isLoaded: true,
-            roomOrder: order,
-            currentRoomId: String(newConfig.defaultRoom) || order[0] || null,
+              set({
+                virtualMac: mac,
+                friendlyName: generateFriendlyName(mac),
+              });
+            }
           },
-          false,
-          "setConfig",
-        );
-      },
 
-      setCurrentRoom: () => {
-        const roomOrder = useConfigStore.getState().roomOrder;
-        const currentRoom = useConfigStore.getState().currentRoomId;
-        if (currentRoom) {
-          const currentRoomIndex = roomOrder.indexOf(currentRoom);
-          const nextRoomIndex = (currentRoomIndex + 1) % roomOrder.length;
-          set(
-            { currentRoomId: roomOrder[nextRoomIndex] },
-            false,
-            "setCurrentRoom",
-          );
-        }
-      },
+          setConfig: (newConfig) => {
+            // Extract the room order from the config
+            const order =
+              newConfig.roomInfos?.map((room) => String(room.roomId)) || [];
 
-      resetConfig: () =>
-        set(
-          {
-            config: null,
-            isLoaded: false,
-            roomOrder: [],
-            currentRoomId: null,
+            set(
+              {
+                config: newConfig,
+                isLoaded: true,
+                roomOrder: order,
+                currentRoomId:
+                  String(newConfig.defaultRoom) || order[0] || null,
+              },
+              false,
+              "setConfig",
+            );
           },
-          false,
-          "resetConfig",
-        ),
-    }),
+
+          setCurrentRoom: () => {
+            const roomOrder = get().roomOrder;
+            const currentRoom = get().currentRoomId;
+            if (currentRoom) {
+              const currentRoomIndex = roomOrder.indexOf(currentRoom);
+              const nextRoomIndex = (currentRoomIndex + 1) % roomOrder.length;
+              set(
+                { currentRoomId: roomOrder[nextRoomIndex] },
+                false,
+                "setCurrentRoom",
+              );
+            }
+          },
+
+          resetConfig: () =>
+            set(
+              {
+                config: null,
+                isLoaded: false,
+                roomOrder: [],
+                currentRoomId: null,
+              },
+              false,
+              "resetConfig",
+            ),
+        };
+      },
+      {
+        name: "panel-config-storage",
+        partialize: (state) => ({
+          virtualMac: state.virtualMac,
+          friendlyName: state.friendlyName,
+        }),
+      },
+    ),
     { name: "ConfigStore" },
   ),
 );
+useConfigStore.getState().initialize();

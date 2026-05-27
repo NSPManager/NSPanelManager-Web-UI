@@ -55,8 +55,9 @@ export const stompService = {
       onConnect: () => {
         console.log("STOMP Connected");
         const virtualMac = useConfigStore.getState().virtualMac;
-        if (!virtualMac) return;
-        stompService.sendRegisterCommand(virtualMac);
+        const friendlyName = useConfigStore.getState().friendlyName;
+        if (!virtualMac && !friendlyName) return;
+        stompService.sendRegisterCommand(virtualMac, friendlyName);
         stompService.subscribeToConfig(virtualMac);
         stompService.sendNSPanelStatus(virtualMac, "online");
       },
@@ -68,11 +69,11 @@ export const stompService = {
     client.activate();
   },
 
-  sendRegisterCommand(virtualMac: string) {
+  sendRegisterCommand(virtualMac: string, friendlyName: string) {
     const registerCommand = {
       command: "register_request",
       mac_origin: virtualMac,
-      friendly_name: "Browser7",
+      friendly_name: friendlyName,
       version: "1.0.1",
       md5_firmware: "",
       md5_data_file: "",
