@@ -20,73 +20,70 @@ interface ConfigState {
 export const useConfigStore = create<ConfigState>()(
   devtools(
     persist(
-      (set, get) => {
-        return {
-          virtualMac: "",
-          friendlyName: "",
-          config: null,
-          isLoaded: false,
-          roomOrder: [],
-          currentRoomId: null,
+      (set, get) => ({
+        virtualMac: "",
+        friendlyName: "",
+        config: null,
+        isLoaded: false,
+        roomOrder: [],
+        currentRoomId: null,
 
-          initialize: () => {
-            const state = get();
+        initialize: () => {
+          const state = get();
 
-            if (!state.virtualMac) {
-              const mac = generateRandomMac();
+          if (!state.virtualMac) {
+            const mac = generateRandomMac();
 
-              set({
-                virtualMac: mac,
-                friendlyName: generateFriendlyName(mac),
-              });
-            }
-          },
+            set({
+              virtualMac: mac,
+              friendlyName: generateFriendlyName(mac),
+            });
+          }
+        },
 
-          setConfig: (newConfig) => {
-            // Extract the room order from the config
-            const order =
-              newConfig.roomInfos?.map((room) => String(room.roomId)) || [];
+        setConfig: (newConfig) => {
+          // Extract the room order from the config
+          const order =
+            newConfig.roomInfos?.map((room) => String(room.roomId)) || [];
 
+          set(
+            {
+              config: newConfig,
+              isLoaded: true,
+              roomOrder: order,
+              currentRoomId: String(newConfig.defaultRoom) || order[0] || null,
+            },
+            false,
+            "setConfig",
+          );
+        },
+
+        setCurrentRoom: () => {
+          const roomOrder = get().roomOrder;
+          const currentRoom = get().currentRoomId;
+          if (currentRoom) {
+            const currentRoomIndex = roomOrder.indexOf(currentRoom);
+            const nextRoomIndex = (currentRoomIndex + 1) % roomOrder.length;
             set(
-              {
-                config: newConfig,
-                isLoaded: true,
-                roomOrder: order,
-                currentRoomId:
-                  String(newConfig.defaultRoom) || order[0] || null,
-              },
+              { currentRoomId: roomOrder[nextRoomIndex] },
               false,
-              "setConfig",
+              "setCurrentRoom",
             );
-          },
+          }
+        },
 
-          setCurrentRoom: () => {
-            const roomOrder = get().roomOrder;
-            const currentRoom = get().currentRoomId;
-            if (currentRoom) {
-              const currentRoomIndex = roomOrder.indexOf(currentRoom);
-              const nextRoomIndex = (currentRoomIndex + 1) % roomOrder.length;
-              set(
-                { currentRoomId: roomOrder[nextRoomIndex] },
-                false,
-                "setCurrentRoom",
-              );
-            }
-          },
-
-          resetConfig: () =>
-            set(
-              {
-                config: null,
-                isLoaded: false,
-                roomOrder: [],
-                currentRoomId: null,
-              },
-              false,
-              "resetConfig",
-            ),
-        };
-      },
+        resetConfig: () =>
+          set(
+            {
+              config: null,
+              isLoaded: false,
+              roomOrder: [],
+              currentRoomId: null,
+            },
+            false,
+            "resetConfig",
+          ),
+      }),
       {
         name: "panel-config-storage",
         partialize: (state) => ({

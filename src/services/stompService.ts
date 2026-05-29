@@ -57,8 +57,8 @@ export const stompService = {
         const virtualMac = useConfigStore.getState().virtualMac;
         const friendlyName = useConfigStore.getState().friendlyName;
         if (!virtualMac && !friendlyName) return;
-        stompService.sendRegisterCommand(virtualMac, friendlyName);
         stompService.subscribeToConfig(virtualMac);
+        stompService.sendRegisterCommand(virtualMac, friendlyName);
         stompService.sendNSPanelStatus(virtualMac, "online");
       },
       onStompError: (frame) => {
