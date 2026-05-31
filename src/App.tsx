@@ -13,9 +13,7 @@ function App() {
       stompService.cleanup(); // Total cleanup on unmount
     };
   }, []);
-  console.log(useConfigStore.persist.hasHydrated());
-  const virtualMac = useConfigStore((state) => state.virtualMac);
-  const friendlyName = useConfigStore((state) => state.friendlyName);
+
   return (
     <div className="relative h-screen w-full bg-black text-white overflow-hidden">
       {/* 1. The Background Layer */}

@@ -5,4 +5,17 @@ import tailwindcss from "@tailwindcss/vite";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  base: "/webapp/",
+
+  // ADD THIS SERVER BLOCK:
+  server: {
+    proxy: {
+      // Change this key to match the path your code connects to
+      "/websocket/stomp": {
+        target: "ws://192.168.32.201:8011",
+        ws: true,
+        changeOrigin: true,
+      },
+    },
+  },
 });

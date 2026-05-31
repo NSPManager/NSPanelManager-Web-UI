@@ -14,8 +14,9 @@ import { useScenePagesStore } from "../stores/useScenePagesStore";
 import { useLightsStore } from "../stores/useLightsStore";
 import type { LightType } from "../types";
 
-const MANAGER_ADDRESS = import.meta.env.VITE_STOMP_MANAGER_ADDRESS;
-const PORT = import.meta.env.VITE_STOMP_MANAGER_PORT;
+const MANAGER_ADDRESS = import.meta.env.DEV
+  ? "192.168.32.201"
+  : window.location.hostname;
 
 type SubLevel =
   | "config"
@@ -49,7 +50,7 @@ export const stompService = {
 
     client = new Client({
       webSocketFactory: () => {
-        return new WebSocket(`ws://${MANAGER_ADDRESS}:${PORT}/websocket/stomp`);
+        return new WebSocket(`ws://${window.location.host}/websocket/stomp`);
       },
       reconnectDelay: 5000,
       onConnect: () => {
@@ -78,7 +79,8 @@ export const stompService = {
       md5_firmware: "",
       md5_data_file: "",
       md5_tft_file: "",
-      address: "192.168.32.24",
+      address: "",
+      model: "web",
     };
 
     if (!client?.connected) return;

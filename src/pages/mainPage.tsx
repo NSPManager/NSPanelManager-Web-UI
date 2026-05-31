@@ -19,17 +19,15 @@ function MainPage() {
           currentRoomId ? state.rooms[currentRoomId] : null,
         )
       : useRoomsStore((state) => state.globalRoom);
-  // const isLoaded = useGlobalRoomStore((state) => state.isLoaded);
-  // const room = useGlobalRoomStore((state) => state.globalRoom);
 
   if (!isLoaded || !room) {
     return <h1>Loading...</h1>;
   }
 
   return (
-    <div className="relative z-10 grid h-full w-full grid-cols-4 grid-rows-[auto_1fr_auto] gap-2 p-2">
+    <div className="relative z-10 grid h-full w-full grid-cols-4 grid-rows-[auto_1fr_auto] gap-2 p-2 ">
       {/* Row 1 */}
-      <div className="flex col-span-4 border-1 h-20 rounded-xl">
+      <div className="flex col-span-4 h-20 rounded-xl bg-black/20">
         <div className="flex flex-1 items-center justify-center h-full">
           <SlidersVertical />
         </div>
@@ -40,7 +38,7 @@ function MainPage() {
         onClick={() =>
           useRoomsStore.getState().handleLightToggle(LightType.CEILING)
         }
-        className="flex flex-col p-4 border-1 rounded-xl items-center justify-center"
+        className="flex flex-col p-4 rounded-xl items-center justify-center bg-black/20"
       >
         <div className="flex justify-center w-1/2 max-w-[50px] md:w-1/3">
           <CeilingLightIcon isOn={room.numCeilingLightsOn > 0} />
@@ -50,13 +48,13 @@ function MainPage() {
         onClick={() =>
           useRoomsStore.getState().handleLightToggle(LightType.TABLE)
         }
-        className="flex flex-col p-4 border-1 rounded-xl items-center justify-center"
+        className="flex flex-col p-4 rounded-xl items-center justify-center bg-black/20"
       >
-        <div className="flex justify-center w-1/2 max-w-[50px] md:w-1/3">
+        <div className="flex justify-center w-1/2 max-w-[50px] md:w-1/3 ">
           <TableLightIcon isOn={room.numTableLightsOn > 0} />
         </div>
       </div>
-      <div className="flex flex-col p-2 border-1 rounded-xl items-center justify-center">
+      <div className="flex flex-col p-2 rounded-xl items-center justify-center bg-black/20">
         {/* <div className="flex justify-center w-full h-full"> */}
         <Slider
           value={room.averageDimLevel}
@@ -65,7 +63,7 @@ function MainPage() {
         />
       </div>
       {/* </div> */}
-      <div className="flex flex-col p-2 border-1 rounded-xl items-center justify-center ">
+      <div className="flex flex-col p-2 rounded-xl items-center justify-center bg-black/20">
         <Slider
           value={room.averageColorTemperature}
           sliderType={SliderType.COLORTEMP}
@@ -74,7 +72,7 @@ function MainPage() {
       </div>
 
       {/* Row 3 Room toggle bu col-span-2tton and Light Mode */}
-      <div className="flex border-1 col-span-2 h-20 rounded-xl items-center justify-center">
+      <div className="flex col-span-2 h-20 rounded-xl items-center justify-center bg-black/20">
         <button
           onClick={() => useConfigStore.getState().setCurrentRoom()}
           className="flex flex-1 items-center justify-center h-full"
@@ -88,7 +86,7 @@ function MainPage() {
       </div>
       <button
         onClick={() => useUIStore.getState().toggleMainPageMode()}
-        className="relative flex col-span-2 border-1 h-20 rounded-xl items-center justify-center"
+        className="relative flex col-span-2 h-20 rounded-xl items-center justify-center bg-black/20"
       >
         <div className="absolute left-0 top-0 bottom-0 w-[25%] flex items-center justify-center">
           <ChevronDown />
