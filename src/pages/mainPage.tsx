@@ -7,7 +7,7 @@ import TableLightIcon from "../components/TableLightIcon";
 import CeilingLightIcon from "../components/CeilingLighIcon";
 import Slider from "../components/Slider";
 import ColorTempIcon from "../components/ColorTempIcon";
-import { useEffect, useState } from "react";
+import useScreenOrientation from "../hooks/useScreenOrientation";
 
 function MainPage() {
   const mainPagemode = useUIStore((state) => state.mainPageMode);
@@ -21,20 +21,9 @@ function MainPage() {
         )
       : useRoomsStore((state) => state.globalRoom);
 
-  const [orientation, setOrientation] = useState<"vertical" | "horizontal">(
-    "vertical",
-  );
-
-  useEffect(() => {
-    function checkOrientation() {
-      setOrientation(
-        window.innerWidth >= window.innerHeight ? "vertical" : "horizontal",
-      );
-    }
-    checkOrientation();
-    window.addEventListener("resize", checkOrientation);
-    return () => window.removeEventListener("resize", checkOrientation);
-  }, []);
+  const orientation = useScreenOrientation();
+  const sliderOrientation =
+    orientation === "landscape" ? "vertical" : "horizontal";
 
   if (!isLoaded || !room) {
     return <h1>Loading...</h1>;
@@ -44,7 +33,7 @@ function MainPage() {
     <div className="relative z-10 grid h-full grid-rows-[auto_1fr_auto] gap-1 p-2 md:gap-2">
       {/* ROW 1 */}
       <div
-        className={`flex rounded-xl bg-black/20 ${orientation === "vertical" ? "h-10 md:h-20" : "h-20"}`}
+        className={`flex rounded-xl bg-black/20 ${orientation === "landscape" ? "h-10 md:h-20" : "h-20"}`}
       >
         <div className="flex flex-1 items-center justify-center h-full">
           <SlidersVertical />
@@ -53,7 +42,7 @@ function MainPage() {
       </div>
       {/* Row 2 ceiling, table, brightness, colortemp */}
       <div
-        className={`grid gap-1 md:gap-2 ${orientation === "vertical" ? "grid-cols-4 grid-rows-1" : "grid-cols-2 grid-rows-3"}`}
+        className={`grid gap-1 md:gap-2 ${orientation === "landscape" ? "grid-cols-4 grid-rows-1" : "grid-cols-2 grid-rows-3"}`}
       >
         <div
           onClick={() =>
@@ -76,22 +65,22 @@ function MainPage() {
           </div>
         </div>
         <div
-          className={`flex flex-col p-2 rounded-xl items-center justify-center bg-black/20 ${orientation === "vertical" ? "col-span-1" : "col-span-2"}`}
+          className={`flex flex-col p-2 rounded-xl items-center justify-center bg-black/20 ${orientation === "landscape" ? "col-span-1" : "col-span-2"}`}
         >
           <Slider
             value={room.averageDimLevel}
             sliderType={SliderType.BRIGHTNESS}
-            orientation={orientation}
+            orientation={sliderOrientation}
             icon={<Sun size={"100%"} className="w-full" />}
           />
         </div>
         <div
-          className={`flex flex-col p-2 rounded-xl items-center justify-center bg-black/20 ${orientation === "vertical" ? "col-span-1" : "col-span-2"}`}
+          className={`flex flex-col p-2 rounded-xl items-center justify-center bg-black/20 ${orientation === "landscape" ? "col-span-1" : "col-span-2"}`}
         >
           <Slider
             value={room.averageColorTemperature}
             sliderType={SliderType.COLORTEMP}
-            orientation={orientation}
+            orientation={sliderOrientation}
             icon={<ColorTempIcon />}
           />
         </div>
@@ -99,7 +88,7 @@ function MainPage() {
       <div>
         {/* Row 3 Room toggle bu col-span-2tton and Light Mode */}
         <div
-          className={`grid grid-cols-2 gap-1 md:gap-2 ${orientation === "vertical" ? "h-10 md:h-20" : "h-20"}`}
+          className={`grid grid-cols-2 gap-1 md:gap-2 ${orientation === "landscape" ? "h-10 md:h-20" : "h-20"}`}
         >
           <div
             className={`flex rounded-xl items-center justify-center bg-black/20`}
