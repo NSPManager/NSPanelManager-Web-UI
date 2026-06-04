@@ -7,6 +7,7 @@ import TableLightIcon from "../components/TableLightIcon";
 import CeilingLightIcon from "../components/CeilingLighIcon";
 import Slider from "../components/Slider";
 import ColorTempIcon from "../components/ColorTempIcon";
+import { useEffect, useState } from "react";
 
 function MainPage() {
   const mainPagemode = useUIStore((state) => state.mainPageMode);
@@ -20,14 +21,31 @@ function MainPage() {
         )
       : useRoomsStore((state) => state.globalRoom);
 
+  const [orientation, setOrientation] = useState<"vertical" | "horizontal">(
+    "vertical",
+  );
+
+  useEffect(() => {
+    function checkOrientation() {
+      setOrientation(
+        window.innerWidth >= window.innerHeight ? "vertical" : "horizontal",
+      );
+    }
+    checkOrientation();
+    window.addEventListener("resize", checkOrientation);
+    return () => window.removeEventListener("resize", checkOrientation);
+  }, []);
+
   if (!isLoaded || !room) {
     return <h1>Loading...</h1>;
   }
 
   return (
-    <div className="relative z-10 grid h-full w-full grid-cols-4 grid-rows-[auto_1fr_auto] gap-2 p-2 ">
-      {/* Row 1 */}
-      <div className="flex col-span-4 h-20 rounded-xl bg-black/20">
+    <div className="relative z-10 grid h-full grid-rows-[auto_1fr_auto] gap-1 p-2 md:gap-2">
+      {/* ROW 1 */}
+      <div
+        className={`flex rounded-xl bg-black/20 ${orientation === "vertical" ? "h-10 md:h-20" : "h-20"}`}
+      >
         <div className="flex flex-1 items-center justify-center h-full">
           <SlidersVertical />
         </div>
@@ -35,66 +53,81 @@ function MainPage() {
       </div>
       {/* Row 2 ceiling, table, brightness, colortemp */}
       <div
-        onClick={() =>
-          useRoomsStore.getState().handleLightToggle(LightType.CEILING)
-        }
-        className="flex flex-col p-4 rounded-xl items-center justify-center bg-black/20"
+        className={`grid gap-1 md:gap-2 ${orientation === "vertical" ? "grid-cols-4 grid-rows-1" : "grid-cols-2 grid-rows-3"}`}
       >
-        <div className="flex justify-center w-1/2 max-w-[50px] md:w-1/3">
-          <CeilingLightIcon isOn={room.numCeilingLightsOn > 0} />
-        </div>
-      </div>
-      <div
-        onClick={() =>
-          useRoomsStore.getState().handleLightToggle(LightType.TABLE)
-        }
-        className="flex flex-col p-4 rounded-xl items-center justify-center bg-black/20"
-      >
-        <div className="flex justify-center w-1/2 max-w-[50px] md:w-1/3 ">
-          <TableLightIcon isOn={room.numTableLightsOn > 0} />
-        </div>
-      </div>
-      <div className="flex flex-col p-2 rounded-xl items-center justify-center bg-black/20">
-        {/* <div className="flex justify-center w-full h-full"> */}
-        <Slider
-          value={room.averageDimLevel}
-          sliderType={SliderType.BRIGHTNESS}
-          icon={<Sun size={"100%"} className="w-full" />}
-        />
-      </div>
-      {/* </div> */}
-      <div className="flex flex-col p-2 rounded-xl items-center justify-center bg-black/20">
-        <Slider
-          value={room.averageColorTemperature}
-          sliderType={SliderType.COLORTEMP}
-          icon={<ColorTempIcon />}
-        />
-      </div>
-
-      {/* Row 3 Room toggle bu col-span-2tton and Light Mode */}
-      <div className="flex col-span-2 h-20 rounded-xl items-center justify-center bg-black/20">
-        <button
-          onClick={() => useConfigStore.getState().setCurrentRoom()}
-          className="flex flex-1 items-center justify-center h-full"
+        <div
+          onClick={() =>
+            useRoomsStore.getState().handleLightToggle(LightType.CEILING)
+          }
+          className="flex flex-col rounded-xl items-center justify-center bg-black/20"
         >
-          <ChevronDown />
-        </button>
-        <div className="w-[2px] h-[60%] bg-[#ffffff80]"></div>
-        <button className="text-md flex flex-[3] justify-center">
-          {room.name || "All"}
-        </button>
-      </div>
-      <button
-        onClick={() => useUIStore.getState().toggleMainPageMode()}
-        className="relative flex col-span-2 h-20 rounded-xl items-center justify-center bg-black/20"
-      >
-        <div className="absolute left-0 top-0 bottom-0 w-[25%] flex items-center justify-center">
-          <ChevronDown />
+          <div className="flex justify-center w-[30px] md:w-[50px]">
+            <CeilingLightIcon isOn={room.numCeilingLightsOn > 0} />
+          </div>
         </div>
-        <span className="text-md flex justify-center">
-          {mainPagemode === "roomLights" ? "Room Lights" : "All Lights"}
-        </span>
-      </button>
+        <div
+          onClick={() =>
+            useRoomsStore.getState().handleLightToggle(LightType.TABLE)
+          }
+          className="flex flex-col rounded-xl items-center justify-center bg-black/20"
+        >
+          <div className="flex justify-center w-[30px] md:w-[50px]">
+            <TableLightIcon isOn={room.numTableLightsOn > 0} />
+          </div>
+        </div>
+        <div
+          className={`flex flex-col p-2 rounded-xl items-center justify-center bg-black/20 ${orientation === "vertical" ? "col-span-1" : "col-span-2"}`}
+        >
+          <Slider
+            value={room.averageDimLevel}
+            sliderType={SliderType.BRIGHTNESS}
+            orientation={orientation}
+            icon={<Sun size={"100%"} className="w-full" />}
+          />
+        </div>
+        <div
+          className={`flex flex-col p-2 rounded-xl items-center justify-center bg-black/20 ${orientation === "vertical" ? "col-span-1" : "col-span-2"}`}
+        >
+          <Slider
+            value={room.averageColorTemperature}
+            sliderType={SliderType.COLORTEMP}
+            orientation={orientation}
+            icon={<ColorTempIcon />}
+          />
+        </div>
+      </div>
+      <div>
+        {/* Row 3 Room toggle bu col-span-2tton and Light Mode */}
+        <div
+          className={`grid grid-cols-2 gap-1 md:gap-2 ${orientation === "vertical" ? "h-10 md:h-20" : "h-20"}`}
+        >
+          <div
+            className={`flex rounded-xl items-center justify-center bg-black/20`}
+          >
+            <button
+              onClick={() => useConfigStore.getState().setCurrentRoom()}
+              className="flex flex-1 items-center justify-center h-full"
+            >
+              <ChevronDown />
+            </button>
+            <div className="w-[2px] h-[60%] bg-[#ffffff80]"></div>
+            <button className="text-md flex flex-[3] justify-center">
+              {room.name || "All"}
+            </button>
+          </div>
+          <button
+            onClick={() => useUIStore.getState().toggleMainPageMode()}
+            className="relative flex rounded-xl items-center justify-center bg-black/20"
+          >
+            <div className="absolute left-0 top-0 bottom-0 w-[25%] flex items-center justify-center">
+              <ChevronDown />
+            </div>
+            <span className="text-md flex justify-center">
+              {mainPagemode === "roomLights" ? "Room Lights" : "All Lights"}
+            </span>
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

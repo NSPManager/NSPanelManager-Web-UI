@@ -6,10 +6,11 @@ import { SliderType } from "../types";
 interface SliderProps {
   value: number;
   sliderType: SliderType;
+  orientation: "horizontal" | "vertical" | undefined;
   icon: JSX.Element;
 }
 
-function Slider({ value, sliderType, icon }: SliderProps) {
+function Slider({ value, sliderType, orientation, icon }: SliderProps) {
   const [sliderValue, setSliderValue] = useState(value);
 
   useEffect(() => {
@@ -18,7 +19,7 @@ function Slider({ value, sliderType, icon }: SliderProps) {
 
   return (
     <RadixSlider.Root
-      orientation="vertical"
+      orientation={orientation}
       min={0}
       max={100}
       step={1}
@@ -31,11 +32,14 @@ function Slider({ value, sliderType, icon }: SliderProps) {
       }
       className="relative flex flex-col items-center select-none touch-none w-full h-full"
     >
-      <div className="absolute flex flex-col justify-center w-1/2 max-w-[50px] md:w-1/3 inset-0 m-auto pointer-events-none z-20">
+      <div className="absolute flex flex-col justify-center w-[30px] md:w-[50px] inset-0 m-auto pointer-events-none z-20">
         {icon}
       </div>
-      <RadixSlider.Track className="relative grow w-full rounded-xl overflow-hidden z-10">
-        <RadixSlider.Range className="absolute w-full bg-black/30 border-t-3" />
+      {/* replace grow with h-full on the track */}
+      <RadixSlider.Track className="relative h-full w-full rounded-xl overflow-hidden z-10">
+        <RadixSlider.Range
+          className={`absolute bg-black/30 ${orientation === "vertical" ? "w-full border-t-3" : "h-full border-r-3"} `}
+        />
       </RadixSlider.Track>
       <RadixSlider.Thumb className="block" aria-label="Light brightness" />
     </RadixSlider.Root>

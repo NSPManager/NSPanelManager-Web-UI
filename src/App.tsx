@@ -23,6 +23,7 @@ function App() {
         }}
       />
       <MainPage />
+      {/* <MainPage /> */}
     </div>
   );
 }
