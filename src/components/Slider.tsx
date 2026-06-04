@@ -1,7 +1,7 @@
+import { useRoomsStore } from "@/stores";
+import type { SliderType } from "@/types";
 import * as RadixSlider from "@radix-ui/react-slider";
 import { useEffect, useState, type JSX } from "react";
-import { useRoomsStore } from "../stores/useRoomsStore";
-import { SliderType } from "../types";
 
 interface SliderProps {
   value: number;

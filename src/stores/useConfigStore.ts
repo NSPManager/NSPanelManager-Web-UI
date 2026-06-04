@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
-import type { INSPanelConfig } from "../proto/bundle";
-import { generateFriendlyName, generateRandomMac } from "../utils/utils";
+import type { INSPanelConfig } from "@/proto/bundle";
+import { generateFriendlyName, generateRandomMac } from "@/utils/utils";
 
 interface ConfigState {
   virtualMac: string;

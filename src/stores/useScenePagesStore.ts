@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
-import type { NSPanelRoomEntitiesPage } from "../proto/bundle";
+import type { NSPanelRoomEntitiesPage } from "@/proto/bundle";
 
 interface ScenePagesState {
   scenePages: Record<string, NSPanelRoomEntitiesPage>;

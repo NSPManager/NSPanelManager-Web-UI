@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
-import type { NSPanelEntityState } from "../proto/bundle";
+import type { NSPanelEntityState } from "@/proto/bundle";
 
 interface LightState {
   lights: Record<string, NSPanelEntityState>;

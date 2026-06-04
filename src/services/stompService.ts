@@ -1,18 +1,20 @@
 import { Client, type StompSubscription } from "@stomp/stompjs";
-import { convertProtbuf } from "./protoService";
+import { convertProtbuf } from "@/services/protoService";
 import {
   NSPanelMQTTManagerCommand,
   type INSPanelConfig,
   type NSPanelEntityState,
   type NSPanelRoomEntitiesPage,
   type NSPanelRoomStatus,
-} from "../proto/bundle";
-import { useConfigStore } from "../stores/useConfigStore";
-import { useRoomsStore } from "../stores/useRoomsStore";
-import { useEntityPagesStore } from "../stores/useEntityPagesStore";
-import { useScenePagesStore } from "../stores/useScenePagesStore";
-import { useLightsStore } from "../stores/useLightsStore";
-import type { LightType } from "../types";
+} from "@/proto/bundle";
+import {
+  useConfigStore,
+  useEntityPagesStore,
+  useLightsStore,
+  useRoomsStore,
+  useScenePagesStore,
+} from "@/stores";
+import type { LightType } from "@/types";
 
 const MANAGER_ADDRESS = import.meta.env.DEV
   ? "192.168.32.201"

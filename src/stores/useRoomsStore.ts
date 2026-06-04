@@ -1,13 +1,13 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
-import type { NSPanelRoomStatus } from "../proto/bundle";
-import { LightType, SliderType } from "../types";
-import { useUIStore } from "./useUIStore";
+import type { NSPanelRoomStatus } from "@/proto/bundle";
+import { LightType, SliderType } from "@/types";
 import {
   stompService,
   type LightCommandOptions,
-} from "../services/stompService";
+} from "@/services/stompService";
+import { useUIStore } from "./useUIStore";
 import { useConfigStore } from "./useConfigStore";
 
 interface RoomsState {

@@ -1,13 +1,13 @@
 import { ChevronDown, SlidersVertical, Sun } from "lucide-react";
-import { useConfigStore } from "../stores/useConfigStore";
-import { useRoomsStore } from "../stores/useRoomsStore";
-import { useUIStore } from "../stores/useUIStore";
-import { LightType, SliderType } from "../types";
-import TableLightIcon from "../components/TableLightIcon";
-import CeilingLightIcon from "../components/CeilingLighIcon";
-import Slider from "../components/Slider";
-import ColorTempIcon from "../components/ColorTempIcon";
-import useScreenOrientation from "../hooks/useScreenOrientation";
+import { useScreenOrientation } from "@/hooks";
+import { useConfigStore, useRoomsStore, useUIStore } from "@/stores";
+import {
+  CeilingLightIcon,
+  ColorTempIcon,
+  Slider,
+  TableLightIcon,
+} from "@/components";
+import { LightType, SliderType } from "@/types";
 
 function MainPage() {
   const mainPagemode = useUIStore((state) => state.mainPageMode);
