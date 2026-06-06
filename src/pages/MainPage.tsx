@@ -26,8 +26,14 @@ function MainPage() {
     orientation === "landscape" ? "vertical" : "horizontal";
 
   if (!isLoaded || !room) {
-    return <h1>Loading...</h1>;
+    return <h1>Waiting for config from manager...</h1>;
   }
+
+  const cardStyles = "rounded-xl items-center justify-center bg-black/20";
+
+  const sliderStyles = `p-2 ${orientation === "landscape" ? "col-span-1" : "col-span-2"}`;
+
+  const ceilingTableStyles = "flex justify-center w-[30px] md:w-[50px]";
 
   return (
     <div className="relative z-10 grid h-full grid-rows-[auto_1fr_auto] gap-1 p-2 md:gap-2">
@@ -40,7 +46,7 @@ function MainPage() {
         </div>
         <div className="flex flex-[7] items-center justify-center h-full"></div>
       </div>
-      {/* Row 2 ceiling, table, brightness, colortemp */}
+      {/* ROW 2 Buttons: ceiling, table, brightness, colortemp */}
       <div
         className={`grid gap-1 md:gap-2 ${orientation === "landscape" ? "grid-cols-4 grid-rows-1" : "grid-cols-2 grid-rows-3"}`}
       >
@@ -48,9 +54,9 @@ function MainPage() {
           onClick={() =>
             useRoomsStore.getState().handleLightToggle(LightType.CEILING)
           }
-          className="flex flex-col rounded-xl items-center justify-center bg-black/20"
+          className={`flex flex-col ${cardStyles}`}
         >
-          <div className="flex justify-center w-[30px] md:w-[50px]">
+          <div className={`${ceilingTableStyles}`}>
             <CeilingLightIcon isOn={room.numCeilingLightsOn > 0} />
           </div>
         </div>
@@ -58,15 +64,13 @@ function MainPage() {
           onClick={() =>
             useRoomsStore.getState().handleLightToggle(LightType.TABLE)
           }
-          className="flex flex-col rounded-xl items-center justify-center bg-black/20"
+          className={`flex flex-col ${cardStyles}`}
         >
-          <div className="flex justify-center w-[30px] md:w-[50px]">
+          <div className={`${ceilingTableStyles}`}>
             <TableLightIcon isOn={room.numTableLightsOn > 0} />
           </div>
         </div>
-        <div
-          className={`flex flex-col p-2 rounded-xl items-center justify-center bg-black/20 ${orientation === "landscape" ? "col-span-1" : "col-span-2"}`}
-        >
+        <div className={`flex flex-col ${cardStyles} ${sliderStyles}`}>
           <Slider
             value={room.averageDimLevel}
             sliderType={SliderType.BRIGHTNESS}
@@ -74,9 +78,7 @@ function MainPage() {
             icon={<Sun size={"100%"} className="w-full" />}
           />
         </div>
-        <div
-          className={`flex flex-col p-2 rounded-xl items-center justify-center bg-black/20 ${orientation === "landscape" ? "col-span-1" : "col-span-2"}`}
-        >
+        <div className={`flex flex-col ${cardStyles} ${sliderStyles}`}>
           <Slider
             value={room.averageColorTemperature}
             sliderType={SliderType.COLORTEMP}
@@ -86,27 +88,37 @@ function MainPage() {
         </div>
       </div>
       <div>
-        {/* Row 3 Room toggle bu col-span-2tton and Light Mode */}
+        {/* ROW 3 Room toggle button and Light Mode */}
         <div
           className={`grid grid-cols-2 gap-1 md:gap-2 ${orientation === "landscape" ? "h-10 md:h-20" : "h-20"}`}
         >
-          <div
-            className={`flex rounded-xl items-center justify-center bg-black/20`}
-          >
-            <button
-              onClick={() => useConfigStore.getState().setCurrentRoom()}
-              className="flex flex-1 items-center justify-center h-full"
+          <div className="grid grid-cols-[1fr_2px_3fr] md:grid-cols-[1fr_4px_3fr]">
+            <div
+              className={`flex rounded-l-xl items-center justify-center bg-black/20`}
             >
-              <ChevronDown />
-            </button>
-            <div className="w-[2px] h-[60%] bg-[#ffffff80]"></div>
-            <button className="text-md flex flex-[3] justify-center">
-              {room.name || "All"}
-            </button>
+              <button
+                onClick={() => useConfigStore.getState().setCurrentRoom()}
+                className="flex items-center justify-center h-full w-full"
+              >
+                <ChevronDown />
+              </button>
+            </div>
+            <div className="grid grid-rows-[1fr_60%_1fr]">
+              <div className="bg-black/20"></div>
+              <div className="bg-transparent"></div>
+              <div className="bg-black/20"></div>
+            </div>
+            <div
+              className={`flex rounded-r-xl items-center justify-center bg-black/20`}
+            >
+              <button className="text-md flex justify-center">
+                {room.name || "All"}
+              </button>
+            </div>
           </div>
           <button
             onClick={() => useUIStore.getState().toggleMainPageMode()}
-            className="relative flex rounded-xl items-center justify-center bg-black/20"
+            className={`relative flex ${cardStyles}`}
           >
             <div className="absolute left-0 top-0 bottom-0 w-[25%] flex items-center justify-center">
               <ChevronDown />
