@@ -1,1 +1,28 @@
 @import "tailwindcss";
+
+@theme {
+  --animate-overlayShow: overlay-fade 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-contentShow: modal-scale 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes overlay-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modal-scale {
+  from {
+    opacity: 0;
+    /* Scale down without touching positioning coordinates */
+    scale: 0.96;
+  }
+  to {
+    opacity: 1;
+    /* Scale up smoothly */
+    scale: 1;
+  }
+}

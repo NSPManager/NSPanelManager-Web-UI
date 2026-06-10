@@ -4,6 +4,7 @@ import { useConfigStore, useRoomsStore, useUIStore } from "@/stores";
 import {
   CeilingLightIcon,
   ColorTempIcon,
+  RoomSelector,
   Slider,
   TableLightIcon,
 } from "@/components";
@@ -111,9 +112,11 @@ function MainPage() {
             <div
               className={`flex rounded-r-xl items-center justify-center bg-black/20`}
             >
-              <button className="text-md flex justify-center">
-                {room.name || "All"}
-              </button>
+              <RoomSelector
+                roomName={room.name}
+                currentRoomId={currentRoomId}
+                orientation={orientation}
+              />
             </div>
           </div>
           <button

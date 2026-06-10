@@ -13,7 +13,7 @@ interface ConfigState {
 
   initialize: () => void;
   setConfig: (newConfig: INSPanelConfig) => void;
-  setCurrentRoom: () => void;
+  setCurrentRoom: (id?: string) => void;
   resetConfig: () => void;
 }
 
@@ -58,17 +58,21 @@ export const useConfigStore = create<ConfigState>()(
           );
         },
 
-        setCurrentRoom: () => {
-          const roomOrder = get().roomOrder;
-          const currentRoom = get().currentRoomId;
-          if (currentRoom) {
-            const currentRoomIndex = roomOrder.indexOf(currentRoom);
-            const nextRoomIndex = (currentRoomIndex + 1) % roomOrder.length;
-            set(
-              { currentRoomId: roomOrder[nextRoomIndex] },
-              false,
-              "setCurrentRoom",
-            );
+        setCurrentRoom: (id?: string) => {
+          if (id) {
+            set({ currentRoomId: id }, false, "setCurrentRoom");
+          } else {
+            const roomOrder = get().roomOrder;
+            const currentRoom = get().currentRoomId;
+            if (currentRoom) {
+              const currentRoomIndex = roomOrder.indexOf(currentRoom);
+              const nextRoomIndex = (currentRoomIndex + 1) % roomOrder.length;
+              set(
+                { currentRoomId: roomOrder[nextRoomIndex] },
+                false,
+                "setCurrentRoom",
+              );
+            }
           }
         },
 
