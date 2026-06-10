@@ -4,11 +4,10 @@ import { useShallow } from "zustand/shallow";
 
 interface Props {
   roomName: string;
-  currentRoomId: string | null;
   orientation: "landscape" | "portrait";
 }
 
-function roomSelector({ roomName, currentRoomId, orientation }: Props) {
+function roomSelector({ roomName, orientation }: Props) {
   const roomIds = useRoomsStore(
     useShallow((state) => Object.values(state.rooms).map((room) => room.id)),
   );

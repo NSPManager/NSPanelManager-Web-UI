@@ -112,11 +112,7 @@ function MainPage() {
             <div
               className={`flex rounded-r-xl items-center justify-center bg-black/20`}
             >
-              <RoomSelector
-                roomName={room.name}
-                currentRoomId={currentRoomId}
-                orientation={orientation}
-              />
+              <RoomSelector roomName={room.name} orientation={orientation} />
             </div>
           </div>
           <button
