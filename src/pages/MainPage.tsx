@@ -55,7 +55,7 @@ function MainPage() {
           onClick={() =>
             useRoomsStore.getState().handleLightToggle(LightType.CEILING)
           }
-          className={`flex flex-col ${cardStyles}`}
+          className={`flex flex-col cursor-pointer ${cardStyles}`}
         >
           <div className={`${ceilingTableStyles}`}>
             <CeilingLightIcon isOn={room.numCeilingLightsOn > 0} />
@@ -65,7 +65,7 @@ function MainPage() {
           onClick={() =>
             useRoomsStore.getState().handleLightToggle(LightType.TABLE)
           }
-          className={`flex flex-col ${cardStyles}`}
+          className={`flex flex-col cursor-pointer ${cardStyles}`}
         >
           <div className={`${ceilingTableStyles}`}>
             <TableLightIcon isOn={room.numTableLightsOn > 0} />
@@ -99,7 +99,7 @@ function MainPage() {
             >
               <button
                 onClick={() => useConfigStore.getState().setCurrentRoom()}
-                className="flex items-center justify-center h-full w-full"
+                className="flex items-center justify-center h-full w-full cursor-pointer"
               >
                 <ChevronDown />
               </button>
@@ -112,17 +112,17 @@ function MainPage() {
             <div
               className={`flex rounded-r-xl items-center justify-center bg-black/20`}
             >
-              <RoomSelector roomName={room.name} orientation={orientation} />
+              <RoomSelector orientation={orientation} />
             </div>
           </div>
           <button
             onClick={() => useUIStore.getState().toggleMainPageMode()}
-            className={`relative flex ${cardStyles}`}
+            className={`relative flex cursor-pointer ${cardStyles}`}
           >
             <div className="absolute left-0 top-0 bottom-0 w-[25%] flex items-center justify-center">
               <ChevronDown />
             </div>
-            <span className="text-md flex justify-center">
+            <span className="text-md flex justify-center cursor-pointer">
               {mainPagemode === "roomLights" ? "Room Lights" : "All Lights"}
             </span>
           </button>

@@ -1,25 +1,32 @@
 import { useConfigStore, useRoomsStore } from "@/stores";
 import * as Dialog from "@radix-ui/react-dialog";
+import { useState } from "react";
 import { useShallow } from "zustand/shallow";
 
 interface Props {
-  roomName: string;
   orientation: "landscape" | "portrait";
 }
 
-function roomSelector({ roomName, orientation }: Props) {
+function roomSelector({ orientation }: Props) {
+  const [open, setOpen] = useState(false);
+
   const roomIds = useRoomsStore(
     useShallow((state) => Object.values(state.rooms).map((room) => room.id)),
   );
   const roomNames = useRoomsStore(
     useShallow((state) => Object.values(state.rooms).map((room) => room.name)),
   );
+  const currentRoomId = useConfigStore((state) => state.currentRoomId);
+  const setCurrentRoom = useConfigStore((state) => state.setCurrentRoom);
+  const currentRoomName = useRoomsStore((state) =>
+    currentRoomId ? state.rooms[currentRoomId]?.name : undefined,
+  );
 
   return (
-    <Dialog.Root>
+    <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger asChild>
-        <button className="text-md flex justify-center items-center w-full h-full">
-          {roomName || "All"}
+        <button className="text-md flex justify-center items-center w-full h-full cursor-pointer">
+          {currentRoomName || "All"}
         </button>
       </Dialog.Trigger>
       <Dialog.Portal>
@@ -32,17 +39,22 @@ function roomSelector({ roomName, orientation }: Props) {
           >
             {roomNames.map((room, index) => {
               const id = roomIds[index];
+              const isActive = currentRoomId === String(id);
               return (
-                <Dialog.Close asChild key={id}>
-                  <button
-                    onClick={() =>
-                      useConfigStore.getState().setCurrentRoom(String(id))
-                    }
-                    className={`flex p-4 pl-5 pr-5 rounded-md ${room === roomName ? "bg-[#ffc101]" : "bg-black/70"}`}
-                  >
-                    {room}
-                  </button>
-                </Dialog.Close>
+                <button
+                  key={id}
+                  onClick={() => {
+                    setCurrentRoom(String(id));
+                    setTimeout(() => {
+                      setOpen(false);
+                    }, 200);
+                  }}
+                  className={`flex p-4 pl-5 pr-5 rounded-md transition-all duration-100 transform active:scale-[0.96] cursor-pointer ${
+                    isActive ? "bg-[#ffc101]" : "bg-black/70 hover:bg-black/50"
+                  }`}
+                >
+                  {room}
+                </button>
               );
             })}
           </Dialog.Content>

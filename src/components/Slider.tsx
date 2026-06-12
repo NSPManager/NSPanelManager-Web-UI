@@ -38,7 +38,7 @@ function Slider({ value, sliderType, orientation, icon }: SliderProps) {
       {/* replace grow with h-full on the track */}
       <RadixSlider.Track className="relative h-full w-full rounded-xl overflow-hidden z-10">
         <RadixSlider.Range
-          className={`absolute bg-black/30 ${orientation === "vertical" ? "w-full border-t-3" : "h-full border-r-3"} `}
+          className={`absolute bg-black/30 cursor-pointer ${orientation === "vertical" ? "w-full border-t-3" : "h-full border-r-3"} `}
         />
       </RadixSlider.Track>
       <RadixSlider.Thumb className="block" aria-label="Light brightness" />
