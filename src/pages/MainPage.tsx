@@ -1,5 +1,4 @@
 import { ChevronDown, SlidersVertical, Sun } from "lucide-react";
-import { useScreenOrientation } from "@/hooks";
 import { useConfigStore, useRoomsStore, useUIStore } from "@/stores";
 import {
   CeilingLightIcon,
@@ -22,7 +21,7 @@ function MainPage() {
         )
       : useRoomsStore((state) => state.globalRoom);
 
-  const orientation = useScreenOrientation();
+  const orientation = useUIStore((state) => state.orientation);
   const sliderOrientation =
     orientation === "landscape" ? "vertical" : "horizontal";
 
@@ -112,7 +111,7 @@ function MainPage() {
             <div
               className={`flex rounded-r-xl items-center justify-center bg-black/20`}
             >
-              <RoomSelector orientation={orientation} />
+              <RoomSelector />
             </div>
           </div>
           <button

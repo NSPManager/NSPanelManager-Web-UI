@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
+import { useUIStore } from "@/stores";
+import { useEffect } from "react";
 
 function useScreenOrientation() {
-  const [orientation, setOrientation] = useState<"landscape" | "portrait">(
-    "landscape",
-  );
+  const setOrientation = useUIStore.getState().setOrientation;
 
   useEffect(() => {
     function checkOrientation() {
@@ -14,9 +13,7 @@ function useScreenOrientation() {
     checkOrientation();
     window.addEventListener("resize", checkOrientation);
     return () => window.removeEventListener("resize", checkOrientation);
-  }, []);
-
-  return orientation;
+  }, [setOrientation]);
 }
 
 export default useScreenOrientation;

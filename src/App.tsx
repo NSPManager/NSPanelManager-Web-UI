@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import { stompService } from "@/services/stompService";
 import { MainPage } from "@/pages";
+import { useScreenOrientation } from "./hooks";
 
 function App() {
   useEffect(() => {
@@ -12,6 +13,8 @@ function App() {
       stompService.cleanup(); // Total cleanup on unmount
     };
   }, []);
+
+  useScreenOrientation();
 
   return (
     <div className="relative h-screen w-full bg-black text-white">

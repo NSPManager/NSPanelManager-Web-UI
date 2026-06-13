@@ -3,11 +3,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { useState } from "react";
 import { useShallow } from "zustand/shallow";
 
-interface Props {
-  orientation: "landscape" | "portrait";
-}
-
-function roomSelector({ orientation }: Props) {
+function roomSelector() {
   const [open, setOpen] = useState(false);
 
   const roomIds = useRoomsStore(
@@ -22,6 +18,7 @@ function roomSelector({ orientation }: Props) {
   const currentRoomName = useRoomsStore((state) =>
     currentRoomId ? state.rooms[currentRoomId]?.name : undefined,
   );
+  const orientation = useUIStore((state) => state.orientation);
 
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
