@@ -1,4 +1,4 @@
-import { useConfigStore, useRoomsStore } from "@/stores";
+import { useConfigStore, useRoomsStore, useUIStore } from "@/stores";
 import * as Dialog from "@radix-ui/react-dialog";
 import { useState } from "react";
 import { useShallow } from "zustand/shallow";
@@ -16,6 +16,7 @@ function roomSelector({ orientation }: Props) {
   const roomNames = useRoomsStore(
     useShallow((state) => Object.values(state.rooms).map((room) => room.name)),
   );
+  const mainPagemode = useUIStore((state) => state.mainPageMode);
   const currentRoomId = useConfigStore((state) => state.currentRoomId);
   const setCurrentRoom = useConfigStore((state) => state.setCurrentRoom);
   const currentRoomName = useRoomsStore((state) =>
@@ -26,7 +27,7 @@ function roomSelector({ orientation }: Props) {
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger asChild>
         <button className="text-md flex justify-center items-center w-full h-full cursor-pointer">
-          {currentRoomName || "All"}
+          {mainPagemode === "roomLights" ? currentRoomName : "All"}
         </button>
       </Dialog.Trigger>
       <Dialog.Portal>

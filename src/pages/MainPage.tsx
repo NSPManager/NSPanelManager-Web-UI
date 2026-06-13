@@ -40,7 +40,7 @@ function MainPage() {
     <div className="relative z-10 grid h-full grid-rows-[auto_1fr_auto] gap-1 p-2 md:gap-2">
       {/* ROW 1 */}
       <div
-        className={`flex rounded-xl bg-black/20 ${orientation === "landscape" ? "h-10 md:h-20" : "h-20"}`}
+        className={`flex rounded-xl bg-black/20 ${orientation === "landscape" ? "h-20 max-lg:[@media(min-aspect-ratio:2/1)]:h-10" : "h-20"}`}
       >
         <div className="flex flex-1 items-center justify-center h-full">
           <SlidersVertical />
@@ -91,7 +91,7 @@ function MainPage() {
       <div>
         {/* ROW 3 Room toggle button and Light Mode */}
         <div
-          className={`grid grid-cols-2 gap-1 md:gap-2 ${orientation === "landscape" ? "h-10 md:h-20" : "h-20"}`}
+          className={`grid grid-cols-2 gap-1 md:gap-2 ${orientation === "landscape" ? "h-20 max-lg:[@media(min-aspect-ratio:2/1)]:h-10" : "h-20"}`}
         >
           <div className="grid grid-cols-[1fr_2px_3fr] md:grid-cols-[1fr_4px_3fr]">
             <div
