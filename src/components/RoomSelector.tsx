@@ -23,7 +23,10 @@ function roomSelector() {
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger asChild>
-        <button className="text-md flex justify-center items-center w-full h-full cursor-pointer">
+        <button
+          disabled={mainPagemode !== "roomLights"}
+          className="text-md flex justify-center items-center w-full h-full cursor-pointer"
+        >
           {mainPagemode === "roomLights" ? currentRoomName : "All"}
         </button>
       </Dialog.Trigger>

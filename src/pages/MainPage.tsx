@@ -25,6 +25,10 @@ function MainPage() {
   const sliderOrientation =
     orientation === "landscape" ? "vertical" : "horizontal";
 
+  const handleLightToggle = useRoomsStore.getState().handleLightToggle;
+  const setCurrentRoom = useConfigStore.getState().setCurrentRoom;
+  const toggleMainPageMode = useUIStore.getState().toggleMainPageMode;
+
   if (!isLoaded || !room) {
     return <h1>Waiting for config from manager...</h1>;
   }
@@ -51,9 +55,7 @@ function MainPage() {
         className={`grid gap-1 md:gap-2 ${orientation === "landscape" ? "grid-cols-4 grid-rows-1" : "grid-cols-2 grid-rows-3"}`}
       >
         <div
-          onClick={() =>
-            useRoomsStore.getState().handleLightToggle(LightType.CEILING)
-          }
+          onClick={() => handleLightToggle(LightType.CEILING)}
           className={`flex flex-col cursor-pointer ${cardStyles}`}
         >
           <div className={`${ceilingTableStyles}`}>
@@ -61,9 +63,7 @@ function MainPage() {
           </div>
         </div>
         <div
-          onClick={() =>
-            useRoomsStore.getState().handleLightToggle(LightType.TABLE)
-          }
+          onClick={() => handleLightToggle(LightType.TABLE)}
           className={`flex flex-col cursor-pointer ${cardStyles}`}
         >
           <div className={`${ceilingTableStyles}`}>
@@ -97,7 +97,11 @@ function MainPage() {
               className={`flex rounded-l-xl items-center justify-center bg-black/20`}
             >
               <button
-                onClick={() => useConfigStore.getState().setCurrentRoom()}
+                onClick={
+                  mainPagemode === "roomLights"
+                    ? () => setCurrentRoom()
+                    : undefined
+                }
                 className="flex items-center justify-center h-full w-full cursor-pointer"
               >
                 <ChevronDown />
@@ -115,7 +119,7 @@ function MainPage() {
             </div>
           </div>
           <button
-            onClick={() => useUIStore.getState().toggleMainPageMode()}
+            onClick={() => toggleMainPageMode()}
             className={`relative flex cursor-pointer ${cardStyles}`}
           >
             <div className="absolute left-0 top-0 bottom-0 w-[25%] flex items-center justify-center">
