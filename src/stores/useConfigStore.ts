@@ -57,22 +57,18 @@ export const useConfigStore = create<ConfigState>()(
             "setConfig",
           );
         },
-
+        // TODO refactor this function, not nice
         setCurrentRoom: (id?: string) => {
           if (id) {
-            set({ currentRoomId: id }, false, "setCurrentRoom");
-          } else {
-            const roomOrder = get().roomOrder;
-            const currentRoom = get().currentRoomId;
-            if (currentRoom) {
-              const currentRoomIndex = roomOrder.indexOf(currentRoom);
-              const nextRoomIndex = (currentRoomIndex + 1) % roomOrder.length;
-              set(
-                { currentRoomId: roomOrder[nextRoomIndex] },
-                false,
-                "setCurrentRoom",
-              );
-            }
+            return set({ currentRoomId: id }, false, "setCurrentRoom");
+          }
+          const roomOrder = get().roomOrder;
+          const currentRoom = get().currentRoomId;
+          if (currentRoom) {
+            const currentRoomIndex = roomOrder.indexOf(currentRoom);
+            const nextRoomIndex = (currentRoomIndex + 1) % roomOrder.length;
+            const nextRoom = roomOrder[nextRoomIndex];
+            set({ currentRoomId: nextRoom }, false, "setCurrentRoom");
           }
         },
 

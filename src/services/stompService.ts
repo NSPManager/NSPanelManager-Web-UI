@@ -21,6 +21,7 @@ const MANAGER_ADDRESS = import.meta.env.DEV
   : window.location.hostname;
 
 type SubLevel =
+  | "registerAccept"
   | "config"
   | "globalRoom"
   | "rooms"
@@ -29,6 +30,7 @@ type SubLevel =
   | "scenePages";
 
 const subscriptions: Record<SubLevel, Record<string, StompSubscription>> = {
+  registerAccept: {},
   config: {},
   globalRoom: {},
   rooms: {},
@@ -45,6 +47,31 @@ export interface LightCommandOptions {
 
 let client: Client | null = null;
 
+let registerRequestTimerId: ReturnType<typeof setInterval> | null = null;
+
+function startRegisterRequestTimer() {
+  const interval = 5000;
+  if (registerRequestTimerId !== null) return;
+  console.log(
+    `Starting to send register requests every ${interval / 1000} seconds`,
+  );
+
+  registerRequestTimerId = setInterval(() => {
+    console.log("Sent register request");
+    stompService.sendRegisterCommand();
+  }, interval);
+}
+
+function stopRegisterRequestTimer() {
+  if (registerRequestTimerId === null) return;
+
+  clearInterval(registerRequestTimerId);
+  registerRequestTimerId = null;
+  console.log(
+    "Received register accept. Stopping transmission of register requests.",
+  );
+}
+
 export const stompService = {
   //Initialize the connection
   init: () => {
@@ -57,12 +84,11 @@ export const stompService = {
       reconnectDelay: 5000,
       onConnect: () => {
         console.log("STOMP Connected");
-        const virtualMac = useConfigStore.getState().virtualMac;
-        const friendlyName = useConfigStore.getState().friendlyName;
-        if (!virtualMac && !friendlyName) return;
-        stompService.subscribeToConfig(virtualMac);
-        stompService.sendRegisterCommand(virtualMac, friendlyName);
-        stompService.sendNSPanelStatus(virtualMac, "online");
+        stompService.subscribeToRegisterAccept();
+        stompService.sendRegisterCommand();
+        startRegisterRequestTimer();
+        // stompService.subscribeToConfig(virtualMac);
+        // stompService.sendNSPanelStatus();
       },
       onStompError: (frame) => {
         console.error("Broker reported error: " + frame.headers["message"]);
@@ -72,7 +98,11 @@ export const stompService = {
     client.activate();
   },
 
-  sendRegisterCommand(virtualMac: string, friendlyName: string) {
+  sendRegisterCommand() {
+    const virtualMac = useConfigStore.getState().virtualMac;
+    const friendlyName = useConfigStore.getState().friendlyName;
+    if (!virtualMac && !friendlyName) return;
+
     const registerCommand = {
       command: "register_request",
       mac_origin: virtualMac,
@@ -125,46 +155,77 @@ export const stompService = {
     useScenePagesStore.getState().resetScenePages();
   },
 
-  subscribeToConfig: (macAddress: string) => {
-    if (!client?.connected || subscriptions.config["main"]) return;
-    console.log("Subscribing to config", macAddress);
+  subscribeToRegisterAccept: () => {
+    if (!client?.connected || subscriptions.registerAccept["main"]) return;
+
+    const virtualMac = useConfigStore.getState().virtualMac;
+    if (!virtualMac) return;
+
+    console.log("Subscribing to register accept topic");
     const sub = client.subscribe(
-      `mqtt/nspanel/${macAddress}/config`,
+      `mqtt/nspanel/${virtualMac}/command`,
       (message) => {
-        const configData = convertProtbuf<INSPanelConfig>(
-          message,
-          "NSPanelConfig",
-        );
-        console.log("Received New Config");
+        if (message.body) {
+          stopRegisterRequestTimer();
+          try {
+            //Decode Base64 string back to plain text JSON string
+            const decodedString = atob(message.body);
 
-        if (configData && configData.roomInfos) {
-          stompService.newConfigCleanUp();
-          useConfigStore.getState().setConfig(configData);
+            //Parse the plain text into a JS object
+            const dataObj = JSON.parse(decodedString);
 
-          console.log(
-            "Starting subscriptions to global room, rooms, entityPages and ScenePages",
-          );
-          stompService.subscribeToGlobalRoom();
-          //Loop through roomInfo object containing entityPages, scenesPages and room ids to start subscriptions
-          for (const room of configData.roomInfos) {
-            const { roomId, entityPageIds, scenePageIds } = room;
-
-            if (roomId) {
-              stompService.subscribeToRoom(roomId);
-            }
-            if (entityPageIds && entityPageIds.length > 0) {
-              for (const id of entityPageIds) {
-                stompService.subscribeToEntityPage(id);
-              }
-            }
-            if (scenePageIds && scenePageIds.length > 0)
-              for (const id of scenePageIds) {
-                stompService.subscribeToScenesPage(id);
-              }
+            stompService.subscribeToConfig(dataObj.config_topic);
+            console.log(dataObj);
+          } catch (error) {
+            console.error("Failed to decode or parse message:", error);
           }
         }
       },
     );
+
+    subscriptions.registerAccept["main"] = sub;
+
+    // stompService.subscribeToConfig(virtualMac);
+  },
+
+  subscribeToConfig: (configTopic: string) => {
+    if (!client?.connected || subscriptions.config["main"]) return;
+    configTopic = "mqtt/" + configTopic;
+    console.log("Subscribing to config", configTopic);
+    const sub = client.subscribe(configTopic, (message) => {
+      const configData = convertProtbuf<INSPanelConfig>(
+        message,
+        "NSPanelConfig",
+      );
+      console.log("Received New Config");
+
+      if (configData && configData.roomInfos) {
+        stompService.newConfigCleanUp();
+        useConfigStore.getState().setConfig(configData);
+
+        console.log(
+          "Starting subscriptions to global room, rooms, entityPages and ScenePages",
+        );
+        stompService.subscribeToGlobalRoom();
+        //Loop through roomInfo object containing entityPages, scenesPages and room ids to start subscriptions
+        for (const room of configData.roomInfos) {
+          const { roomId, entityPageIds, scenePageIds } = room;
+
+          if (roomId) {
+            stompService.subscribeToRoom(roomId);
+          }
+          if (entityPageIds && entityPageIds.length > 0) {
+            for (const id of entityPageIds) {
+              stompService.subscribeToEntityPage(id);
+            }
+          }
+          if (scenePageIds && scenePageIds.length > 0)
+            for (const id of scenePageIds) {
+              stompService.subscribeToScenesPage(id);
+            }
+        }
+      }
+    });
     subscriptions.config["main"] = sub;
   },
 
