@@ -48,6 +48,7 @@ export interface LightCommandOptions {
 let client: Client | null = null;
 
 let registerRequestTimerId: ReturnType<typeof setInterval> | null = null;
+let browserStatusOnlineTimerId: ReturnType<typeof setInterval> | null = null;
 
 function startRegisterRequestTimer() {
   const interval = 5000;
@@ -58,7 +59,7 @@ function startRegisterRequestTimer() {
 
   registerRequestTimerId = setInterval(() => {
     console.log("Sent register request");
-    stompService.sendRegisterCommand();
+    stompService.sendRegisterRequest();
   }, interval);
 }
 
@@ -70,6 +71,19 @@ function stopRegisterRequestTimer() {
   console.log(
     "Received register accept. Stopping transmission of register requests.",
   );
+}
+
+function startStatusOnlineTimer() {
+  const interval = 30000;
+  if (browserStatusOnlineTimerId !== null) return;
+  stompService.sendBrowserStatusOnline();
+  console.log(
+    `Starting to send browser status ONLINE every ${interval / 1000} seconds`,
+  );
+  browserStatusOnlineTimerId = setInterval(() => {
+    stompService.sendBrowserStatusOnline();
+    console.log("Sent browser status ONLINE");
+  }, interval);
 }
 
 export const stompService = {
@@ -85,10 +99,9 @@ export const stompService = {
       onConnect: () => {
         console.log("STOMP Connected");
         stompService.subscribeToRegisterAccept();
-        stompService.sendRegisterCommand();
+        stompService.sendRegisterRequest();
         startRegisterRequestTimer();
-        // stompService.subscribeToConfig(virtualMac);
-        // stompService.sendNSPanelStatus();
+        startStatusOnlineTimer();
       },
       onStompError: (frame) => {
         console.error("Broker reported error: " + frame.headers["message"]);
@@ -98,7 +111,7 @@ export const stompService = {
     client.activate();
   },
 
-  sendRegisterCommand() {
+  sendRegisterRequest() {
     const virtualMac = useConfigStore.getState().virtualMac;
     const friendlyName = useConfigStore.getState().friendlyName;
     if (!virtualMac && !friendlyName) return;
@@ -124,10 +137,12 @@ export const stompService = {
     });
   },
 
-  sendNSPanelStatus(mac: string, state: "online" | "offline") {
+  sendBrowserStatusOnline() {
+    const virtualMac = useConfigStore.getState().virtualMac;
+    if (!virtualMac) return;
     const payload = {
-      mac: mac,
-      state: state,
+      mac: virtualMac,
+      state: "online",
     };
 
     // Convert the object to a JSON string
@@ -136,7 +151,7 @@ export const stompService = {
     if (!client?.connected) return;
 
     client.publish({
-      destination: `mqtt/nspanel/${mac}/status`,
+      destination: `mqtt/nspanel/${virtualMac}/status`,
       body: jsonBody, // Use 'body' for strings/JSON instead of 'binaryBody'
     });
   },
@@ -156,6 +171,8 @@ export const stompService = {
   },
 
   subscribeToRegisterAccept: () => {
+    //When we receive an accept from the manager on this topic we stop sending requests and
+    //we start the config subscription
     if (!client?.connected || subscriptions.registerAccept["main"]) return;
 
     const virtualMac = useConfigStore.getState().virtualMac;
@@ -172,10 +189,10 @@ export const stompService = {
             const decodedString = atob(message.body);
 
             //Parse the plain text into a JS object
-            const dataObj = JSON.parse(decodedString);
+            const registerAccept = JSON.parse(decodedString);
 
-            stompService.subscribeToConfig(dataObj.config_topic);
-            console.log(dataObj);
+            stompService.subscribeToConfig(registerAccept.config_topic);
+            console.log(registerAccept);
           } catch (error) {
             console.error("Failed to decode or parse message:", error);
           }
@@ -184,8 +201,6 @@ export const stompService = {
     );
 
     subscriptions.registerAccept["main"] = sub;
-
-    // stompService.subscribeToConfig(virtualMac);
   },
 
   subscribeToConfig: (configTopic: string) => {
