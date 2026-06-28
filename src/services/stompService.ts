@@ -364,7 +364,9 @@ export const stompService = {
       const category = subscriptions[level];
       Object.keys(category).forEach((key) => {
         console.log(`Unsubscribing from ${level}: ${key}`);
-        category[key].unsubscribe();
+        if (client?.connected) {
+          category[key].unsubscribe();
+        }
         delete category[key];
       });
     } else {

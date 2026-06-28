@@ -30,7 +30,11 @@ function MainPage() {
   const toggleMainPageMode = useUIStore.getState().toggleMainPageMode;
 
   if (!isLoaded || !room) {
-    return <h1>Waiting for config from manager...</h1>;
+    return (
+      <div className="relative z-10 flex h-full items-center justify-center">
+        Waiting for config from manager...
+      </div>
+    );
   }
 
   const cardStyles = "rounded-xl items-center justify-center bg-black/20";
