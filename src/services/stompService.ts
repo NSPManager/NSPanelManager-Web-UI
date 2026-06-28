@@ -103,6 +103,10 @@ export const stompService = {
         startRegisterRequestTimer();
         startStatusOnlineTimer();
       },
+      onWebSocketClose: () => {
+        stompService.cleanup();
+        stompService.cleanUpTimers();
+      },
       onStompError: (frame) => {
         console.error("Broker reported error: " + frame.headers["message"]);
       },
@@ -174,7 +178,6 @@ export const stompService = {
     //When we receive an accept from the manager on this topic we stop sending requests and
     //we start the config subscription
     if (!client?.connected || subscriptions.registerAccept["main"]) return;
-
     const virtualMac = useConfigStore.getState().virtualMac;
     if (!virtualMac) return;
 
@@ -190,9 +193,8 @@ export const stompService = {
 
             //Parse the plain text into a JS object
             const registerAccept = JSON.parse(decodedString);
-
+            console.log("Register accept message:", registerAccept);
             stompService.subscribeToConfig(registerAccept.config_topic);
-            console.log(registerAccept);
           } catch (error) {
             console.error("Failed to decode or parse message:", error);
           }
@@ -373,6 +375,17 @@ export const stompService = {
       });
       console.log("Reached total cleanup");
     }
+  },
+  cleanUpTimers: () => {
+    if (registerRequestTimerId) {
+      clearInterval(registerRequestTimerId);
+      registerRequestTimerId = null;
+    }
+    if (browserStatusOnlineTimerId) {
+      clearInterval(browserStatusOnlineTimerId);
+      browserStatusOnlineTimerId = null;
+    }
+    console.log("Timers stopped and removed");
   },
 
   sendMainPageLightCommand(
