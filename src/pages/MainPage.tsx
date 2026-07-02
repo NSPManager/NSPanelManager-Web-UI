@@ -8,6 +8,7 @@ import {
   TableLightIcon,
 } from "@/components";
 import { LightType, SliderType } from "@/types";
+import { useRef, useState } from "react";
 
 function MainPage() {
   const mainPagemode = useUIStore((state) => state.mainPageMode);
@@ -28,6 +29,33 @@ function MainPage() {
   const handleLightToggle = useRoomsStore.getState().handleLightToggle;
   const setCurrentRoom = useConfigStore.getState().setCurrentRoom;
   const toggleMainPageMode = useUIStore.getState().toggleMainPageMode;
+
+  const longPressTimerRef = useRef<any>(null);
+  const [isLongPressActive, setIsLongPressActive] = useState(false);
+
+  function startPress() {
+    longPressTimerRef.current = setTimeout(() => {
+      handleLongPress();
+      longPressTimerRef.current = null;
+    }, 600);
+  }
+
+  function endPress() {
+    if (longPressTimerRef.current) {
+      handleShortPress();
+      clearTimeout(longPressTimerRef.current);
+      longPressTimerRef.current = null;
+    }
+  }
+
+  function handleShortPress() {
+    console.log("Short press");
+    handleLightToggle(LightType.TABLE);
+  }
+
+  function handleLongPress() {
+    console.log("Long press");
+  }
 
   if (!isLoaded || !room) {
     return (
@@ -67,7 +95,12 @@ function MainPage() {
           </div>
         </div>
         <div
-          onClick={() => handleLightToggle(LightType.TABLE)}
+          onMouseDown={startPress}
+          onMouseUp={endPress}
+          onMouseLeave={endPress}
+          onTouchStart={startPress}
+          onTouchEnd={endPress}
+          // onClick={() => handleLightToggle(LightType.TABLE)}
           className={`flex flex-col cursor-pointer ${cardStyles}`}
         >
           <div className={`${ceilingTableStyles}`}>
