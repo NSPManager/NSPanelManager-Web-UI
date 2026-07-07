@@ -75,6 +75,7 @@ export const useRoomsStore = create<RoomsState>()(
             : activeData.numCeilingLightsOn > 0;
 
         const brightness = isCurrentlyOn ? 0 : config.defaultLightBrightess;
+        console.log("sending light toggle", brightness);
         stompService.sendMainPageLightCommand(
           lightType,
           { brightness: brightness },

@@ -8,7 +8,8 @@ import {
   TableLightIcon,
 } from "@/components";
 import { LightType, SliderType } from "@/types";
-import { useRef, useState } from "react";
+import { useLongPress } from "@/hooks/useLongPress";
+import { useLongPressLock } from "@/hooks/useLongPressLock";
 
 function MainPage() {
   const mainPagemode = useUIStore((state) => state.mainPageMode);
@@ -25,37 +26,33 @@ function MainPage() {
   const orientation = useUIStore((state) => state.orientation);
   const sliderOrientation =
     orientation === "landscape" ? "vertical" : "horizontal";
-
   const handleLightToggle = useRoomsStore.getState().handleLightToggle;
   const setCurrentRoom = useConfigStore.getState().setCurrentRoom;
   const toggleMainPageMode = useUIStore.getState().toggleMainPageMode;
 
-  const longPressTimerRef = useRef<any>(null);
-  const [isLongPressActive, setIsLongPressActive] = useState(false);
+  const tableLock = useLongPressLock();
 
-  function startPress() {
-    longPressTimerRef.current = setTimeout(() => {
-      handleLongPress();
-      longPressTimerRef.current = null;
-    }, 600);
-  }
+  const tableButtonHandlers = useLongPress({
+    onShortPress: () =>
+      tableLock.isLockActive
+        ? tableLock.clearLock()
+        : handleLightToggle(LightType.TABLE),
+    onLongPress: () =>
+      tableLock.isLockActive ? tableLock.clearLock() : tableLock.startLock(),
+  });
 
-  function endPress() {
-    if (longPressTimerRef.current) {
-      handleShortPress();
-      clearTimeout(longPressTimerRef.current);
-      longPressTimerRef.current = null;
-    }
-  }
+  const ceilingLock = useLongPressLock();
 
-  function handleShortPress() {
-    console.log("Short press");
-    handleLightToggle(LightType.TABLE);
-  }
-
-  function handleLongPress() {
-    console.log("Long press");
-  }
+  const ceilingButtonHandlers = useLongPress({
+    onShortPress: () =>
+      ceilingLock.isLockActive
+        ? ceilingLock.clearLock()
+        : handleLightToggle(LightType.CEILING),
+    onLongPress: () =>
+      ceilingLock.isLockActive
+        ? ceilingLock.clearLock()
+        : ceilingLock.startLock(),
+  });
 
   if (!isLoaded || !room) {
     return (
@@ -87,25 +84,28 @@ function MainPage() {
         className={`grid gap-1 md:gap-2 ${orientation === "landscape" ? "grid-cols-4 grid-rows-1" : "grid-cols-2 grid-rows-3"}`}
       >
         <div
-          onClick={() => handleLightToggle(LightType.CEILING)}
+          {...ceilingButtonHandlers}
+          // onClick={() => handleLightToggle(LightType.CEILING)}
           className={`flex flex-col cursor-pointer ${cardStyles}`}
         >
+          <div
+            className={`w-[60px] h-[3px] transition-colors duration-200 ${ceilingLock.isLockActive ? "bg-[#FFC101]" : "bg-transparent"} `}
+          ></div>
           <div className={`${ceilingTableStyles}`}>
             <CeilingLightIcon isOn={room.numCeilingLightsOn > 0} />
           </div>
         </div>
         <div
-          onMouseDown={startPress}
-          onMouseUp={endPress}
-          onMouseLeave={endPress}
-          onTouchStart={startPress}
-          onTouchEnd={endPress}
+          {...tableButtonHandlers}
           // onClick={() => handleLightToggle(LightType.TABLE)}
           className={`flex flex-col cursor-pointer ${cardStyles}`}
         >
           <div className={`${ceilingTableStyles}`}>
             <TableLightIcon isOn={room.numTableLightsOn > 0} />
           </div>
+          <div
+            className={`w-[60px] h-[3px] transition-colors duration-200 ${tableLock.isLockActive ? "bg-[#FFC101]" : "bg-transparent"} `}
+          ></div>
         </div>
         <div className={`flex flex-col ${cardStyles} ${sliderStyles}`}>
           <Slider
@@ -113,6 +113,7 @@ function MainPage() {
             sliderType={SliderType.BRIGHTNESS}
             orientation={sliderOrientation}
             icon={<Sun size={"100%"} className="w-full" />}
+            isTableLockActive={tableLock.isLockActive}
           />
         </div>
         <div className={`flex flex-col ${cardStyles} ${sliderStyles}`}>
@@ -121,6 +122,7 @@ function MainPage() {
             sliderType={SliderType.COLORTEMP}
             orientation={sliderOrientation}
             icon={<ColorTempIcon />}
+            isTableLockActive={tableLock.isLockActive}
           />
         </div>
       </div>

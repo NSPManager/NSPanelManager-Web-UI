@@ -8,9 +8,16 @@ interface SliderProps {
   sliderType: SliderType;
   orientation: "horizontal" | "vertical" | undefined;
   icon: JSX.Element;
+  isTableLockActive: boolean;
 }
 
-function Slider({ value, sliderType, orientation, icon }: SliderProps) {
+function Slider({
+  value,
+  sliderType,
+  orientation,
+  icon,
+  isTableLockActive,
+}: SliderProps) {
   const [sliderValue, setSliderValue] = useState(value);
 
   useEffect(() => {
@@ -38,7 +45,7 @@ function Slider({ value, sliderType, orientation, icon }: SliderProps) {
       {/* replace grow with h-full on the track */}
       <RadixSlider.Track className="relative h-full w-full rounded-xl overflow-hidden z-10">
         <RadixSlider.Range
-          className={`absolute bg-black/30 cursor-pointer ${orientation === "vertical" ? "w-full border-t-3" : "h-full border-r-3"} `}
+          className={`absolute bg-black/30 cursor-pointer transition-colors duration-200 ${orientation === "vertical" ? "w-full border-t-3" : "h-full border-r-3"} ${isTableLockActive ? "border-[#FFC101]" : ""} `}
         />
       </RadixSlider.Track>
       <RadixSlider.Thumb className="block" aria-label="Light brightness" />
