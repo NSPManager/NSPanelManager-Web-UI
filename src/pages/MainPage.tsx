@@ -34,26 +34,44 @@ function MainPage() {
 
   const tableButtonHandlers = useLongPress({
     onShortPress: () =>
-      tableLock.isLockActive
-        ? tableLock.clearLock()
+      tableLock.isLockActive || ceilingLock.isLockActive
+        ? clearAllLocks()
         : handleLightToggle(LightType.TABLE),
-    onLongPress: () =>
-      tableLock.isLockActive ? tableLock.clearLock() : tableLock.startLock(),
+    onLongPress: () => {
+      if (tableLock.isLockActive) {
+        clearAllLocks();
+      } else if (ceilingLock.isLockActive) {
+        ceilingLock.clearLock();
+        tableLock.startLock();
+      } else {
+        tableLock.startLock();
+      }
+    },
   });
 
   const ceilingLock = useLongPressLock();
 
   const ceilingButtonHandlers = useLongPress({
     onShortPress: () =>
-      ceilingLock.isLockActive
-        ? ceilingLock.clearLock()
+      tableLock.isLockActive || ceilingLock.isLockActive
+        ? clearAllLocks()
         : handleLightToggle(LightType.CEILING),
-    onLongPress: () =>
-      ceilingLock.isLockActive
-        ? ceilingLock.clearLock()
-        : ceilingLock.startLock(),
+    onLongPress: () => {
+      if (ceilingLock.isLockActive) {
+        clearAllLocks();
+      } else if (tableLock.isLockActive) {
+        tableLock.clearLock();
+        ceilingLock.startLock();
+      } else {
+        ceilingLock.startLock();
+      }
+    },
   });
 
+  function clearAllLocks() {
+    ceilingLock.clearLock();
+    tableLock.clearLock();
+  }
   if (!isLoaded || !room) {
     return (
       <div className="relative z-10 flex h-full items-center justify-center">
