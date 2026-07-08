@@ -27,6 +27,16 @@ export function useLongPressLock({
     setIsLockActive(false);
   }
 
+  function resetLockTimeout() {
+    if (isLockActive && longPressTimeout.current) {
+      clearTimeout(longPressTimeout.current);
+      longPressTimeout.current = setTimeout(() => {
+        setIsLockActive(false);
+        longPressTimeout.current = null;
+      }, delay);
+    }
+  }
+
   useEffect(() => {
     return () => {
       if (longPressTimeout.current) {
@@ -39,6 +49,7 @@ export function useLongPressLock({
   return {
     startLock,
     clearLock,
+    resetLockTimeout,
     isLockActive,
   };
 }

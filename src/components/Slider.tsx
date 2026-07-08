@@ -1,5 +1,5 @@
 import { useRoomsStore } from "@/stores";
-import type { SliderType } from "@/types";
+import type { LightType, SliderType } from "@/types";
 import * as RadixSlider from "@radix-ui/react-slider";
 import { useEffect, useState, type JSX } from "react";
 
@@ -8,7 +8,8 @@ interface SliderProps {
   sliderType: SliderType;
   orientation: "horizontal" | "vertical" | undefined;
   icon: JSX.Element;
-  isTableLockActive: boolean;
+  resetLockTimeout(): void;
+  lockLightType?: typeof LightType.CEILING | typeof LightType.TABLE;
 }
 
 function Slider({
@@ -16,7 +17,8 @@ function Slider({
   sliderType,
   orientation,
   icon,
-  isTableLockActive,
+  resetLockTimeout,
+  lockLightType,
 }: SliderProps) {
   const [sliderValue, setSliderValue] = useState(value);
 
@@ -33,9 +35,12 @@ function Slider({
       value={[sliderValue]}
       onValueChange={(values) => {
         setSliderValue(values[0]);
+        lockLightType ? resetLockTimeout() : "";
       }}
       onValueCommit={(values) =>
-        useRoomsStore.getState().handleLightSlider(values[0], sliderType)
+        useRoomsStore
+          .getState()
+          .handleLightSlider(values[0], sliderType, lockLightType)
       }
       className="relative flex flex-col items-center select-none touch-none w-full h-full"
     >
@@ -45,7 +50,7 @@ function Slider({
       {/* replace grow with h-full on the track */}
       <RadixSlider.Track className="relative h-full w-full rounded-xl overflow-hidden z-10">
         <RadixSlider.Range
-          className={`absolute bg-black/30 cursor-pointer transition-colors duration-200 ${orientation === "vertical" ? "w-full border-t-3" : "h-full border-r-3"} ${isTableLockActive ? "border-[#FFC101]" : ""} `}
+          className={`absolute bg-black/30 cursor-pointer transition-colors duration-200 ${orientation === "vertical" ? "w-full border-t-3" : "h-full border-r-3"} ${lockLightType ? "border-[#FFC101]" : ""} `}
         />
       </RadixSlider.Track>
       <RadixSlider.Thumb className="block" aria-label="Light brightness" />

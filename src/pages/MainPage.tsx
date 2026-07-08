@@ -38,14 +38,9 @@ function MainPage() {
         ? clearAllLocks()
         : handleLightToggle(LightType.TABLE),
     onLongPress: () => {
-      if (tableLock.isLockActive) {
-        clearAllLocks();
-      } else if (ceilingLock.isLockActive) {
-        ceilingLock.clearLock();
-        tableLock.startLock();
-      } else {
-        tableLock.startLock();
-      }
+      if (tableLock.isLockActive) return clearAllLocks();
+      ceilingLock.clearLock();
+      tableLock.startLock();
     },
   });
 
@@ -57,14 +52,9 @@ function MainPage() {
         ? clearAllLocks()
         : handleLightToggle(LightType.CEILING),
     onLongPress: () => {
-      if (ceilingLock.isLockActive) {
-        clearAllLocks();
-      } else if (tableLock.isLockActive) {
-        tableLock.clearLock();
-        ceilingLock.startLock();
-      } else {
-        ceilingLock.startLock();
-      }
+      if (ceilingLock.isLockActive) return clearAllLocks();
+      tableLock.clearLock();
+      ceilingLock.startLock();
     },
   });
 
@@ -131,7 +121,18 @@ function MainPage() {
             sliderType={SliderType.BRIGHTNESS}
             orientation={sliderOrientation}
             icon={<Sun size={"100%"} className="w-full" />}
-            isTableLockActive={tableLock.isLockActive}
+            resetLockTimeout={
+              tableLock.isLockActive
+                ? tableLock.resetLockTimeout
+                : ceilingLock.resetLockTimeout
+            }
+            lockLightType={
+              tableLock.isLockActive
+                ? LightType.TABLE
+                : ceilingLock.isLockActive
+                  ? LightType.CEILING
+                  : undefined
+            }
           />
         </div>
         <div className={`flex flex-col ${cardStyles} ${sliderStyles}`}>
@@ -140,7 +141,18 @@ function MainPage() {
             sliderType={SliderType.COLORTEMP}
             orientation={sliderOrientation}
             icon={<ColorTempIcon />}
-            isTableLockActive={tableLock.isLockActive}
+            resetLockTimeout={
+              tableLock.isLockActive
+                ? tableLock.resetLockTimeout
+                : ceilingLock.resetLockTimeout
+            }
+            lockLightType={
+              tableLock.isLockActive
+                ? LightType.TABLE
+                : ceilingLock.isLockActive
+                  ? LightType.CEILING
+                  : undefined
+            }
           />
         </div>
       </div>

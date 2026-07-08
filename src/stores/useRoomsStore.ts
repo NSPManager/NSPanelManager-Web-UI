@@ -18,7 +18,11 @@ interface RoomsState {
   setGlobalRoom: (roomData: NSPanelRoomStatus) => void;
   resetRooms: () => void;
   handleLightToggle: (lightType: LightType) => void;
-  handleLightSlider: (value: number, sliderType: SliderType) => void;
+  handleLightSlider: (
+    value: number,
+    sliderType: SliderType,
+    lockLightType?: typeof LightType.CEILING | typeof LightType.TABLE,
+  ) => void;
 }
 
 export const useRoomsStore = create<RoomsState>()(
@@ -86,7 +90,7 @@ export const useRoomsStore = create<RoomsState>()(
           },
         );
       },
-      handleLightSlider: (value, sliderType) => {
+      handleLightSlider: (value, sliderType, lockLightType) => {
         const { config, currentRoomId } = useConfigStore.getState();
         const { rooms, globalRoom } = get();
         const mainPageMode = useUIStore.getState().mainPageMode;
@@ -102,16 +106,20 @@ export const useRoomsStore = create<RoomsState>()(
         const isCeilingOn = activeData.numCeilingLightsOn > 0;
         const isTableOn = activeData.numTableLightsOn > 0;
 
-        const key = `${isCeilingOn}-${isTableOn}`;
+        let lightType: LightType;
+        if (lockLightType) {
+          lightType = lockLightType;
+        } else {
+          const key = `${isCeilingOn}-${isTableOn}`;
 
-        const typeMap: Record<string, LightType> = {
-          ["true-false"]: LightType.CEILING,
-          ["false-true"]: LightType.TABLE,
-          ["true-true"]: LightType.ALL,
-          ["false-false"]: LightType.ALL,
-        };
-        const lightType = typeMap[key];
-
+          const typeMap: Record<string, LightType> = {
+            ["true-false"]: LightType.CEILING,
+            ["false-true"]: LightType.TABLE,
+            ["true-true"]: LightType.ALL,
+            ["false-false"]: LightType.ALL,
+          };
+          lightType = typeMap[key];
+        }
         const options: LightCommandOptions = {};
         if (sliderType === SliderType.BRIGHTNESS) options.brightness = value;
         if (sliderType === SliderType.COLORTEMP) options.colorTemp = value;
