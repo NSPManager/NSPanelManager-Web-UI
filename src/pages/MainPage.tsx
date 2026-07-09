@@ -76,6 +76,34 @@ function MainPage() {
 
   const ceilingTableStyles = "flex justify-center w-[30px] md:w-[50px]";
 
+  const activeLockBrightnessSlider = tableLock.isLockActive
+    ? {
+        type: LightType.TABLE,
+        value: room.tableLightsDimLevel,
+        reset: tableLock.resetLockTimeout,
+      }
+    : ceilingLock.isLockActive
+      ? {
+          type: LightType.CEILING,
+          value: room.ceilingLightsDimLevel,
+          reset: ceilingLock.resetLockTimeout,
+        }
+      : null;
+
+  const activeLockColorTempSlider = tableLock.isLockActive
+    ? {
+        type: LightType.TABLE,
+        value: room.tableLightsColorTemperatureValue,
+        reset: tableLock.resetLockTimeout,
+      }
+    : ceilingLock.isLockActive
+      ? {
+          type: LightType.CEILING,
+          value: room.ceilingLightsColorTemperatureValue,
+          reset: ceilingLock.resetLockTimeout,
+        }
+      : null;
+
   return (
     <div className="relative z-10 grid h-full grid-rows-[auto_1fr_auto] gap-1 p-2 md:gap-2">
       {/* ROW 1 */}
@@ -117,42 +145,30 @@ function MainPage() {
         </div>
         <div className={`flex flex-col ${cardStyles} ${sliderStyles}`}>
           <Slider
-            value={room.averageDimLevel}
+            value={
+              activeLockBrightnessSlider
+                ? activeLockBrightnessSlider.value
+                : room.averageDimLevel
+            }
             sliderType={SliderType.BRIGHTNESS}
             orientation={sliderOrientation}
             icon={<Sun size={"100%"} className="w-full" />}
-            resetLockTimeout={
-              tableLock.isLockActive
-                ? tableLock.resetLockTimeout
-                : ceilingLock.resetLockTimeout
-            }
-            lockLightType={
-              tableLock.isLockActive
-                ? LightType.TABLE
-                : ceilingLock.isLockActive
-                  ? LightType.CEILING
-                  : undefined
-            }
+            resetLockTimeout={activeLockBrightnessSlider?.reset}
+            lockLightType={activeLockBrightnessSlider?.type}
           />
         </div>
         <div className={`flex flex-col ${cardStyles} ${sliderStyles}`}>
           <Slider
-            value={room.averageColorTemperature}
+            value={
+              activeLockColorTempSlider
+                ? activeLockColorTempSlider.value
+                : room.averageColorTemperature
+            }
             sliderType={SliderType.COLORTEMP}
             orientation={sliderOrientation}
             icon={<ColorTempIcon />}
-            resetLockTimeout={
-              tableLock.isLockActive
-                ? tableLock.resetLockTimeout
-                : ceilingLock.resetLockTimeout
-            }
-            lockLightType={
-              tableLock.isLockActive
-                ? LightType.TABLE
-                : ceilingLock.isLockActive
-                  ? LightType.CEILING
-                  : undefined
-            }
+            resetLockTimeout={activeLockColorTempSlider?.reset}
+            lockLightType={activeLockColorTempSlider?.type}
           />
         </div>
       </div>

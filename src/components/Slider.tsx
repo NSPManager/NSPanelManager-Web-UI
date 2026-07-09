@@ -8,7 +8,7 @@ interface SliderProps {
   sliderType: SliderType;
   orientation: "horizontal" | "vertical" | undefined;
   icon: JSX.Element;
-  resetLockTimeout(): void;
+  resetLockTimeout?(): void;
   lockLightType?: typeof LightType.CEILING | typeof LightType.TABLE;
 }
 
@@ -35,7 +35,7 @@ function Slider({
       value={[sliderValue]}
       onValueChange={(values) => {
         setSliderValue(values[0]);
-        lockLightType ? resetLockTimeout() : "";
+        lockLightType ? resetLockTimeout?.() : "";
       }}
       onValueCommit={(values) =>
         useRoomsStore
@@ -47,7 +47,6 @@ function Slider({
       <div className="absolute flex flex-col justify-center w-[30px] md:w-[50px] inset-0 m-auto pointer-events-none z-20">
         {icon}
       </div>
-      {/* replace grow with h-full on the track */}
       <RadixSlider.Track className="relative h-full w-full rounded-xl overflow-hidden z-10">
         <RadixSlider.Range
           className={`absolute bg-black/30 cursor-pointer transition-colors duration-200 ${orientation === "vertical" ? "w-full border-t-3" : "h-full border-r-3"} ${lockLightType ? "border-[#FFC101]" : ""} `}
