@@ -14,19 +14,22 @@ interface UIState {
 }
 
 export const useUIStore = create<UIState>()(
-  devtools((set, get) => ({
-    mainPageMode: "roomLights",
-    orientation: "landscape",
-    toggleMainPageMode: () => {
-      get().mainPageMode === "roomLights"
-        ? set({ mainPageMode: "allLights" })
-        : set({ mainPageMode: "roomLights" });
-    },
-    setMainPageMode: (mode) =>
-      set({ mainPageMode: mode }, false, "setMainPageMode"),
-    resetMainPagemode: () =>
-      set({ mainPageMode: "roomLights" }, false, "resetMainPagemode"),
-    setOrientation: (orientation: Orientation) =>
-      set({ orientation: orientation }),
-  })),
+  devtools(
+    (set, get) => ({
+      mainPageMode: "roomLights",
+      orientation: "landscape",
+      toggleMainPageMode: () => {
+        get().mainPageMode === "roomLights"
+          ? set({ mainPageMode: "allLights" })
+          : set({ mainPageMode: "roomLights" });
+      },
+      setMainPageMode: (mode) =>
+        set({ mainPageMode: mode }, false, "setMainPageMode"),
+      resetMainPagemode: () =>
+        set({ mainPageMode: "roomLights" }, false, "resetMainPagemode"),
+      setOrientation: (orientation: Orientation) =>
+        set({ orientation: orientation }, false, "setOrientation"),
+    }),
+    { name: "UIStore" },
+  ),
 );

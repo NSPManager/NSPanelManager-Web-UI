@@ -78,8 +78,22 @@ export const useRoomsStore = create<RoomsState>()(
             ? activeData.numTableLightsOn > 0
             : activeData.numCeilingLightsOn > 0;
 
-        const brightness = isCurrentlyOn ? 0 : config.defaultLightBrightess;
-        console.log("sending light toggle", brightness);
+        const otherLightTypeDimLevel =
+          lightType === LightType.TABLE
+            ? activeData.ceilingLightsDimLevel
+            : activeData.tableLightsDimLevel;
+
+        const brightness = isCurrentlyOn
+          ? 0
+          : otherLightTypeDimLevel
+            ? otherLightTypeDimLevel
+            : config.defaultLightBrightess;
+        console.log(
+          "sending light toggle",
+          brightness,
+          activeData.ceilingLightsColorTemperatureValue,
+          activeData.tableLightsColorTemperatureValue,
+        );
         stompService.sendMainPageLightCommand(
           lightType,
           { brightness: brightness },
@@ -121,8 +135,12 @@ export const useRoomsStore = create<RoomsState>()(
           lightType = typeMap[key];
         }
         const options: LightCommandOptions = {};
-        if (sliderType === SliderType.BRIGHTNESS) options.brightness = value;
-        if (sliderType === SliderType.COLORTEMP) options.colorTemp = value;
+        if (sliderType === SliderType.BRIGHTNESS) {
+          options.brightness = value;
+        }
+        if (sliderType === SliderType.COLORTEMP) {
+          options.colorTemp = value;
+        }
 
         stompService.sendMainPageLightCommand(lightType, options, {
           isGlobal: mainPageMode === "allLights",
