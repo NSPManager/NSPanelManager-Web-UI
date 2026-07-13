@@ -33,12 +33,24 @@ function MainPage() {
   const tableLock = useLongPressLock();
 
   const tableButtonHandlers = useLongPress({
-    onShortPress: () =>
-      tableLock.isLockActive || ceilingLock.isLockActive
-        ? clearAllLocks()
-        : handleLightToggle(LightType.TABLE),
+    onShortPress: () => {
+      if (mainPagemode === "allLights") {
+        handleLightToggle(LightType.TABLE);
+        return;
+      }
+      if (tableLock.isLockActive || ceilingLock.isLockActive) {
+        clearAllLocks();
+        return;
+      }
+      handleLightToggle(LightType.TABLE);
+    },
     onLongPress: () => {
-      if (tableLock.isLockActive) return clearAllLocks();
+      if (mainPagemode === "allLights") return;
+
+      if (tableLock.isLockActive) {
+        clearAllLocks();
+        return;
+      }
       ceilingLock.clearLock();
       tableLock.startLock();
     },
@@ -47,12 +59,24 @@ function MainPage() {
   const ceilingLock = useLongPressLock();
 
   const ceilingButtonHandlers = useLongPress({
-    onShortPress: () =>
-      tableLock.isLockActive || ceilingLock.isLockActive
-        ? clearAllLocks()
-        : handleLightToggle(LightType.CEILING),
+    onShortPress: () => {
+      if (mainPagemode === "allLights") {
+        handleLightToggle(LightType.CEILING);
+        return;
+      }
+      if (tableLock.isLockActive || ceilingLock.isLockActive) {
+        clearAllLocks();
+        return;
+      }
+      handleLightToggle(LightType.CEILING);
+    },
     onLongPress: () => {
-      if (ceilingLock.isLockActive) return clearAllLocks();
+      if (mainPagemode === "allLights") return;
+
+      if (ceilingLock.isLockActive) {
+        clearAllLocks();
+        return;
+      }
       tableLock.clearLock();
       ceilingLock.startLock();
     },
@@ -105,7 +129,12 @@ function MainPage() {
       : null;
 
   return (
-    <div className="relative z-10 grid h-full grid-rows-[auto_1fr_auto] gap-1 p-2 md:gap-2">
+    <div
+      //Setting this onlick in the top div makes all button clicks except ceiling, table, brightness and colortemp clear active ceiling/table lock.
+      //e.preventPropagation that is used on the ceiling, table, brightness, colortemp buttons prevent clearalllocks to be called.
+      onClick={() => clearAllLocks()}
+      className="relative z-10 grid h-full grid-rows-[auto_1fr_auto] gap-1 p-2 md:gap-2"
+    >
       {/* ROW 1 */}
       <div
         className={`flex rounded-xl bg-black/20 ${orientation === "landscape" ? "h-20 max-lg:[@media(min-aspect-ratio:2/1)]:h-10" : "h-20"}`}
@@ -121,7 +150,7 @@ function MainPage() {
       >
         <div
           {...ceilingButtonHandlers}
-          // onClick={() => handleLightToggle(LightType.CEILING)}
+          onClick={(e) => e.stopPropagation()}
           className={`flex flex-col cursor-pointer ${cardStyles}`}
         >
           <div
@@ -133,7 +162,7 @@ function MainPage() {
         </div>
         <div
           {...tableButtonHandlers}
-          // onClick={() => handleLightToggle(LightType.TABLE)}
+          onClick={(e) => e.stopPropagation()}
           className={`flex flex-col cursor-pointer ${cardStyles}`}
         >
           <div className={`${ceilingTableStyles}`}>
@@ -143,7 +172,10 @@ function MainPage() {
             className={`w-[60px] h-[3px] transition-colors duration-200 ${tableLock.isLockActive ? "bg-[#FFC101]" : "bg-transparent"} `}
           ></div>
         </div>
-        <div className={`flex flex-col ${cardStyles} ${sliderStyles}`}>
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className={`flex flex-col ${cardStyles} ${sliderStyles}`}
+        >
           <Slider
             value={
               activeLockBrightnessSlider
@@ -157,7 +189,10 @@ function MainPage() {
             lockLightType={activeLockBrightnessSlider?.type}
           />
         </div>
-        <div className={`flex flex-col ${cardStyles} ${sliderStyles}`}>
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className={`flex flex-col ${cardStyles} ${sliderStyles}`}
+        >
           <Slider
             value={
               activeLockColorTempSlider
