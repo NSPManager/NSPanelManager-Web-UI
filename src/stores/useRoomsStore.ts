@@ -17,7 +17,7 @@ interface RoomsState {
   updateRoom: (roomData: NSPanelRoomStatus) => void;
   setGlobalRoom: (roomData: NSPanelRoomStatus) => void;
   resetRooms: () => void;
-  handleLightToggle: (lightType: LightType) => void;
+  handleLightToggle: (lightType: LightType, roomId?: string) => void;
   handleLightSlider: (
     value: number,
     sliderType: SliderType,
@@ -59,13 +59,14 @@ export const useRoomsStore = create<RoomsState>()(
           false,
           "resetRooms",
         ),
-      handleLightToggle: (lightType) => {
+      handleLightToggle: (lightType, roomId) => {
         const { config, currentRoomId } = useConfigStore.getState();
         const { rooms, globalRoom } = get();
         const mainPageMode = useUIStore.getState().mainPageMode;
 
-        const activeData =
-          mainPageMode === "allLights"
+        const activeData = roomId
+          ? rooms[roomId]
+          : mainPageMode === "allLights"
             ? globalRoom
             : currentRoomId !== null
               ? rooms[currentRoomId]
@@ -101,7 +102,7 @@ export const useRoomsStore = create<RoomsState>()(
           {
             isGlobal: mainPageMode === "allLights",
             nspanelId: config?.nspanelId,
-            roomId: Number(currentRoomId),
+            roomId: roomId ? Number(roomId) : Number(currentRoomId),
           },
         );
       },

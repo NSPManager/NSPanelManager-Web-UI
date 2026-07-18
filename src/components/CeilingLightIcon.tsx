@@ -1,6 +1,6 @@
 interface Props {
   className?: string;
-  isOn: boolean;
+  isOn?: boolean;
 }
 function CeilingLightIcon({ className, isOn }: Props) {
   return (
