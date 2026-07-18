@@ -25,7 +25,7 @@ function roomSelector() {
       <Dialog.Trigger asChild>
         <button
           disabled={mainPagemode !== "roomLights"}
-          className="text-md flex justify-center items-center w-full h-full cursor-pointer"
+          className="no-select text-md flex justify-center items-center w-full h-full cursor-pointer"
         >
           {mainPagemode === "roomLights" ? currentRoomName : "All"}
         </button>

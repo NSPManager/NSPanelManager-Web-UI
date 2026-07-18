@@ -259,7 +259,7 @@ function MainPage() {
             <div className="absolute left-0 top-0 bottom-0 w-[25%] flex items-center justify-center">
               <ChevronDown />
             </div>
-            <span className="text-md flex justify-center cursor-pointer">
+            <span className="no-select text-md flex justify-center cursor-pointer">
               {mainPagemode === "roomLights" ? "Room Lights" : "All Lights"}
             </span>
           </button>
