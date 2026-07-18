@@ -163,7 +163,7 @@ function MainPage() {
               isOn={room.numCeilingLightsOn > 0}
             />
           </div>
-          <div className="flex items-start justify-center mt-4 md:mt-10">
+          <div className="no-select flex items-start justify-center mt-4 md:mt-10 ">
             {room.ceilingLightsDimLevel}
           </div>
         </div>
@@ -182,7 +182,7 @@ function MainPage() {
               className={`w-[60px] h-[3px] transition-colors duration-200 ${tableLock.isLockActive ? "bg-[#FFC101]" : "bg-transparent"} `}
             ></div>
           </div>
-          <div className="flex items-start justify-center mt-4 md:mt-10">
+          <div className="no-select flex items-start justify-center mt-4 md:mt-10">
             {room.tableLightsDimLevel}
           </div>
         </div>
