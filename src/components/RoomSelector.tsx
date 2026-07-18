@@ -1,9 +1,4 @@
-import {
-  useConfigStore,
-  useLightsStore,
-  useRoomsStore,
-  useUIStore,
-} from "@/stores";
+import { useConfigStore, useRoomsStore, useUIStore } from "@/stores";
 import * as Dialog from "@radix-ui/react-dialog";
 import { useState } from "react";
 import { useShallow } from "zustand/shallow";
