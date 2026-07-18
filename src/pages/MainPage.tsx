@@ -34,10 +34,10 @@ function MainPage() {
 
   const tableButtonHandlers = useLongPress({
     onShortPress: () => {
-      if (mainPagemode === "allLights") {
-        handleLightToggle(LightType.TABLE);
-        return;
-      }
+      // if (mainPagemode === "allLights") {
+      //   handleLightToggle(LightType.TABLE);
+      //   return;
+      // }
       if (tableLock.isLockActive || ceilingLock.isLockActive) {
         clearAllLocks();
         return;
@@ -45,7 +45,7 @@ function MainPage() {
       handleLightToggle(LightType.TABLE);
     },
     onLongPress: () => {
-      if (mainPagemode === "allLights") return;
+      // if (mainPagemode === "allLights") return;
 
       if (tableLock.isLockActive) {
         clearAllLocks();
@@ -60,10 +60,10 @@ function MainPage() {
 
   const ceilingButtonHandlers = useLongPress({
     onShortPress: () => {
-      if (mainPagemode === "allLights") {
-        handleLightToggle(LightType.CEILING);
-        return;
-      }
+      // if (mainPagemode === "allLights") {
+      //   handleLightToggle(LightType.CEILING);
+      //   return;
+      // }
       if (tableLock.isLockActive || ceilingLock.isLockActive) {
         clearAllLocks();
         return;
@@ -71,7 +71,7 @@ function MainPage() {
       handleLightToggle(LightType.CEILING);
     },
     onLongPress: () => {
-      if (mainPagemode === "allLights") return;
+      // if (mainPagemode === "allLights") return;
 
       if (ceilingLock.isLockActive) {
         clearAllLocks();
@@ -94,11 +94,11 @@ function MainPage() {
     );
   }
 
-  const cardStyles = "rounded-xl items-center justify-center bg-black/20";
+  const cardStyles = "rounded-xl bg-black/20";
 
   const sliderStyles = `p-2 ${orientation === "landscape" ? "col-span-1" : "col-span-2"}`;
 
-  const ceilingTableStyles = "flex justify-center w-[30px] md:w-[50px]";
+  const ceilingTableStyles = "w-[30px] md:w-[50px]";
 
   const activeLockBrightnessSlider = tableLock.isLockActive
     ? {
@@ -151,26 +151,40 @@ function MainPage() {
         <div
           {...ceilingButtonHandlers}
           onClick={(e) => e.stopPropagation()}
-          className={`flex flex-col cursor-pointer ${cardStyles}`}
+          className={`grid grid-rows-[1fr_auto_1fr] cursor-pointer ${cardStyles}`}
         >
-          <div
-            className={`w-[60px] h-[3px] transition-colors duration-200 ${ceilingLock.isLockActive ? "bg-[#FFC101]" : "bg-transparent"} `}
-          ></div>
-          <div className={`${ceilingTableStyles}`}>
-            <CeilingLightIcon isOn={room.numCeilingLightsOn > 0} />
+          <div className="flex items-end justify-center"></div>
+          <div className={`flex flex-col items-center justify-center`}>
+            <div
+              className={`w-[60px] h-[3px] transition-colors duration-200 ${ceilingLock.isLockActive ? "bg-[#FFC101]" : "bg-transparent"} `}
+            ></div>
+            <CeilingLightIcon
+              className={`${ceilingTableStyles}`}
+              isOn={room.numCeilingLightsOn > 0}
+            />
+          </div>
+          <div className="flex items-start justify-center mt-4 md:mt-10">
+            {room.ceilingLightsDimLevel}
           </div>
         </div>
         <div
           {...tableButtonHandlers}
           onClick={(e) => e.stopPropagation()}
-          className={`flex flex-col cursor-pointer ${cardStyles}`}
+          className={`grid grid-rows-[1fr_auto_1fr] cursor-pointer ${cardStyles}`}
         >
-          <div className={`${ceilingTableStyles}`}>
-            <TableLightIcon isOn={room.numTableLightsOn > 0} />
+          <div className="flex items-end justify-center"></div>
+          <div className={`flex flex-col items-center justify-center`}>
+            <TableLightIcon
+              className={`${ceilingTableStyles}`}
+              isOn={room.numTableLightsOn > 0}
+            />
+            <div
+              className={`w-[60px] h-[3px] transition-colors duration-200 ${tableLock.isLockActive ? "bg-[#FFC101]" : "bg-transparent"} `}
+            ></div>
           </div>
-          <div
-            className={`w-[60px] h-[3px] transition-colors duration-200 ${tableLock.isLockActive ? "bg-[#FFC101]" : "bg-transparent"} `}
-          ></div>
+          <div className="flex items-start justify-center mt-4 md:mt-10">
+            {room.tableLightsDimLevel}
+          </div>
         </div>
         <div
           onClick={(e) => e.stopPropagation()}
@@ -240,7 +254,7 @@ function MainPage() {
           </div>
           <button
             onClick={() => toggleMainPageMode()}
-            className={`relative flex cursor-pointer ${cardStyles}`}
+            className={`relative flex items-center justify-center cursor-pointer ${cardStyles}`}
           >
             <div className="absolute left-0 top-0 bottom-0 w-[25%] flex items-center justify-center">
               <ChevronDown />

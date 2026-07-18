@@ -91,8 +91,9 @@ export const useRoomsStore = create<RoomsState>()(
         console.log(
           "sending light toggle",
           brightness,
-          activeData.ceilingLightsColorTemperatureValue,
-          activeData.tableLightsColorTemperatureValue,
+          // activeData.ceilingLightsColorTemperatureValue,
+          // activeData.tableLightsColorTemperatureValue,
+          mainPageMode,
         );
         stompService.sendMainPageLightCommand(
           lightType,
