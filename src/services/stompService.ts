@@ -112,6 +112,20 @@ export const stompService = {
       },
     });
 
+    const virtualMac = useConfigStore.getState().virtualMac;
+    if (!virtualMac) return;
+
+    const lastWillPayload = {
+      mac: virtualMac,
+      state: "offline",
+    };
+
+    client.connectHeaders = {
+      last_will_topic: `mqtt/nspanel/${virtualMac}/status`,
+      last_will_message: JSON.stringify(lastWillPayload),
+      last_will_retained: "true",
+    };
+
     client.activate();
   },
 
