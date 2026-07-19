@@ -48,7 +48,7 @@ function roomSelector() {
           <Dialog.Title className="m-0 text-[17px] font-medium text-mauve12"></Dialog.Title>
           <Dialog.Description />
           <Dialog.Content
-            className={`z-50 ${orientation === "landscape" ? "grid grid-cols-3" : "flex flex-col"} gap-[4px] grow rounded-xl text-white p-4 md:p-8 shadow-[var(--shadow-6)] focus:outline-none data-[state=open]:animate-contentShow`}
+            className={`z-50 ${orientation === "landscape" ? "grid grid-cols-2" : "flex flex-col"} gap-[4px] grow rounded-xl text-white p-4 md:p-8 shadow-[var(--shadow-6)] focus:outline-none data-[state=open]:animate-contentShow`}
           >
             {roomIds.map((id) => {
               // const id = roomIds[index];
@@ -67,7 +67,7 @@ function roomSelector() {
                       setOpen(false);
                     }, 200);
                   }}
-                  className={`flex h-[50px] md:h-[80px] justify-between items-center p-1 md:p-2 pl-5 rounded-md transition-all duration-100 transform cursor-pointer ${
+                  className={`flex h-[50px] md:h-[80px] justify-between items-center p-1 pl-2 md:p-2 md:pl-4 rounded-md transition-all duration-100 transform cursor-pointer ${
                     isActive ? "bg-[#ffc101]" : "bg-black/70 hover:bg-black/50"
                   }`}
                 >
