@@ -228,7 +228,7 @@ function MainPage() {
         >
           <div className="grid grid-cols-[1fr_2px_3fr] md:grid-cols-[1fr_4px_3fr]">
             <div
-              className={`flex rounded-l-xl items-center justify-center bg-black/20`}
+              className={`flex rounded-l-xl items-center justify-center bg-black/20 active:opacity-60 duration-50 transition-all`}
             >
               <button
                 onClick={
@@ -247,14 +247,14 @@ function MainPage() {
               <div className="bg-black/20"></div>
             </div>
             <div
-              className={`flex rounded-r-xl items-center justify-center bg-black/20`}
+              className={`flex rounded-r-xl items-center justify-center bg-black/20 active:opacity-60 duration-50 transition-all`}
             >
               <RoomSelector />
             </div>
           </div>
           <button
             onClick={() => toggleMainPageMode()}
-            className={`relative flex items-center justify-center cursor-pointer ${cardStyles}`}
+            className={`relative flex items-center justify-center cursor-pointer ${cardStyles} active:opacity-60 duration-50 transition-all`}
           >
             <div className="absolute left-0 top-0 bottom-0 w-[25%] flex items-center justify-center">
               <ChevronDown />
