@@ -78,7 +78,11 @@ function roomSelector() {
                         e.stopPropagation();
                         handleLightToggle(LightType.CEILING, String(id));
                       }}
-                      className="flex h-full aspect-square rounded-md p-2 items-center justify-center cursor-pointer bg-gray-800 hover:bg-gray-700"
+                      className={`flex h-full aspect-square rounded-md p-2 items-center justify-center cursor-pointer  border-1 border-white/30 ${
+                        isActive
+                          ? "bg-teal-900 hover:bg-teal-800"
+                          : "hover:bg-white/10"
+                      }`}
                     >
                       <CeilingLightIcon
                         isOn={currentRoomData.numCeilingLightsOn > 0}
@@ -90,7 +94,11 @@ function roomSelector() {
                         e.stopPropagation();
                         handleLightToggle(LightType.TABLE, String(id));
                       }}
-                      className="flex h-full aspect-square rounded-md p-2 items-center justify-center cursor-pointer bg-gray-800 hover:bg-gray-700"
+                      className={`flex h-full aspect-square rounded-md p-2 items-center justify-center cursor-pointer  border-1 border-white/30 ${
+                        isActive
+                          ? "bg-teal-900 hover:bg-teal-800"
+                          : "hover:bg-white/10"
+                      }`}
                     >
                       <TableLightIcon
                         isOn={currentRoomData.numTableLightsOn > 0}
