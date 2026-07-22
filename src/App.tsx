@@ -17,7 +17,7 @@ function App() {
   useScreenOrientation();
 
   return (
-    <div className="relative h-screen w-full bg-black text-white">
+    <div className="relative h-[100dvh] w-full overflow-hidden bg-black text-white">
       {/*Background Layer*/}
       <div
         className="absolute inset-0 z-0 bg-cover bg-center opacity-100 bg-[linear-gradient(66.5deg,rgba(161,204,165,1)_-11.3%,rgba(12,146,180,1)_100.1%)]"
