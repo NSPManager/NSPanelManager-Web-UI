@@ -16,9 +16,8 @@ import {
 } from "@/stores";
 import type { LightType } from "@/types";
 
-const MANAGER_ADDRESS = import.meta.env.DEV
-  ? "192.168.32.201"
-  : window.location.hostname;
+//This variable gets an address when we receive register accept from manager
+let MANAGER_ADDRESS = import.meta.env.DEV ? "192.168.32.201" : "";
 
 type SubLevel =
   | "registerAccept"
@@ -48,7 +47,7 @@ export interface LightCommandOptions {
 let client: Client | null = null;
 
 let registerRequestTimerId: ReturnType<typeof setInterval> | null = null;
-let browserStatusOnlineTimerId: ReturnType<typeof setInterval> | null = null;
+// let browserStatusOnlineTimerId: ReturnType<typeof setInterval> | null = null;
 
 function startRegisterRequestTimer() {
   const interval = 5000;
@@ -73,18 +72,18 @@ function stopRegisterRequestTimer() {
   );
 }
 
-function startStatusOnlineTimer() {
-  const interval = 30000;
-  if (browserStatusOnlineTimerId !== null) return;
-  stompService.sendBrowserStatusOnline();
-  console.log(
-    `Starting to send browser status ONLINE every ${interval / 1000} seconds`,
-  );
-  browserStatusOnlineTimerId = setInterval(() => {
-    stompService.sendBrowserStatusOnline();
-    console.log("Sent browser status ONLINE");
-  }, interval);
-}
+// function startStatusOnlineTimer() {
+//   const interval = 30000;
+//   if (browserStatusOnlineTimerId !== null) return;
+//   stompService.sendBrowserStatusOnline();
+//   console.log(
+//     `Starting to send browser status ONLINE every ${interval / 1000} seconds`,
+//   );
+//   browserStatusOnlineTimerId = setInterval(() => {
+//     stompService.sendBrowserStatusOnline();
+//     console.log("Sent browser status ONLINE");
+//   }, interval);
+// }
 
 export const stompService = {
   //Initialize the connection
@@ -101,7 +100,7 @@ export const stompService = {
         stompService.subscribeToRegisterAccept();
         stompService.sendRegisterRequest();
         startRegisterRequestTimer();
-        startStatusOnlineTimer();
+        // startStatusOnlineTimer();
       },
       onWebSocketClose: () => {
         stompService.cleanup();
@@ -169,6 +168,7 @@ export const stompService = {
     if (!client?.connected) return;
 
     client.publish({
+      headers: { retain: "true" },
       destination: `mqtt/nspanel/${virtualMac}/status`,
       body: jsonBody, // Use 'body' for strings/JSON instead of 'binaryBody'
     });
@@ -201,13 +201,18 @@ export const stompService = {
       (message) => {
         if (message.body) {
           stopRegisterRequestTimer();
+          stompService.sendBrowserStatusOnline();
           try {
             //Decode Base64 string back to plain text JSON string
             const decodedString = atob(message.body);
 
             //Parse the plain text into a JS object
             const registerAccept = JSON.parse(decodedString);
-            console.log("Register accept message:", registerAccept);
+            // console.log("Register accept message:", registerAccept);
+            console.log(
+              `Setting manager address to: ${registerAccept.address}`,
+            );
+            MANAGER_ADDRESS = registerAccept.address;
             stompService.subscribeToConfig(registerAccept.config_topic);
           } catch (error) {
             console.error("Failed to decode or parse message:", error);
@@ -397,10 +402,10 @@ export const stompService = {
       clearInterval(registerRequestTimerId);
       registerRequestTimerId = null;
     }
-    if (browserStatusOnlineTimerId) {
-      clearInterval(browserStatusOnlineTimerId);
-      browserStatusOnlineTimerId = null;
-    }
+    // if (browserStatusOnlineTimerId) {
+    //   clearInterval(browserStatusOnlineTimerId);
+    //   browserStatusOnlineTimerId = null;
+    // }
     console.log("Timers stopped and removed");
   },
 
