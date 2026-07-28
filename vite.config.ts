@@ -18,7 +18,8 @@ export default defineConfig({
     proxy: {
       // Change this key to match the path your code connects to
       "/websocket/stomp": {
-        target: "ws://192.168.32.201:8011",
+        // target: "ws://192.168.32.201:8011",
+        target: "ws://192.168.60.3:8001",
         ws: true,
         changeOrigin: true,
       },

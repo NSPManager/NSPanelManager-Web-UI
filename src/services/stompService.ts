@@ -17,7 +17,8 @@ import {
 import type { LightType } from "@/types";
 
 //This variable gets an address when we receive register accept from manager
-let MANAGER_ADDRESS = import.meta.env.DEV ? "192.168.32.201" : "";
+// let MANAGER_ADDRESS = import.meta.env.DEV ? "192.168.32.201" : "";
+let MANAGER_ADDRESS = import.meta.env.DEV ? "192.168.60.3" : "";
 
 type SubLevel =
   | "registerAccept"
