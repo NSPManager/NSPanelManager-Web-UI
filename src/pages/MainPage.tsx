@@ -1,4 +1,4 @@
-import { ChevronDown, SlidersVertical, Sun } from "lucide-react";
+import { ChevronDown, Link, SlidersVertical, Sun } from "lucide-react";
 import { useConfigStore, useRoomsStore, useUIStore } from "@/stores";
 import {
   CeilingLightIcon,
@@ -10,11 +10,13 @@ import {
 import { LightType, SliderType } from "@/types";
 import { useLongPress } from "@/hooks/useLongPress";
 import { useLongPressLock } from "@/hooks/useLongPressLock";
+import { useEffect, useRef } from "react";
 
 function MainPage() {
   const mainPagemode = useUIStore((state) => state.mainPageMode);
 
   const currentRoomId = useConfigStore((state) => state.currentRoomId);
+  const defaultRoom = useConfigStore((state) => state.config?.defaultRoom);
   const isLoaded = useRoomsStore((state) => state.isLoaded);
   const room =
     mainPagemode === "roomLights"
@@ -27,17 +29,25 @@ function MainPage() {
   const sliderOrientation =
     orientation === "landscape" ? "vertical" : "horizontal";
   const handleLightToggle = useRoomsStore.getState().handleLightToggle;
-  const setCurrentRoom = useConfigStore.getState().setCurrentRoom;
+  const nextRoom = useConfigStore.getState().nextRoom;
   const toggleMainPageMode = useUIStore.getState().toggleMainPageMode;
+  const resetUiTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    startResetUiTimer();
+
+    return () => {
+      if (resetUiTimerRef.current) {
+        clearTimeout(resetUiTimerRef.current);
+        resetUiTimerRef.current = null;
+      }
+    };
+  }, []);
 
   const tableLock = useLongPressLock();
 
   const tableButtonHandlers = useLongPress({
     onShortPress: () => {
-      // if (mainPagemode === "allLights") {
-      //   handleLightToggle(LightType.TABLE);
-      //   return;
-      // }
       if (tableLock.isLockActive || ceilingLock.isLockActive) {
         clearAllLocks();
         return;
@@ -45,8 +55,6 @@ function MainPage() {
       handleLightToggle(LightType.TABLE);
     },
     onLongPress: () => {
-      // if (mainPagemode === "allLights") return;
-
       if (tableLock.isLockActive) {
         clearAllLocks();
         return;
@@ -60,10 +68,6 @@ function MainPage() {
 
   const ceilingButtonHandlers = useLongPress({
     onShortPress: () => {
-      // if (mainPagemode === "allLights") {
-      //   handleLightToggle(LightType.CEILING);
-      //   return;
-      // }
       if (tableLock.isLockActive || ceilingLock.isLockActive) {
         clearAllLocks();
         return;
@@ -71,8 +75,6 @@ function MainPage() {
       handleLightToggle(LightType.CEILING);
     },
     onLongPress: () => {
-      // if (mainPagemode === "allLights") return;
-
       if (ceilingLock.isLockActive) {
         clearAllLocks();
         return;
@@ -92,6 +94,19 @@ function MainPage() {
         Waiting for config from manager...
       </div>
     );
+  }
+
+  function startResetUiTimer() {
+    if (resetUiTimerRef.current) {
+      clearTimeout(resetUiTimerRef.current);
+      resetUiTimerRef.current = null;
+    }
+    resetUiTimerRef.current = setTimeout(() => {
+      if (defaultRoom) {
+        useConfigStore.getState().setCurrentRoom(String(defaultRoom));
+        useUIStore.getState().setMainPageMode("roomLights");
+      }
+    }, 10000);
   }
 
   const cardStyles = "rounded-xl bg-black/20";
@@ -130,6 +145,7 @@ function MainPage() {
 
   return (
     <div
+      onClickCapture={() => startResetUiTimer()}
       //Setting this onlick in the top div makes all button clicks except ceiling, table, brightness and colortemp clear active ceiling/table lock.
       //e.preventPropagation that is used on the ceiling, table, brightness, colortemp buttons prevent clearalllocks to be called.
       onClick={() => clearAllLocks()}
@@ -232,9 +248,7 @@ function MainPage() {
             >
               <button
                 onClick={
-                  mainPagemode === "roomLights"
-                    ? () => setCurrentRoom()
-                    : undefined
+                  mainPagemode === "roomLights" ? () => nextRoom() : undefined
                 }
                 className="flex items-center justify-center h-full w-full cursor-pointer"
               >

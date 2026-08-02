@@ -13,7 +13,9 @@ interface ConfigState {
 
   initialize: () => void;
   setConfig: (newConfig: INSPanelConfig) => void;
-  setCurrentRoom: (id?: string) => void;
+  setCurrentRoom: (id: string) => void;
+  nextRoom: () => void;
+  prevRoom: () => void;
   resetConfig: () => void;
 }
 
@@ -58,17 +60,29 @@ export const useConfigStore = create<ConfigState>()(
           );
         },
         // TODO refactor this function, not nice
-        setCurrentRoom: (id?: string) => {
-          if (id) {
-            return set({ currentRoomId: id }, false, "setCurrentRoom");
-          }
+        setCurrentRoom: (id: string) => {
+          set({ currentRoomId: id }, false, "setCurrentRoom");
+        },
+        nextRoom: () => {
           const roomOrder = get().roomOrder;
           const currentRoom = get().currentRoomId;
           if (currentRoom) {
             const currentRoomIndex = roomOrder.indexOf(currentRoom);
             const nextRoomIndex = (currentRoomIndex + 1) % roomOrder.length;
             const nextRoom = roomOrder[nextRoomIndex];
-            set({ currentRoomId: nextRoom }, false, "setCurrentRoom");
+            set({ currentRoomId: nextRoom }, false, "nextRoom");
+          }
+        },
+
+        prevRoom: () => {
+          const roomOrder = get().roomOrder;
+          const currentRoom = get().currentRoomId;
+          if (currentRoom) {
+            const currentRoomIndex = roomOrder.indexOf(currentRoom);
+            const prevRoomIndex =
+              (currentRoomIndex - 1 + roomOrder.length) % roomOrder.length;
+            const prevRoom = roomOrder[prevRoomIndex];
+            set({ currentRoomId: prevRoom }, false, "prevRoom");
           }
         },
 

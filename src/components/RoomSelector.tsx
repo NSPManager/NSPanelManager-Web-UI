@@ -5,6 +5,8 @@ import { useShallow } from "zustand/shallow";
 import CeilingLightIcon from "./CeilingLightIcon";
 import TableLightIcon from "./TableLightIcon";
 import { LightType } from "@/types";
+import { useLongPress } from "@/hooks/useLongPress";
+import { useNavigate } from "react-router-dom";
 
 function roomSelector() {
   const [open, setOpen] = useState(false);
@@ -32,16 +34,25 @@ function roomSelector() {
   const orientation = useUIStore((state) => state.orientation);
   const handleLightToggle = useRoomsStore.getState().handleLightToggle;
 
+  const navigate = useNavigate();
+  const roomButtonHandlers = useLongPress({
+    onShortPress: () => navigate("/webapp/roompage"),
+    onLongPress: () => {
+      setOpen(true);
+    },
+  });
+
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
-      <Dialog.Trigger asChild>
-        <button
-          disabled={mainPagemode !== "roomLights"}
-          className="no-select text-md flex justify-center items-center w-full h-full cursor-pointer"
-        >
-          {mainPagemode === "roomLights" ? currentRoomName : "All"}
-        </button>
-      </Dialog.Trigger>
+      {/* <Dialog.Trigger asChild> */}
+      <button
+        {...roomButtonHandlers}
+        disabled={mainPagemode !== "roomLights"}
+        className="no-select text-md flex justify-center items-center w-full h-full cursor-pointer"
+      >
+        {mainPagemode === "roomLights" ? currentRoomName : "All"}
+      </button>
+      {/* </Dialog.Trigger> */}
       <Dialog.Portal>
         <Dialog.Overlay className="z-50 fixed inset-0 backdrop-blur data-[state=open]:animate-overlayShow" />
         <div className="fixed inset-0 z-50 flex items-end justify-center p-2">
