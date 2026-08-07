@@ -10,6 +10,7 @@ interface ConfigState {
   isLoaded: boolean;
   roomOrder: string[];
   currentRoomId: string | null;
+  roomChangeDirection: "PREV" | "NEXT";
 
   initialize: () => void;
   setConfig: (newConfig: INSPanelConfig) => void;
@@ -29,6 +30,7 @@ export const useConfigStore = create<ConfigState>()(
         isLoaded: false,
         roomOrder: [],
         currentRoomId: null,
+        roomChangeDirection: "NEXT",
 
         initialize: () => {
           const state = get();
@@ -71,6 +73,7 @@ export const useConfigStore = create<ConfigState>()(
             const nextRoomIndex = (currentRoomIndex + 1) % roomOrder.length;
             const nextRoom = roomOrder[nextRoomIndex];
             set({ currentRoomId: nextRoom }, false, "nextRoom");
+            set({ roomChangeDirection: "NEXT" }, false, "roomChangeDirection");
           }
         },
 
@@ -83,6 +86,7 @@ export const useConfigStore = create<ConfigState>()(
               (currentRoomIndex - 1 + roomOrder.length) % roomOrder.length;
             const prevRoom = roomOrder[prevRoomIndex];
             set({ currentRoomId: prevRoom }, false, "prevRoom");
+            set({ roomChangeDirection: "PREV" }, false, "roomChangeDirection");
           }
         },
 
