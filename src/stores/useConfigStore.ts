@@ -11,9 +11,11 @@ interface ConfigState {
   roomOrder: string[];
   currentRoomId: string | null;
   roomChangeDirection: "PREV" | "NEXT";
+  resetDefaultRoom: boolean;
 
   initialize: () => void;
   setConfig: (newConfig: INSPanelConfig) => void;
+  setDefaultRoom: () => void;
   setCurrentRoom: (id: string) => void;
   nextRoom: () => void;
   prevRoom: () => void;
@@ -31,6 +33,7 @@ export const useConfigStore = create<ConfigState>()(
         roomOrder: [],
         currentRoomId: null,
         roomChangeDirection: "NEXT",
+        resetDefaultRoom: false,
 
         initialize: () => {
           const state = get();
@@ -61,7 +64,14 @@ export const useConfigStore = create<ConfigState>()(
             "setConfig",
           );
         },
-        // TODO refactor this function, not nice
+        setDefaultRoom: () =>
+          set(
+            {
+              currentRoomId: String(get().config?.defaultRoom),
+            },
+            false,
+            "setDefaultRoom",
+          ),
         setCurrentRoom: (id: string) => {
           set({ currentRoomId: id }, false, "setCurrentRoom");
         },

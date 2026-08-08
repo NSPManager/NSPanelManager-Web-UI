@@ -25,6 +25,9 @@ function MainPage() {
         )
       : useRoomsStore((state) => state.globalRoom);
 
+  const setDefaultRoom = useConfigStore((state) => state.setDefaultRoom);
+
+  const resetDefaultRoom = useConfigStore((state) => state.resetDefaultRoom);
   const orientation = useUIStore((state) => state.orientation);
   const sliderOrientation =
     orientation === "landscape" ? "vertical" : "horizontal";
@@ -32,6 +35,13 @@ function MainPage() {
   const nextRoom = useConfigStore.getState().nextRoom;
   const toggleMainPageMode = useUIStore.getState().toggleMainPageMode;
   const resetUiTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (resetDefaultRoom) {
+      setDefaultRoom();
+      useConfigStore.setState({ resetDefaultRoom: false });
+    }
+  }, []);
 
   useEffect(() => {
     startResetUiTimer();

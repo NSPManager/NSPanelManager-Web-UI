@@ -9,7 +9,7 @@ interface useLongPressConfig {
 export function useLongPress({
   onShortPress,
   onLongPress,
-  delay = 600,
+  delay = 200,
 }: useLongPressConfig) {
   const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   // const longPressTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);

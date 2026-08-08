@@ -29,11 +29,8 @@ import { useNavigate } from "react-router-dom";
 function RoomPage() {
   const navigate = useNavigate();
   const orientation = useUIStore((state) => state.orientation);
-  const sliderOrientation =
-    orientation === "landscape" ? "vertical" : "horizontal";
   const nextRoom = useConfigStore((state) => state.nextRoom);
   const prevRoom = useConfigStore((state) => state.prevRoom);
-
   const currentRoomId = useConfigStore((state) => state.currentRoomId);
 
   const entityPageIds = useRoomsStore((state) =>
@@ -89,15 +86,23 @@ function RoomPage() {
 
   return (
     <div className="relative z-10 h-full grid grid-rows-[auto_1fr] gap-1 p-2 md:gap-2">
-      {/* ROW 1 */}
+      {/* ROW 1 NAVIGATION AND HEADER TEXT*/}
       <div
-        className={`grid grid-cols-[auto_auto_1fr_auto] items-center rounded-xl ${orientation === "landscape" ? "h-20 max-lg:[@media(min-aspect-ratio:2/1)]:h-10" : "h-20"}`}
+        className={`grid grid-cols-[auto_2px_auto_1fr_auto] md:grid-cols-[auto_4px_auto_1fr_auto] rounded-xl ${orientation === "landscape" ? "h-20 max-lg:[@media(min-aspect-ratio:2/1)]:h-10" : "h-20"}`}
       >
         <div
-          onClick={() => navigate("/webapp")}
+          onClick={() => {
+            (useConfigStore.setState({ resetDefaultRoom: true }),
+              navigate("/webapp"));
+          }}
           className="flex p-5 h-full rounded-l-xl items-center bg-black/20 justify-center select-none cursor-pointer active:opacity-60 duration-50 transition-all"
         >
           <ChevronLeft />
+        </div>
+        <div className="grid grid-rows-[1fr_60%_1fr]">
+          <div className="bg-black/20"></div>
+          <div className="bg-transparent"></div>
+          <div className="bg-black/20"></div>
         </div>
         <div
           onClick={() => handlePrevPage()}
@@ -115,23 +120,43 @@ function RoomPage() {
           <ChevronRight />
         </div>
       </div>
+      {/* Buttons */}
       <div
-        className={`grid grid-cols-2 gap-2 ${totalButtons === 4 ? "grid-rows-2" : totalButtons === 8 ? "grid-rows-4" : "grid-rows-6"}`}
+        className={`grid grid-cols-2 gap-1 md:gap-2 ${totalButtons === 4 ? "grid-rows-2" : totalButtons === 8 ? "grid-rows-4" : "grid-rows-6"}`}
       >
-        {roomButtons.map((button) => (
-          <div className="grid items-center p-2 rounded-xl bg-black/20 select-none cursor-pointer active:opacity-60 duration-50 transition-all">
-            {roomViewMap.get(button) || ""}
-          </div>
-        ))}
+        {roomButtons.map((button) => {
+          const buttonName = roomViewMap.get(button);
+          return (
+            <div
+              className={`grid ${totalButtons !== 4 ? "grid-cols-[1fr_2px_70px] md:grid-cols-[1fr_2px_100px]" : "grid-rows-[1fr_2px_1fr]"} items-center rounded-xl`}
+            >
+              <div
+                className={`flex h-full bg-black/20 items-center ${totalButtons !== 4 ? "justify-start rounded-l-xl p-3" : "justify-center rounded-t-xl"} `}
+              >
+                {buttonName}
+              </div>
+              <div
+                className={`grid ${totalButtons !== 4 ? "grid-rows-[1fr_60%_1fr]" : "grid-cols-[1fr_60%_1fr]"} h-full`}
+              >
+                <div className="bg-black/20"></div>
+                <div className="bg-transparent"></div>
+                <div className="bg-black/20"></div>
+              </div>
+              <div
+                className={`flex h-full bg-black/20 justify-center items-center ${totalButtons !== 4 ? "rounded-r-xl" : "rounded-b-xl"}`}
+              >
+                {buttonName ? (
+                  <button className="relative inline-flex h-7 w-12 rounded-full bg-white/40 p-1 cursor-pointer transition-colors duration-200 ease-in-out select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400">
+                    <span className="h-5 w-5 inline-block rounded-full bg-white shadow-md transform transition-transform duration-200 ease-in-out"></span>
+                  </button>
+                ) : (
+                  ""
+                )}
+              </div>
+            </div>
+          );
+        })}
       </div>
-
-      {/* <div className="flex flex-col">
-        {entities?.map((entity) => (
-          <div key={entity.roomViewPosition}>
-            {`${entity.name} ${entity.roomViewPosition} ${entity.mqttStateTopic}`}
-          </div>
-        ))}
-      </div> */}
     </div>
   );
 }
