@@ -13,6 +13,7 @@ import {
   useLightsStore,
   useRoomsStore,
   useScenePagesStore,
+  useUIStore,
 } from "@/stores";
 import type { LightType } from "@/types";
 
@@ -413,26 +414,52 @@ export const stompService = {
   sendMainPageLightCommand(
     type: LightType,
     options: LightCommandOptions,
-    context: { nspanelId: number; roomId: number; isGlobal: boolean },
+    roomId: number,
   ) {
     const { brightness, colorTemp } = options;
+    const command: NSPanelMQTTManagerCommand.IFirstPageTurnLightOn = {
+      affectLights: type, // 1 for Table, 2 for Ceiling
+      selectedRoom: roomId,
+      global: useUIStore.getState().mainPageMode === "allLights",
+      hasBrightnessValue: brightness !== undefined,
+      hasKelvinValue: colorTemp !== undefined,
+      brightnessSliderValue: brightness ?? 0,
+      kelvinSliderValue: colorTemp ?? 0,
+    };
+    stompService.sendNspanelMqttManagerCommand(command, "firstPageTurnOn");
+  },
+
+  sendLightCommand(options: LightCommandOptions, lightId: number) {
+    const { brightness, colorTemp, rgb } = options;
+    const command: NSPanelMQTTManagerCommand.ILightCommand = {
+      lightIds: [lightId],
+      brightness: brightness ?? 0,
+      colorTemperature: colorTemp ?? 0,
+      hue: Number(rgb) ?? 0,
+      saturation: 0,
+      hasBrightness: brightness !== undefined,
+      hasColorTemperature: colorTemp !== undefined,
+      hasHue: rgb !== undefined,
+      hasSaturation: false,
+    };
+    stompService.sendNspanelMqttManagerCommand(command, "lightCommand");
+  },
+
+  sendNspanelMqttManagerCommand(
+    command:
+      | NSPanelMQTTManagerCommand.ILightCommand
+      | NSPanelMQTTManagerCommand.IFirstPageTurnLightOn,
+    commandType: string,
+  ) {
     const payload = {
-      nspanelId: context.nspanelId,
-      firstPageTurnOn: {
-        affectLights: type, // 1 for Table, 2 for Ceiling
-        selectedRoom: context.roomId,
-        global: context.isGlobal,
-        hasBrightnessValue: brightness !== undefined,
-        hasKelvinValue: colorTemp !== undefined,
-        brightnessSliderValue: brightness ?? 0,
-        kelvinSliderValue: colorTemp ?? 0,
-      },
+      nspanelId: useConfigStore.getState().config?.nspanelId,
+      [commandType]: command,
     };
     const buffer = NSPanelMQTTManagerCommand.encode(payload).finish();
 
     // 3. Publish
     if (!client?.connected) return;
-
+    console.log("Sending to manager: ", command);
     client.publish({
       destination: `mqtt/nspanel/mqttmanager_${MANAGER_ADDRESS}/command`,
       binaryBody: buffer,
@@ -441,9 +468,5 @@ export const stompService = {
 };
 
 // TODO
-// send online status to manager
-// stomptopic: mqtt/nspanel/mac-address/status
-// {
-// 	"mac":	"24:D7:EB:0E:3D:58",
-// 	"state":	"online"
-// }
+//Strongly type the sendNspanelMqttManagerCommand function
+// type CommandType = keyof Omit<NSPanelMQTTManagerCommand, 'nspanelId'>;

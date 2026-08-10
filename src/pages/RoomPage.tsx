@@ -16,6 +16,7 @@
 //skapa ny array med length = page type 4/8/12
 //mappa över denna för varje kolla map:en och skriv ut entiteten om den finns annars lämna tomt.
 
+import { stompService } from "@/services/stompService";
 import {
   useConfigStore,
   useEntityPagesStore,
@@ -31,6 +32,8 @@ function RoomPage() {
   const orientation = useUIStore((state) => state.orientation);
   const nextRoom = useConfigStore((state) => state.nextRoom);
   const prevRoom = useConfigStore((state) => state.prevRoom);
+  const setDefaultRoom = useConfigStore((state) => state.setDefaultRoom);
+
   const currentRoomId = useConfigStore((state) => state.currentRoomId);
 
   const entityPageIds = useRoomsStore((state) =>
@@ -52,6 +55,10 @@ function RoomPage() {
   });
 
   const roomButtons = Array.from({ length: totalButtons }, (_, index) => index);
+
+  useEffect(() => {
+    return () => setDefaultRoom();
+  }, []);
 
   useEffect(() => {
     if (useConfigStore.getState().roomChangeDirection === "NEXT") {
@@ -91,10 +98,10 @@ function RoomPage() {
         className={`grid grid-cols-[auto_2px_auto_1fr_auto] md:grid-cols-[auto_4px_auto_1fr_auto] rounded-xl ${orientation === "landscape" ? "h-20 max-lg:[@media(min-aspect-ratio:2/1)]:h-10" : "h-20"}`}
       >
         <div
-          onClick={() => {
-            (useConfigStore.setState({ resetDefaultRoom: true }),
-              navigate("/webapp"));
-          }}
+          onClick={() =>
+            // (useConfigStore.setState({ resetDefaultRoom: true }),
+            navigate("/webapp/")
+          }
           className="flex p-5 h-full rounded-l-xl items-center bg-black/20 justify-center select-none cursor-pointer active:opacity-60 duration-50 transition-all"
         >
           <ChevronLeft />
@@ -146,7 +153,15 @@ function RoomPage() {
                 className={`flex h-full bg-black/20 justify-center items-center ${totalButtons !== 4 ? "rounded-r-xl" : "rounded-b-xl"}`}
               >
                 {buttonName ? (
-                  <button className="relative inline-flex h-7 w-12 rounded-full bg-white/40 p-1 cursor-pointer transition-colors duration-200 ease-in-out select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400">
+                  <button
+                    onClick={() =>
+                      stompService.sendLightCommand(
+                        { brightness: 0, colorTemp: 0 },
+                        67,
+                      )
+                    }
+                    className="relative inline-flex h-7 w-12 rounded-full bg-white/40 p-1 cursor-pointer transition-colors duration-200 ease-in-out select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+                  >
                     <span className="h-5 w-5 inline-block rounded-full bg-white shadow-md transform transition-transform duration-200 ease-in-out"></span>
                   </button>
                 ) : (

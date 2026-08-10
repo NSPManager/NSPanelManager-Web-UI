@@ -36,12 +36,12 @@ function MainPage() {
   const toggleMainPageMode = useUIStore.getState().toggleMainPageMode;
   const resetUiTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  useEffect(() => {
-    if (resetDefaultRoom) {
-      setDefaultRoom();
-      useConfigStore.setState({ resetDefaultRoom: false });
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (resetDefaultRoom) {
+  //     setDefaultRoom();
+  //     useConfigStore.setState({ resetDefaultRoom: false });
+  //   }
+  // }, []);
 
   useEffect(() => {
     startResetUiTimer();
@@ -155,6 +155,7 @@ function MainPage() {
 
   return (
     <div
+      key={currentRoomId}
       onClickCapture={() => startResetUiTimer()}
       //Setting this onlick in the top div makes all button clicks except ceiling, table, brightness and colortemp clear active ceiling/table lock.
       //e.preventPropagation that is used on the ceiling, table, brightness, colortemp buttons prevent clearalllocks to be called.

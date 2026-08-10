@@ -99,11 +99,12 @@ export const useRoomsStore = create<RoomsState>()(
         stompService.sendMainPageLightCommand(
           lightType,
           { brightness: brightness },
-          {
-            isGlobal: mainPageMode === "allLights",
-            nspanelId: config?.nspanelId,
-            roomId: roomId ? Number(roomId) : Number(currentRoomId),
-          },
+          roomId ? Number(roomId) : Number(currentRoomId),
+          // {
+          //   isGlobal: mainPageMode === "allLights",
+          //   nspanelId: config?.nspanelId,
+          //   roomId: roomId ? Number(roomId) : Number(currentRoomId),
+          // },
         );
       },
       handleLightSlider: (value, sliderType, lockLightType) => {
@@ -144,13 +145,18 @@ export const useRoomsStore = create<RoomsState>()(
           options.colorTemp = value;
         }
 
-        stompService.sendMainPageLightCommand(lightType, options, {
-          isGlobal: mainPageMode === "allLights",
-          nspanelId: config?.nspanelId,
-          roomId: Number(currentRoomId),
-        });
+        stompService.sendMainPageLightCommand(
+          lightType,
+          options,
+          Number(currentRoomId),
+        );
       },
     }),
     { name: "RoomsStore" },
   ),
 );
+
+//   {isGlobal: mainPageMode === "allLights",
+//   nspanelId: config?.nspanelId,
+//   roomId: Number(currentRoomId),
+// }
