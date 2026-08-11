@@ -98,13 +98,6 @@ function MainPage() {
     ceilingLock.clearLock();
     tableLock.clearLock();
   }
-  if (!isLoaded || !room) {
-    return (
-      <div className="relative z-10 flex h-full items-center justify-center">
-        Waiting for config from manager...
-      </div>
-    );
-  }
 
   function startResetUiTimer() {
     if (resetUiTimerRef.current) {
@@ -124,6 +117,15 @@ function MainPage() {
   const sliderStyles = `p-2 ${orientation === "landscape" ? "col-span-1" : "col-span-2"}`;
 
   const ceilingTableStyles = "w-[30px] md:w-[50px]";
+
+  //Todo move this if statment down!
+  if (!isLoaded || !room) {
+    return (
+      <div className="relative z-10 flex h-full items-center justify-center">
+        Waiting for config from manager...
+      </div>
+    );
+  }
 
   const activeLockBrightnessSlider = tableLock.isLockActive
     ? {

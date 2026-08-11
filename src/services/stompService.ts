@@ -43,7 +43,8 @@ const subscriptions: Record<SubLevel, Record<string, StompSubscription>> = {
 export interface LightCommandOptions {
   brightness?: number;
   colorTemp?: number;
-  rgb?: string;
+  rgb?: number;
+  saturation?: number;
 }
 
 let client: Client | null = null;
@@ -430,17 +431,17 @@ export const stompService = {
   },
 
   sendLightCommand(options: LightCommandOptions, lightId: number) {
-    const { brightness, colorTemp, rgb } = options;
+    const { brightness, colorTemp, rgb, saturation } = options;
     const command: NSPanelMQTTManagerCommand.ILightCommand = {
       lightIds: [lightId],
       brightness: brightness ?? 0,
       colorTemperature: colorTemp ?? 0,
-      hue: Number(rgb) ?? 0,
-      saturation: 0,
+      hue: rgb ?? 0,
+      saturation: saturation ?? 0,
       hasBrightness: brightness !== undefined,
       hasColorTemperature: colorTemp !== undefined,
       hasHue: rgb !== undefined,
-      hasSaturation: false,
+      hasSaturation: saturation !== undefined,
     };
     stompService.sendNspanelMqttManagerCommand(command, "lightCommand");
   },

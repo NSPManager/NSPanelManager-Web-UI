@@ -1,5 +1,5 @@
-import { useRoomsStore } from "@/stores";
-import type { LightType, SliderType } from "@/types";
+import { useLightsStore, useRoomsStore } from "@/stores";
+import { SliderType, type LightType } from "@/types";
 import * as RadixSlider from "@radix-ui/react-slider";
 import { useEffect, useState, type JSX } from "react";
 
@@ -10,6 +10,7 @@ interface SliderProps {
   icon: JSX.Element;
   resetLockTimeout?(): void;
   lockLightType?: typeof LightType.CEILING | typeof LightType.TABLE;
+  lightId?: string;
 }
 
 function Slider({
@@ -19,6 +20,7 @@ function Slider({
   icon,
   resetLockTimeout,
   lockLightType,
+  lightId,
 }: SliderProps) {
   const [sliderValue, setSliderValue] = useState(value);
 
@@ -30,18 +32,24 @@ function Slider({
     <RadixSlider.Root
       orientation={orientation}
       min={0}
-      max={100}
+      max={sliderType === SliderType.RGB ? 359 : 100}
       step={1}
       value={[sliderValue]}
       onValueChange={(values) => {
         setSliderValue(values[0]);
         lockLightType ? resetLockTimeout?.() : "";
       }}
-      onValueCommit={(values) =>
-        useRoomsStore
-          .getState()
-          .handleLightSlider(values[0], sliderType, lockLightType)
-      }
+      onValueCommit={(values) => {
+        if (lightId) {
+          useLightsStore
+            .getState()
+            .handleLightPageSlider(lightId, sliderType, values[0]);
+        } else {
+          useRoomsStore
+            .getState()
+            .handleMainPageLightSlider(values[0], sliderType, lockLightType);
+        }
+      }}
       className="relative flex flex-col items-center select-none touch-none w-full h-full"
     >
       <div className="absolute flex flex-col justify-center w-[30px] md:w-[50px] inset-0 m-auto pointer-events-none z-20">

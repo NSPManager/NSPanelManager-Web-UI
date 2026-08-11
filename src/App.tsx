@@ -1,7 +1,7 @@
 // App.tsx
 import { useEffect } from "react";
 import { stompService } from "@/services/stompService";
-import { MainPage, RoomPage } from "@/pages";
+import { LightPage, MainPage, RoomPage } from "@/pages";
 import { useScreenOrientation } from "./hooks";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
@@ -30,6 +30,7 @@ function App() {
         <Routes>
           <Route path="/webapp" element={<MainPage />} />
           <Route path="/webapp/roompage" element={<RoomPage />} />
+          <Route path="/webapp/lightpage/:id" element={<LightPage />} />
         </Routes>
       </div>
     </BrowserRouter>

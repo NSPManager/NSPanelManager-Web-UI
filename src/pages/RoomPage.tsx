@@ -122,7 +122,7 @@ function RoomPage() {
         </div>
         <div
           onClick={() => handleNextPage()}
-          className="flex p-5 h-full rounded-r-xl items-center bg-black/20 justify-center select-none cursor-pointer active:opacity-60 duration-50 transition-alll"
+          className="flex p-5 h-full rounded-r-xl items-center bg-black/20 justify-center select-none cursor-pointer active:opacity-60 duration-50 transition-all"
         >
           <ChevronRight />
         </div>
@@ -138,7 +138,11 @@ function RoomPage() {
               className={`grid ${totalButtons !== 4 ? "grid-cols-[1fr_2px_70px] md:grid-cols-[1fr_2px_100px]" : "grid-rows-[1fr_2px_1fr]"} items-center rounded-xl`}
             >
               <div
-                className={`flex h-full bg-black/20 items-center ${totalButtons !== 4 ? "justify-start rounded-l-xl p-3" : "justify-center rounded-t-xl"} `}
+                onClick={() =>
+                  // (useConfigStore.setState({ resetDefaultRoom: true }),
+                  navigate("/webapp/lightpage/67")
+                }
+                className={`flex h-full bg-black/20 items-center ${totalButtons !== 4 ? "justify-start rounded-l-xl p-3" : "justify-center rounded-t-xl"} select-none cursor-pointer active:opacity-60 duration-50 transition-all`}
               >
                 {buttonName}
               </div>

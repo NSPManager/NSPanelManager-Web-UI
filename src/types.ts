@@ -10,6 +10,8 @@ export type LightType = (typeof LightType)[keyof typeof LightType];
 export const SliderType = {
   BRIGHTNESS: 1,
   COLORTEMP: 2,
+  RGB: 3,
+  SATURATION: 4,
 };
 
 export type SliderType = (typeof SliderType)[keyof typeof SliderType];

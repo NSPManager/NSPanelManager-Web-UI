@@ -18,7 +18,7 @@ interface RoomsState {
   setGlobalRoom: (roomData: NSPanelRoomStatus) => void;
   resetRooms: () => void;
   handleLightToggle: (lightType: LightType, roomId?: string) => void;
-  handleLightSlider: (
+  handleMainPageLightSlider: (
     value: number,
     sliderType: SliderType,
     lockLightType?: typeof LightType.CEILING | typeof LightType.TABLE,
@@ -107,7 +107,7 @@ export const useRoomsStore = create<RoomsState>()(
           // },
         );
       },
-      handleLightSlider: (value, sliderType, lockLightType) => {
+      handleMainPageLightSlider: (value, sliderType, lockLightType) => {
         const { config, currentRoomId } = useConfigStore.getState();
         const { rooms, globalRoom } = get();
         const mainPageMode = useUIStore.getState().mainPageMode;
