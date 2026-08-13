@@ -19,10 +19,7 @@
 import { ColorTempIcon, Slider } from "@/components";
 import ColorIcon from "@/components/ColorIcon";
 import {
-  useConfigStore,
-  useEntityPagesStore,
   useLightsStore,
-  useRoomsStore,
   useUIStore,
 } from "@/stores";
 import { SliderType } from "@/types";
@@ -106,7 +103,7 @@ function RoomPage() {
     <div className="relative z-10 h-full grid grid-rows-[auto_1fr] gap-1 p-2 md:gap-2">
       {/* ROW 1 NAVIGATION AND HEADER TEXT*/}
       <div
-        className={`grid grid-cols-[auto_2px_auto_1fr_auto] md:grid-cols-[auto_4px_auto_1fr_auto] rounded-xl ${orientation === "landscape" ? "h-20 max-lg:[@media(min-aspect-ratio:2/1)]:h-10" : "h-20"}`}
+        className={`grid grid-cols-[auto_2px_auto_1fr_auto_auto] md:grid-cols-[auto_4px_auto_1fr_auto_auto] rounded-xl ${orientation === "landscape" ? "h-20 max-lg:[@media(min-aspect-ratio:2/1)]:h-10" : "h-20"}`}
       >
         <div
           onClick={() =>
@@ -128,16 +125,20 @@ function RoomPage() {
         >
           <ChevronLeft />
         </div>
-        <div className="flex h-full items-center justify-center bg-black/20 select-none">
+        <div className={`flex h-full items-center justify-center bg-black/20 select-none gap-2 ${light.light?.canColor ? "" : "col-span-2"}`}>
           {/* {headerText} */}
           {light.light?.name}
         </div>
+        {light.light?.canColor ? <button onClick={() => setLightMode(lightMode=== "COLORTEMP" ? "RGB" : "COLORTEMP")} className="flex w-20 pr-5 pl-5 items-center bg-black/20 justify-center select-none cursor-pointer active:opacity-60 duration-50 transition-all">{lightMode==="COLORTEMP" ? <ColorIcon/> : <ColorTempIcon/>}</button> : "" }
         <div
           // onClick={() => handleNextPage()}
-          className="flex p-5 h-full rounded-r-xl items-center bg-black/20 justify-center select-none cursor-pointer active:opacity-60 duration-50 transition-alll"
+          className={`flex p-5 h-full items-center rounded-r-xl bg-black/20 justify-center select-none cursor-pointer active:opacity-60 duration-50 transition-all`}
         >
           <ChevronRight />
+          
         </div>
+        
+        
       </div>
       {/* Buttons */}
       <div
@@ -162,18 +163,18 @@ function RoomPage() {
           {light.light?.canColorTemp ? (
             <Slider
               value={
-                light.light.currentLightMode === 1
+                lightMode === "RGB"
                   ? (light.light.saturation ?? 0)
                   : (light.light.colorTemp ?? 0)
               }
               orientation={sliderOrientation}
               sliderType={
-                light.light.currentLightMode === 1
+                lightMode === "RGB"
                   ? SliderType.SATURATION
                   : SliderType.COLORTEMP
               }
               icon={
-                light.light.currentLightMode === 1 ? (
+                lightMode === "RGB" ? (
                   <TbDropletHalf2Filled size={"100%"} className="w-full" />
                 ) : (
                   <ColorTempIcon />
@@ -187,14 +188,14 @@ function RoomPage() {
         </div>
         <div
           onClick={(e) => e.stopPropagation()}
-          className={`flex flex-col ${cardStyles}`}
+          className={`relative flex flex-col ${cardStyles}`}
         >
-          {light.light?.canColor && light.light.currentLightMode === 1 ? (
+          {light.light?.canColor && lightMode === "RGB" ? (
             <Slider
               value={light.light.hue ?? 0}
               orientation={sliderOrientation}
               sliderType={SliderType.RGB}
-              icon={<ColorIcon />}
+              icon={<></>}
               lightId={lightId}
             />
           ) : (

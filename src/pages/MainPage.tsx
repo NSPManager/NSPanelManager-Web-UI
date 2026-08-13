@@ -1,4 +1,4 @@
-import { ChevronDown, Link, SlidersVertical, Sun } from "lucide-react";
+import { ChevronDown, SlidersVertical, Sun } from "lucide-react";
 import { useConfigStore, useRoomsStore, useUIStore } from "@/stores";
 import {
   CeilingLightIcon,
@@ -25,9 +25,7 @@ function MainPage() {
         )
       : useRoomsStore((state) => state.globalRoom);
 
-  const setDefaultRoom = useConfigStore((state) => state.setDefaultRoom);
 
-  const resetDefaultRoom = useConfigStore((state) => state.resetDefaultRoom);
   const orientation = useUIStore((state) => state.orientation);
   const sliderOrientation =
     orientation === "landscape" ? "vertical" : "horizontal";

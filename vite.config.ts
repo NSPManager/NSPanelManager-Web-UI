@@ -6,6 +6,10 @@ import path from "path";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  build: {
+    // Target older Chromium engines used by Smart TVs
+    target: ['chrome60', 'safari12'],
+  },
   base: "/webapp/",
   resolve: {
     alias: {

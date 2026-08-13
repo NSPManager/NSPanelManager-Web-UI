@@ -59,7 +59,7 @@ function roomSelector() {
           <Dialog.Title className="m-0 text-[17px] font-medium text-mauve12"></Dialog.Title>
           <Dialog.Description />
           <Dialog.Content
-            className={`z-50 ${orientation === "landscape" ? "grid grid-cols-2" : "flex flex-col"} gap-[4px] grow rounded-xl text-white p-4 md:p-8 shadow-[var(--shadow-6)] focus:outline-none data-[state=open]:animate-contentShow`}
+            className={`z-50 no-select ${orientation === "landscape" ? "grid grid-cols-2" : "flex flex-col"} gap-[4px] grow rounded-xl text-white p-4 md:p-8 shadow-[var(--shadow-6)] focus:outline-none data-[state=open]:animate-contentShow`}
           >
             {roomIds.map((id) => {
               // const id = roomIds[index];

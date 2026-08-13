@@ -10,7 +10,7 @@ interface ConfigState {
   isLoaded: boolean;
   roomOrder: string[];
   currentRoomId: string | null;
-  roomChangeDirection: "PREV" | "NEXT";
+  roomChangeDirection: "DIRECT" | "PREV" | "NEXT";
   resetDefaultRoom: boolean;
 
   initialize: () => void;
@@ -32,7 +32,7 @@ export const useConfigStore = create<ConfigState>()(
         isLoaded: false,
         roomOrder: [],
         currentRoomId: null,
-        roomChangeDirection: "NEXT",
+        roomChangeDirection: "DIRECT",
         resetDefaultRoom: false,
 
         initialize: () => {
