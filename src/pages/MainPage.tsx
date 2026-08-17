@@ -25,7 +25,6 @@ function MainPage() {
         )
       : useRoomsStore((state) => state.globalRoom);
 
-
   const orientation = useUIStore((state) => state.orientation);
   const sliderOrientation =
     orientation === "landscape" ? "vertical" : "horizontal";
@@ -34,22 +33,35 @@ function MainPage() {
   const toggleMainPageMode = useUIStore.getState().toggleMainPageMode;
   const resetUiTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  //REPLACING resetUiTimer with global screensaver solution
   // useEffect(() => {
-  //   if (resetDefaultRoom) {
-  //     setDefaultRoom();
-  //     useConfigStore.setState({ resetDefaultRoom: false });
-  //   }
+  //   startResetUiTimer();
+
+  //   return () => {
+  //     if (resetUiTimerRef.current) {
+  //       clearTimeout(resetUiTimerRef.current);
+  //       resetUiTimerRef.current = null;
+  //     }
+  //   };
   // }, []);
 
-  useEffect(() => {
-    startResetUiTimer();
+  //REPLACING resetUiTimer with global screensaver solution
+  // function startResetUiTimer() {
+  //   if (resetUiTimerRef.current) {
+  //     clearTimeout(resetUiTimerRef.current);
+  //     resetUiTimerRef.current = null;
+  //   }
+  //   resetUiTimerRef.current = setTimeout(() => {
+  //     if (defaultRoom) {
+  //       useConfigStore.getState().setCurrentRoom(String(defaultRoom));
+  //       useUIStore.getState().setMainPageMode("roomLights");
+  //     }
+  //   }, 10000);
+  // }
 
-    return () => {
-      if (resetUiTimerRef.current) {
-        clearTimeout(resetUiTimerRef.current);
-        resetUiTimerRef.current = null;
-      }
-    };
+  useEffect(() => {
+    useConfigStore.getState().setDefaultRoom();
+    useUIStore.getState().setMainPageMode("roomLights");
   }, []);
 
   const tableLock = useLongPressLock();
@@ -95,19 +107,6 @@ function MainPage() {
   function clearAllLocks() {
     ceilingLock.clearLock();
     tableLock.clearLock();
-  }
-
-  function startResetUiTimer() {
-    if (resetUiTimerRef.current) {
-      clearTimeout(resetUiTimerRef.current);
-      resetUiTimerRef.current = null;
-    }
-    resetUiTimerRef.current = setTimeout(() => {
-      if (defaultRoom) {
-        useConfigStore.getState().setCurrentRoom(String(defaultRoom));
-        useUIStore.getState().setMainPageMode("roomLights");
-      }
-    }, 10000);
   }
 
   const cardStyles = "rounded-xl bg-black/20";
@@ -156,7 +155,9 @@ function MainPage() {
   return (
     <div
       key={currentRoomId}
-      onClickCapture={() => startResetUiTimer()}
+      //REPLACING resetUiTimer with global screensaver solution
+      // onClickCapture={() => startResetUiTimer()}
+
       //Setting this onlick in the top div makes all button clicks except ceiling, table, brightness and colortemp clear active ceiling/table lock.
       //e.preventPropagation that is used on the ceiling, table, brightness, colortemp buttons prevent clearalllocks to be called.
       onClick={() => clearAllLocks()}

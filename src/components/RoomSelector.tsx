@@ -8,7 +8,7 @@ import { LightType } from "@/types";
 import { useLongPress } from "@/hooks/useLongPress";
 import { useNavigate } from "react-router-dom";
 
-function roomSelector() {
+function RoomSelector() {
   const [open, setOpen] = useState(false);
 
   // 1. Grab the reactive rooms map directly
@@ -76,7 +76,7 @@ function roomSelector() {
                     setCurrentRoom(String(id));
                     setTimeout(() => {
                       setOpen(false);
-                    }, 200);
+                    }, 2000);
                   }}
                   className={`flex h-[50px] md:h-[80px] justify-between items-center p-1 pl-2 md:p-2 md:pl-4 rounded-md transition-all duration-100 transform cursor-pointer ${
                     isActive ? "bg-[#ffc101]" : "bg-black/70 hover:bg-black/50"
@@ -127,4 +127,4 @@ function roomSelector() {
   );
 }
 
-export default roomSelector;
+export default RoomSelector;
