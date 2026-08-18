@@ -1,18 +1,37 @@
 import type { IMessage } from "@stomp/stompjs";
-import root from "@/proto/bundle.js";
+// import root from "@/proto/bundle.js";
 
-export type protoMessage =
-  | "NSPanelConfig"
-  | "NSPanelEntityState"
-  | "NSPanelRoomEntitiesPage"
-  | "NSPanelRoomStatus"
-  | "NSPanelStatusReport";
+import {
+  NSPanelConfig,
+  NSPanelRoomEntitiesPage,
+  NSPanelRoomStatus,
+  NSPanelStatusReport,
+} from "@/generated/src/proto/protobuf_nspanel";
+
+import { NSPanelEntityState } from "@/generated/src/proto/protobuf_nspanel_entity";
+
+const messageRegistry = {
+  NSPanelConfig,
+  NSPanelEntityState,
+  NSPanelRoomEntitiesPage,
+  NSPanelRoomStatus,
+  NSPanelStatusReport,
+};
+
+export type protoMessage = keyof typeof messageRegistry;
+
+// export type protoMessage =
+//   | "NSPanelConfig"
+//   | "NSPanelEntityState"
+//   | "NSPanelRoomEntitiesPage"
+//   | "NSPanelRoomStatus"
+//   | "NSPanelStatusReport";
 
 export function convertProtbuf<T>(
   message: IMessage,
   messageName: protoMessage,
 ): T | undefined {
-  const messageType = (root as Record<string, any>)[messageName];
+  const messageType = messageRegistry[messageName];
 
   try {
     //Get the message body (which is a Base64 string)
@@ -35,10 +54,7 @@ export function convertProtbuf<T>(
     const decoded = messageType.decode(bytes);
 
     //Convert to a clean object
-    const data = messageType.toObject(decoded, {
-      defaults: true,
-      arrays: true,
-    }) as T;
+    const data = decoded as unknown as T;
 
     return data;
   } catch (err) {

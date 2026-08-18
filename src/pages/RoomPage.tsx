@@ -57,7 +57,10 @@ function RoomPage() {
   const roomButtons = Array.from({ length: totalButtons }, (_, index) => index);
 
   useEffect(() => {
-    return () => {setDefaultRoom(), useConfigStore.setState({roomChangeDirection:"DIRECT"})};
+    return () => {
+      (setDefaultRoom(),
+        useConfigStore.setState({ roomChangeDirection: "DIRECT" }));
+    };
   }, []);
 
   useEffect(() => {

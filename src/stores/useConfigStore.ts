@@ -1,12 +1,12 @@
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
-import type { INSPanelConfig } from "@/proto/bundle";
 import { generateFriendlyName, generateRandomMac } from "@/utils/utils";
+import type { NSPanelConfig } from "@/generated/src/proto/protobuf_nspanel";
 
 interface ConfigState {
   virtualMac: string;
   friendlyName: string;
-  config: INSPanelConfig | null;
+  config: NSPanelConfig | null;
   isLoaded: boolean;
   roomOrder: string[];
   currentRoomId: string | null;
@@ -14,7 +14,7 @@ interface ConfigState {
   resetDefaultRoom: boolean;
 
   initialize: () => void;
-  setConfig: (newConfig: INSPanelConfig) => void;
+  setConfig: (newConfig: NSPanelConfig) => void;
   setDefaultRoom: () => void;
   setCurrentRoom: (id: string) => void;
   nextRoom: () => void;

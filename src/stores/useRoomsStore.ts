@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
-import type { NSPanelRoomStatus } from "@/proto/bundle";
 import { LightType, SliderType } from "@/types";
 import {
   stompService,
@@ -9,6 +8,7 @@ import {
 } from "@/services/stompService";
 import { useUIStore } from "./useUIStore";
 import { useConfigStore } from "./useConfigStore";
+import type { NSPanelRoomStatus } from "@/generated/src/proto/protobuf_nspanel";
 
 interface RoomsState {
   rooms: Record<string, NSPanelRoomStatus>;

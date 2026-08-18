@@ -1,12 +1,12 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
-import type { NSPanelEntityState } from "@/proto/bundle";
 import {
   stompService,
   type LightCommandOptions,
 } from "@/services/stompService";
 import { SliderType } from "@/types";
+import type { NSPanelEntityState } from "@/generated/src/proto/protobuf_nspanel_entity";
 
 interface LightState {
   lights: Record<string, NSPanelEntityState>;

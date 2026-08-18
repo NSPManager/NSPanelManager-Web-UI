@@ -1,12 +1,13 @@
 import { Client, type StompSubscription } from "@stomp/stompjs";
 import { convertProtbuf } from "@/services/protoService";
-import {
-  NSPanelMQTTManagerCommand,
-  type INSPanelConfig,
-  type NSPanelEntityState,
-  type NSPanelRoomEntitiesPage,
-  type NSPanelRoomStatus,
-} from "@/proto/bundle";
+// import {
+//   NSPanelMQTTManagerCommand,
+//   type INSPanelConfig,
+//   type INSPanelEntityState,
+//   type NSPanelEntityState,
+//   type NSPanelRoomEntitiesPage,
+//   type NSPanelRoomStatus,
+// } from "@/proto/bundle";
 import {
   useConfigStore,
   useEntityPagesStore,
@@ -16,10 +17,21 @@ import {
   useUIStore,
 } from "@/stores";
 import type { LightType } from "@/types";
+import {
+  NSPanelConfig,
+  NSPanelMQTTManagerCommand,
+  NSPanelMQTTManagerCommand_FirstPageTurnLightOn,
+  NSPanelMQTTManagerCommand_LightCommand,
+  NSPanelRoomEntitiesPage,
+  NSPanelRoomStatus,
+} from "@/generated/src/proto/protobuf_nspanel";
+import type { NSPanelEntityState } from "@/generated/src/proto/protobuf_nspanel_entity";
 
 //This variable gets an address when we receive register accept from manager
 let MANAGER_ADDRESS = import.meta.env.DEV ? "192.168.32.201" : "";
 // let MANAGER_ADDRESS = import.meta.env.DEV ? "192.168.60.3" : "";
+
+type CommandType = keyof Omit<NSPanelMQTTManagerCommand, "nspanelId">;
 
 type SubLevel =
   | "registerAccept"
@@ -232,7 +244,7 @@ export const stompService = {
     configTopic = "mqtt/" + configTopic;
     console.log("Subscribing to config", configTopic);
     const sub = client.subscribe(configTopic, (message) => {
-      const configData = convertProtbuf<INSPanelConfig>(
+      const configData = convertProtbuf<NSPanelConfig>(
         message,
         "NSPanelConfig",
       );
@@ -418,7 +430,7 @@ export const stompService = {
     roomId: number,
   ) {
     const { brightness, colorTemp } = options;
-    const command: NSPanelMQTTManagerCommand.IFirstPageTurnLightOn = {
+    const command: NSPanelMQTTManagerCommand_FirstPageTurnLightOn = {
       affectLights: type, // 1 for Table, 2 for Ceiling
       selectedRoom: roomId,
       global: useUIStore.getState().mainPageMode === "allLights",
@@ -432,7 +444,7 @@ export const stompService = {
 
   sendLightCommand(options: LightCommandOptions, lightId: number) {
     const { brightness, colorTemp, rgb, saturation } = options;
-    const command: NSPanelMQTTManagerCommand.ILightCommand = {
+    const command: NSPanelMQTTManagerCommand_LightCommand = {
       lightIds: [lightId],
       brightness: brightness ?? 0,
       colorTemperature: colorTemp ?? 0,
@@ -448,14 +460,18 @@ export const stompService = {
 
   sendNspanelMqttManagerCommand(
     command:
-      | NSPanelMQTTManagerCommand.ILightCommand
-      | NSPanelMQTTManagerCommand.IFirstPageTurnLightOn,
-    commandType: string,
+      | NSPanelMQTTManagerCommand_LightCommand
+      | NSPanelMQTTManagerCommand_FirstPageTurnLightOn,
+    commandType: CommandType,
   ) {
+    const nspanelId = useConfigStore.getState().config?.nspanelId;
+    if (!nspanelId) return;
+
     const payload = {
-      nspanelId: useConfigStore.getState().config?.nspanelId,
+      nspanelId: nspanelId,
       [commandType]: command,
     };
+
     const buffer = NSPanelMQTTManagerCommand.encode(payload).finish();
 
     // 3. Publish
