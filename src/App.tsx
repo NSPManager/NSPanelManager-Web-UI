@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import { stompService } from "@/services/stompService";
 import { useScreenOrientation } from "./hooks";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { useConfigStore, useIdleStore, useUIStore } from "./stores";
 
 function App() {

@@ -20,7 +20,6 @@ import {
   NSPanelRoomEntitiesPage_EntitySlot,
   NSPanelRoomEntitiesPage_EntitySlot_EntityType,
 } from "@/generated/src/proto/protobuf_nspanel";
-import { stompService } from "@/services/stompService";
 import {
   useConfigStore,
   useEntityPagesStore,
