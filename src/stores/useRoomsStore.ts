@@ -18,6 +18,7 @@ interface RoomsState {
   setGlobalRoom: (roomData: NSPanelRoomStatus) => void;
   resetRooms: () => void;
   handleLightToggle: (lightType: LightType, roomId?: string) => void;
+  //roomId is used when calling handleLightToggle from the roomSelector. Not from main page
   handleMainPageLightSlider: (
     value: number,
     sliderType: SliderType,

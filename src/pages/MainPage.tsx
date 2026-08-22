@@ -16,7 +16,6 @@ function MainPage() {
   const mainPagemode = useUIStore((state) => state.mainPageMode);
 
   const currentRoomId = useConfigStore((state) => state.currentRoomId);
-  const defaultRoom = useConfigStore((state) => state.config?.defaultRoom);
   const isLoaded = useRoomsStore((state) => state.isLoaded);
   const room =
     mainPagemode === "roomLights"
@@ -31,33 +30,6 @@ function MainPage() {
   const handleLightToggle = useRoomsStore.getState().handleLightToggle;
   const nextRoom = useConfigStore.getState().nextRoom;
   const toggleMainPageMode = useUIStore.getState().toggleMainPageMode;
-  const resetUiTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  //REPLACING resetUiTimer with global screensaver solution
-  // useEffect(() => {
-  //   startResetUiTimer();
-
-  //   return () => {
-  //     if (resetUiTimerRef.current) {
-  //       clearTimeout(resetUiTimerRef.current);
-  //       resetUiTimerRef.current = null;
-  //     }
-  //   };
-  // }, []);
-
-  //REPLACING resetUiTimer with global screensaver solution
-  // function startResetUiTimer() {
-  //   if (resetUiTimerRef.current) {
-  //     clearTimeout(resetUiTimerRef.current);
-  //     resetUiTimerRef.current = null;
-  //   }
-  //   resetUiTimerRef.current = setTimeout(() => {
-  //     if (defaultRoom) {
-  //       useConfigStore.getState().setCurrentRoom(String(defaultRoom));
-  //       useUIStore.getState().setMainPageMode("roomLights");
-  //     }
-  //   }, 10000);
-  // }
 
   useEffect(() => {
     useConfigStore.getState().setDefaultRoom();
@@ -155,9 +127,6 @@ function MainPage() {
   return (
     <div
       key={currentRoomId}
-      //REPLACING resetUiTimer with global screensaver solution
-      // onClickCapture={() => startResetUiTimer()}
-
       //Setting this onlick in the top div makes all button clicks except ceiling, table, brightness and colortemp clear active ceiling/table lock.
       //e.preventPropagation that is used on the ceiling, table, brightness, colortemp buttons prevent clearalllocks to be called.
       onClick={() => clearAllLocks()}

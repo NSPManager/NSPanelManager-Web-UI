@@ -18,10 +18,8 @@
 
 import { ColorTempIcon, Slider } from "@/components";
 import ColorIcon from "@/components/ColorIcon";
-import {
-  useLightsStore,
-  useUIStore,
-} from "@/stores";
+import { NSPanelEntityState_Light_LightMode } from "@/generated/src/proto/protobuf_nspanel_entity";
+import { useLightsStore, useUIStore } from "@/stores";
 import { SliderType } from "@/types";
 import { ChevronLeft, ChevronRight, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -45,7 +43,11 @@ function RoomPage() {
   useEffect(() => {
     const currentLightMode = light?.light?.currentLightMode;
     if (currentLightMode !== undefined) {
-      setLightMode(currentLightMode === 1 ? "RGB" : "COLORTEMP");
+      setLightMode(
+        currentLightMode === NSPanelEntityState_Light_LightMode.RGB
+          ? "RGB"
+          : "COLORTEMP",
+      );
     }
   }, [light?.light?.currentLightMode]);
   console.log(lightMode);
@@ -125,20 +127,30 @@ function RoomPage() {
         >
           <ChevronLeft />
         </div>
-        <div className={`flex h-full items-center justify-center bg-black/20 select-none gap-2 ${light.light?.canColor ? "" : "col-span-2"}`}>
+        <div
+          className={`flex h-full items-center justify-center bg-black/20 select-none gap-2 ${light.light?.canColor ? "" : "col-span-2"}`}
+        >
           {/* {headerText} */}
           {light.light?.name}
         </div>
-        {light.light?.canColor ? <button onClick={() => setLightMode(lightMode=== "COLORTEMP" ? "RGB" : "COLORTEMP")} className="flex w-20 pr-5 pl-5 items-center bg-black/20 justify-center select-none cursor-pointer active:opacity-60 duration-50 transition-all">{lightMode==="COLORTEMP" ? <ColorIcon/> : <ColorTempIcon/>}</button> : "" }
+        {light.light?.canColor ? (
+          <button
+            onClick={() =>
+              setLightMode(lightMode === "COLORTEMP" ? "RGB" : "COLORTEMP")
+            }
+            className="flex w-20 pr-5 pl-5 items-center bg-black/20 justify-center select-none cursor-pointer active:opacity-60 duration-50 transition-all"
+          >
+            {lightMode === "COLORTEMP" ? <ColorIcon /> : <ColorTempIcon />}
+          </button>
+        ) : (
+          ""
+        )}
         <div
           // onClick={() => handleNextPage()}
           className={`flex p-5 h-full items-center rounded-r-xl bg-black/20 justify-center select-none cursor-pointer active:opacity-60 duration-50 transition-all`}
         >
           <ChevronRight />
-          
         </div>
-        
-        
       </div>
       {/* Buttons */}
       <div

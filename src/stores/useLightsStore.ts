@@ -7,6 +7,7 @@ import {
 } from "@/services/stompService";
 import { SliderType } from "@/types";
 import type { NSPanelEntityState } from "@/generated/src/proto/protobuf_nspanel_entity";
+import { useConfigStore } from "./useConfigStore";
 
 interface LightState {
   lights: Record<string, NSPanelEntityState>;
@@ -18,6 +19,7 @@ interface LightState {
     sliderType: SliderType,
     value: number,
   ) => void;
+  handleLightToggle: (lightId: string) => void;
 }
 
 export const useLightsStore = create<LightState>()(
@@ -57,6 +59,16 @@ export const useLightsStore = create<LightState>()(
           saturation: sliderType === SliderType.SATURATION ? value : undefined,
         };
         stompService.sendLightCommand(options, Number(lightId));
+      },
+      handleLightToggle: (lightId) => {
+        //TODO check light type to know if to send defaultbrightness och average brightness. Probelm is currently there is no lightType on NSPanelEntityState_Light
+        const isOn = useLightsStore.getState().lights[lightId].light?.state;
+        const defaultLightBrightess =
+          useConfigStore.getState().config?.defaultLightBrightess;
+        stompService.sendLightCommand(
+          { brightness: isOn ? 0 : defaultLightBrightess },
+          Number(lightId),
+        );
       },
     }),
     { name: "LightsStore" },

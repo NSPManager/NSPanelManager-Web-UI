@@ -16,10 +16,15 @@
 //skapa ny array med length = page type 4/8/12
 //mappa över denna för varje kolla map:en och skriv ut entiteten om den finns annars lämna tomt.
 
+import {
+  NSPanelRoomEntitiesPage_EntitySlot,
+  NSPanelRoomEntitiesPage_EntitySlot_EntityType,
+} from "@/generated/src/proto/protobuf_nspanel";
 import { stompService } from "@/services/stompService";
 import {
   useConfigStore,
   useEntityPagesStore,
+  useLightsStore,
   useRoomsStore,
   useUIStore,
 } from "@/stores";
@@ -45,16 +50,20 @@ function RoomPage() {
   const activeEntityPage = useEntityPagesStore((state) =>
     activeEntityPageId ? state.entityPages[activeEntityPageId] : undefined,
   );
-  const totalButtons = activeEntityPage?.pageType || 8;
+  const totalEntities = activeEntityPage?.pageType || 8;
   const headerText = activeEntityPage?.headerText || undefined;
   const entities = activeEntityPage?.entities || [];
 
-  const roomViewMap = new Map();
+  const roomViewMap: Map<number, NSPanelRoomEntitiesPage_EntitySlot> =
+    new Map();
   entities.forEach((entity) => {
-    roomViewMap.set(entity.roomViewPosition, entity.name);
+    roomViewMap.set(entity.roomViewPosition, entity);
   });
 
-  const roomButtons = Array.from({ length: totalButtons }, (_, index) => index);
+  const roomEntities = Array.from(
+    { length: totalEntities },
+    (_, index) => index,
+  );
 
   useEffect(() => {
     return () => {
@@ -130,47 +139,56 @@ function RoomPage() {
           <ChevronRight />
         </div>
       </div>
-      {/* Buttons */}
+      {/* Entity buttons */}
       <div
-        className={`grid grid-cols-2 gap-1 md:gap-2 ${totalButtons === 4 ? "grid-rows-2" : totalButtons === 8 ? "grid-rows-4" : "grid-rows-6"}`}
+        className={`grid grid-cols-2 gap-1 md:gap-2 ${totalEntities === 4 ? "grid-rows-2" : totalEntities === 8 ? "grid-rows-4" : "grid-rows-6"}`}
       >
-        {roomButtons.map((button) => {
-          const buttonName = roomViewMap.get(button);
+        {roomEntities.map((roomEntity) => {
+          const entity = roomViewMap.get(roomEntity);
+          const isOn = entity?.icon === "s";
           return (
             <div
-              className={`grid ${totalButtons !== 4 ? "grid-cols-[1fr_2px_70px] md:grid-cols-[1fr_2px_100px]" : "grid-rows-[1fr_2px_1fr]"} items-center rounded-xl`}
+              className={`grid ${totalEntities !== 4 ? "grid-cols-[1fr_2px_70px] md:grid-cols-[1fr_2px_100px]" : "grid-rows-[1fr_2px_1fr]"} items-center rounded-xl`}
             >
-              <div
+              <button
                 onClick={() =>
                   // (useConfigStore.setState({ resetDefaultRoom: true }),
-                  navigate("/webapp/lightpage/67")
+                  {
+                    entity?.type ===
+                    NSPanelRoomEntitiesPage_EntitySlot_EntityType.ENTITY_TYPE_LIGHT
+                      ? navigate(`/webapp/lightpage/${entity?.id}`)
+                      : "";
+                  }
                 }
-                className={`flex h-full bg-black/20 items-center ${totalButtons !== 4 ? "justify-start rounded-l-xl p-3" : "justify-center rounded-t-xl"} select-none cursor-pointer active:opacity-60 duration-50 transition-all`}
+                className={`flex h-full bg-black/20 items-center ${totalEntities !== 4 ? "justify-start rounded-l-xl p-3" : "justify-center rounded-t-xl"} select-none cursor-pointer active:opacity-60 duration-50 transition-all`}
               >
-                {buttonName}
-              </div>
+                {entity?.name}
+              </button>
               <div
-                className={`grid ${totalButtons !== 4 ? "grid-rows-[1fr_60%_1fr]" : "grid-cols-[1fr_60%_1fr]"} h-full`}
+                className={`grid ${totalEntities !== 4 ? "grid-rows-[1fr_60%_1fr]" : "grid-cols-[1fr_60%_1fr]"} h-full`}
               >
                 <div className="bg-black/20"></div>
                 <div className="bg-transparent"></div>
                 <div className="bg-black/20"></div>
               </div>
               <div
-                className={`flex h-full bg-black/20 justify-center items-center ${totalButtons !== 4 ? "rounded-r-xl" : "rounded-b-xl"}`}
+                onClick={() => {
+                  entity
+                    ? useLightsStore
+                        .getState()
+                        .handleLightToggle(String(entity?.id))
+                    : "";
+                }}
+                className={`flex h-full bg-black/20 justify-center items-center ${totalEntities !== 4 ? "rounded-r-xl" : "rounded-b-xl"} ${entity ? "cursor-pointer" : ""}`}
               >
-                {buttonName ? (
-                  <button
-                    onClick={() =>
-                      stompService.sendLightCommand(
-                        { brightness: 0, colorTemp: 0 },
-                        67,
-                      )
-                    }
-                    className="relative inline-flex h-7 w-12 rounded-full bg-white/40 p-1 cursor-pointer transition-colors duration-200 ease-in-out select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+                {entity ? (
+                  <div
+                    className={`relative inline-flex h-7 w-12 rounded-full ${isOn ? "bg-[#ffc101] justify-end" : "bg-white/40 justify-start"}  p-1 transition-colors duration-200 ease-in-out select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400`}
                   >
-                    <span className="h-5 w-5 inline-block rounded-full bg-white shadow-md transform transition-transform duration-200 ease-in-out"></span>
-                  </button>
+                    <span
+                      className={`h-5 w-5 inline-block rounded-full bg-white shadow-md transform transition-transform duration-200 ease-in-out`}
+                    ></span>
+                  </div>
                 ) : (
                   ""
                 )}

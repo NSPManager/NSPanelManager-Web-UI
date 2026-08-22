@@ -359,6 +359,69 @@ export interface NSPanelRoomEntitiesPage_EntitySlot {
   canSaveScene: boolean;
   /** MQTT topic where NSPanelEntityState is sent for control of individual entity. Empty if not controllable individually. */
   mqttStateTopic: string;
+  type: NSPanelRoomEntitiesPage_EntitySlot_EntityType;
+  id: number;
+}
+
+export enum NSPanelRoomEntitiesPage_EntitySlot_EntityType {
+  ENTITY_TYPE_UNSPECIFIED = 0,
+  ENTITY_TYPE_LIGHT = 1,
+  ENTITY_TYPE_SWITCH = 2,
+  ENTITY_TYPE_BUTTON = 3,
+  ENTITY_TYPE_THERMOSTAT = 4,
+  ENTITY_TYPE_SCENE = 5,
+  UNRECOGNIZED = -1,
+}
+
+export function nSPanelRoomEntitiesPage_EntitySlot_EntityTypeFromJSON(
+  object: any,
+): NSPanelRoomEntitiesPage_EntitySlot_EntityType {
+  switch (object) {
+    case 0:
+    case "ENTITY_TYPE_UNSPECIFIED":
+      return NSPanelRoomEntitiesPage_EntitySlot_EntityType.ENTITY_TYPE_UNSPECIFIED;
+    case 1:
+    case "ENTITY_TYPE_LIGHT":
+      return NSPanelRoomEntitiesPage_EntitySlot_EntityType.ENTITY_TYPE_LIGHT;
+    case 2:
+    case "ENTITY_TYPE_SWITCH":
+      return NSPanelRoomEntitiesPage_EntitySlot_EntityType.ENTITY_TYPE_SWITCH;
+    case 3:
+    case "ENTITY_TYPE_BUTTON":
+      return NSPanelRoomEntitiesPage_EntitySlot_EntityType.ENTITY_TYPE_BUTTON;
+    case 4:
+    case "ENTITY_TYPE_THERMOSTAT":
+      return NSPanelRoomEntitiesPage_EntitySlot_EntityType.ENTITY_TYPE_THERMOSTAT;
+    case 5:
+    case "ENTITY_TYPE_SCENE":
+      return NSPanelRoomEntitiesPage_EntitySlot_EntityType.ENTITY_TYPE_SCENE;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return NSPanelRoomEntitiesPage_EntitySlot_EntityType.UNRECOGNIZED;
+  }
+}
+
+export function nSPanelRoomEntitiesPage_EntitySlot_EntityTypeToJSON(
+  object: NSPanelRoomEntitiesPage_EntitySlot_EntityType,
+): string {
+  switch (object) {
+    case NSPanelRoomEntitiesPage_EntitySlot_EntityType.ENTITY_TYPE_UNSPECIFIED:
+      return "ENTITY_TYPE_UNSPECIFIED";
+    case NSPanelRoomEntitiesPage_EntitySlot_EntityType.ENTITY_TYPE_LIGHT:
+      return "ENTITY_TYPE_LIGHT";
+    case NSPanelRoomEntitiesPage_EntitySlot_EntityType.ENTITY_TYPE_SWITCH:
+      return "ENTITY_TYPE_SWITCH";
+    case NSPanelRoomEntitiesPage_EntitySlot_EntityType.ENTITY_TYPE_BUTTON:
+      return "ENTITY_TYPE_BUTTON";
+    case NSPanelRoomEntitiesPage_EntitySlot_EntityType.ENTITY_TYPE_THERMOSTAT:
+      return "ENTITY_TYPE_THERMOSTAT";
+    case NSPanelRoomEntitiesPage_EntitySlot_EntityType.ENTITY_TYPE_SCENE:
+      return "ENTITY_TYPE_SCENE";
+    case NSPanelRoomEntitiesPage_EntitySlot_EntityType.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
 }
 
 /**
@@ -2012,7 +2075,17 @@ export const NSPanelRoomEntitiesPage: MessageFns<NSPanelRoomEntitiesPage> = {
 };
 
 function createBaseNSPanelRoomEntitiesPage_EntitySlot(): NSPanelRoomEntitiesPage_EntitySlot {
-  return { roomViewPosition: 0, name: "", icon: "", pco: 0, pco2: 0, canSaveScene: false, mqttStateTopic: "" };
+  return {
+    roomViewPosition: 0,
+    name: "",
+    icon: "",
+    pco: 0,
+    pco2: 0,
+    canSaveScene: false,
+    mqttStateTopic: "",
+    type: 0,
+    id: 0,
+  };
 }
 
 export const NSPanelRoomEntitiesPage_EntitySlot: MessageFns<NSPanelRoomEntitiesPage_EntitySlot> = {
@@ -2037,6 +2110,12 @@ export const NSPanelRoomEntitiesPage_EntitySlot: MessageFns<NSPanelRoomEntitiesP
     }
     if (message.mqttStateTopic !== "") {
       writer.uint32(58).string(message.mqttStateTopic);
+    }
+    if (message.type !== 0) {
+      writer.uint32(64).int32(message.type);
+    }
+    if (message.id !== 0) {
+      writer.uint32(72).int32(message.id);
     }
     return writer;
   },
@@ -2104,6 +2183,22 @@ export const NSPanelRoomEntitiesPage_EntitySlot: MessageFns<NSPanelRoomEntitiesP
           message.mqttStateTopic = reader.string();
           continue;
         }
+        case 8: {
+          if (tag !== 64) {
+            break;
+          }
+
+          message.type = reader.int32() as any;
+          continue;
+        }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.id = reader.int32();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2134,6 +2229,8 @@ export const NSPanelRoomEntitiesPage_EntitySlot: MessageFns<NSPanelRoomEntitiesP
         : isSet(object.mqtt_state_topic)
         ? globalThis.String(object.mqtt_state_topic)
         : "",
+      type: isSet(object.type) ? nSPanelRoomEntitiesPage_EntitySlot_EntityTypeFromJSON(object.type) : 0,
+      id: isSet(object.id) ? globalThis.Number(object.id) : 0,
     };
   },
 
@@ -2160,6 +2257,12 @@ export const NSPanelRoomEntitiesPage_EntitySlot: MessageFns<NSPanelRoomEntitiesP
     if (message.mqttStateTopic !== "") {
       obj.mqttStateTopic = message.mqttStateTopic;
     }
+    if (message.type !== 0) {
+      obj.type = nSPanelRoomEntitiesPage_EntitySlot_EntityTypeToJSON(message.type);
+    }
+    if (message.id !== 0) {
+      obj.id = Math.round(message.id);
+    }
     return obj;
   },
 
@@ -2179,6 +2282,8 @@ export const NSPanelRoomEntitiesPage_EntitySlot: MessageFns<NSPanelRoomEntitiesP
     message.pco2 = object.pco2 ?? 0;
     message.canSaveScene = object.canSaveScene ?? false;
     message.mqttStateTopic = object.mqttStateTopic ?? "";
+    message.type = object.type ?? 0;
+    message.id = object.id ?? 0;
     return message;
   },
 };

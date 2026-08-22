@@ -23,6 +23,7 @@ import {
   NSPanelMQTTManagerCommand_FirstPageTurnLightOn,
   NSPanelMQTTManagerCommand_LightCommand,
   NSPanelRoomEntitiesPage,
+  NSPanelRoomEntitiesPage_EntitySlot_EntityType,
   NSPanelRoomStatus,
 } from "@/generated/src/proto/protobuf_nspanel";
 import type { NSPanelEntityState } from "@/generated/src/proto/protobuf_nspanel_entity";
@@ -31,7 +32,8 @@ import type { NSPanelEntityState } from "@/generated/src/proto/protobuf_nspanel_
 let MANAGER_ADDRESS = import.meta.env.DEV ? "192.168.32.201" : "";
 // let MANAGER_ADDRESS = import.meta.env.DEV ? "192.168.60.3" : "";
 
-type CommandType = keyof Omit<NSPanelMQTTManagerCommand, "nspanelId">;
+// type CommandType = keyof Omit<NSPanelMQTTManagerCommand, "nspanelId">;
+type ManagerCommandPayload = Omit<NSPanelMQTTManagerCommand, "nspanelId">;
 
 type SubLevel =
   | "registerAccept"
@@ -341,7 +343,11 @@ export const stompService = {
           console.log("Subscribing to Entities");
 
           for (const entity of entityPageData.entities) {
-            if (entity.mqttStateTopic) {
+            if (
+              entity.type ===
+                NSPanelRoomEntitiesPage_EntitySlot_EntityType.ENTITY_TYPE_LIGHT &&
+              entity.mqttStateTopic
+            ) {
               stompService.subscribeToEntity(entity.mqttStateTopic);
             }
           }
@@ -439,7 +445,7 @@ export const stompService = {
       brightnessSliderValue: brightness ?? 0,
       kelvinSliderValue: colorTemp ?? 0,
     };
-    stompService.sendNspanelMqttManagerCommand(command, "firstPageTurnOn");
+    stompService.sendNspanelMqttManagerCommand({ firstPageTurnOn: command });
   },
 
   sendLightCommand(options: LightCommandOptions, lightId: number) {
@@ -455,35 +461,27 @@ export const stompService = {
       hasHue: rgb !== undefined,
       hasSaturation: saturation !== undefined,
     };
-    stompService.sendNspanelMqttManagerCommand(command, "lightCommand");
+    stompService.sendNspanelMqttManagerCommand({ lightCommand: command });
   },
 
-  sendNspanelMqttManagerCommand(
-    command:
-      | NSPanelMQTTManagerCommand_LightCommand
-      | NSPanelMQTTManagerCommand_FirstPageTurnLightOn,
-    commandType: CommandType,
-  ) {
+  sendNspanelMqttManagerCommand(commandPayload: ManagerCommandPayload) {
     const nspanelId = useConfigStore.getState().config?.nspanelId;
+
     if (!nspanelId) return;
 
-    const payload = {
+    const payload: NSPanelMQTTManagerCommand = {
       nspanelId: nspanelId,
-      [commandType]: command,
+      ...commandPayload,
     };
 
     const buffer = NSPanelMQTTManagerCommand.encode(payload).finish();
 
     // 3. Publish
     if (!client?.connected) return;
-    console.log("Sending to manager: ", command);
+    console.log("Sending to manager: ", payload);
     client.publish({
       destination: `mqtt/nspanel/mqttmanager_${MANAGER_ADDRESS}/command`,
       binaryBody: buffer,
     });
   },
 };
-
-// TODO
-//Strongly type the sendNspanelMqttManagerCommand function
-// type CommandType = keyof Omit<NSPanelMQTTManagerCommand, 'nspanelId'>;
