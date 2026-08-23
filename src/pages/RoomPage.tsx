@@ -36,7 +36,6 @@ function RoomPage() {
   const orientation = useUIStore((state) => state.orientation);
   const nextRoom = useConfigStore((state) => state.nextRoom);
   const prevRoom = useConfigStore((state) => state.prevRoom);
-  const setDefaultRoom = useConfigStore((state) => state.setDefaultRoom);
 
   const currentRoomId = useConfigStore((state) => state.currentRoomId);
 

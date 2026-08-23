@@ -10,7 +10,6 @@ import {
 import { LightType, SliderType } from "@/types";
 import { useLongPress } from "@/hooks/useLongPress";
 import { useLongPressLock } from "@/hooks/useLongPressLock";
-import { useEffect } from "react";
 
 function MainPage() {
   const mainPagemode = useUIStore((state) => state.mainPageMode);
