@@ -11,7 +11,7 @@ interface IdleState {
 export const useIdleStore = create<IdleState>()(
   devtools(
     (set, get) => ({
-      idleTimeoutMs: 60000,
+      idleTimeoutMs: 15000,
       timerId: null,
       lastResetTime: 0,
 

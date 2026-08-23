@@ -64,12 +64,13 @@ function RoomPage() {
     (_, index) => index,
   );
 
-  useEffect(() => {
-    return () => {
-      (setDefaultRoom(),
-        useConfigStore.setState({ roomChangeDirection: "DIRECT" }));
-    };
-  }, []);
+  //Removed change mind about going back to default room when going back from room page to main page
+  // useEffect(() => {
+  //   return () => {
+  //     (setDefaultRoom(),
+  //       useConfigStore.setState({ roomChangeDirection: "DIRECT" }));
+  //   };
+  // }, []);
 
   useEffect(() => {
     if (useConfigStore.getState().roomChangeDirection === "DIRECT" || "NEXT") {

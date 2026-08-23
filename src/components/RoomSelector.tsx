@@ -76,7 +76,7 @@ function RoomSelector() {
                     setCurrentRoom(String(id));
                     setTimeout(() => {
                       setOpen(false);
-                    }, 2000);
+                    }, 0);
                   }}
                   className={`flex h-[50px] md:h-[80px] justify-between items-center p-1 pl-2 md:p-2 md:pl-4 rounded-md transition-all duration-100 transform cursor-pointer ${
                     isActive ? "bg-[#ffc101]" : "bg-black/70 hover:bg-black/50"

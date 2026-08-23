@@ -31,10 +31,11 @@ function MainPage() {
   const nextRoom = useConfigStore.getState().nextRoom;
   const toggleMainPageMode = useUIStore.getState().toggleMainPageMode;
 
-  useEffect(() => {
-    useConfigStore.getState().setDefaultRoom();
-    useUIStore.getState().setMainPageMode("roomLights");
-  }, []);
+  //Removed change mind about going back to default room when going back from room page to main page
+  // useEffect(() => {
+  //   // useConfigStore.getState().setDefaultRoom();
+  //   // useUIStore.getState().setMainPageMode("roomLights");
+  // }, []);
 
   const tableLock = useLongPressLock();
 
