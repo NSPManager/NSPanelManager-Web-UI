@@ -7,6 +7,7 @@ type Orientation = "landscape" | "portrait";
 interface UIState {
   mainPageMode: MainPageMode;
   orientation: Orientation;
+  isRoomSelectorOpen: boolean;
   toggleMainPageMode: () => void;
   setMainPageMode: (mode: MainPageMode) => void;
   resetMainPagemode: () => void;
@@ -18,6 +19,7 @@ export const useUIStore = create<UIState>()(
     (set, get) => ({
       mainPageMode: "roomLights",
       orientation: "landscape",
+      isRoomSelectorOpen: false,
       toggleMainPageMode: () => {
         get().mainPageMode === "roomLights"
           ? set({ mainPageMode: "allLights" })

@@ -1,6 +1,5 @@
 import { useConfigStore, useRoomsStore, useUIStore } from "@/stores";
 import * as Dialog from "@radix-ui/react-dialog";
-import { useState } from "react";
 import { useShallow } from "zustand/shallow";
 import CeilingLightIcon from "./CeilingLightIcon";
 import TableLightIcon from "./TableLightIcon";
@@ -9,7 +8,10 @@ import { useLongPress } from "@/hooks/useLongPress";
 import { useNavigate } from "react-router-dom";
 
 function RoomSelector() {
-  const [open, setOpen] = useState(false);
+  const open = useUIStore((state) => state.isRoomSelectorOpen);
+  function setOpen(isOpen: boolean): void {
+    useUIStore.setState({ isRoomSelectorOpen: isOpen });
+  }
 
   // 1. Grab the reactive rooms map directly
   const rooms = useRoomsStore((state) => state.rooms);

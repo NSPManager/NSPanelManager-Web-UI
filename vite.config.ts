@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   build: {
     // Target older Chromium engines used by Smart TVs
-    target: ['chrome60', 'safari12'],
+    target: ["chrome60", "safari12"],
   },
   base: "/webapp/",
   resolve: {

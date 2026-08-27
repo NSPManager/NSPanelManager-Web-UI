@@ -24,8 +24,10 @@ function App() {
     if (currentPath === "/webapp" || currentPath === "/webapp/") {
       useConfigStore.getState().setDefaultRoom();
       useUIStore.getState().setMainPageMode("roomLights");
+      useUIStore.setState({ isRoomSelectorOpen: false });
     } else {
       navigate("/webapp/");
+      useConfigStore.getState().setDefaultRoom();
     }
   }
 
