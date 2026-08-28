@@ -20,6 +20,7 @@ import {
   NSPanelRoomEntitiesPage_EntitySlot,
   NSPanelRoomEntitiesPage_EntitySlot_EntityType,
 } from "@/generated/src/proto/protobuf_nspanel";
+import { stompService } from "@/services/stompService";
 import {
   useConfigStore,
   useEntityPagesStore,
@@ -62,14 +63,6 @@ function RoomPage() {
     { length: totalEntities },
     (_, index) => index,
   );
-
-  //Removed change mind about going back to default room when going back from room page to main page
-  // useEffect(() => {
-  //   return () => {
-  //     (setDefaultRoom(),
-  //       useConfigStore.setState({ roomChangeDirection: "DIRECT" }));
-  //   };
-  // }, []);
 
   useEffect(() => {
     if (useConfigStore.getState().roomChangeDirection === "DIRECT" || "NEXT") {
@@ -147,6 +140,7 @@ function RoomPage() {
           const isOn = entity?.icon === "s";
           return (
             <div
+              key={entity?.id}
               className={`grid ${totalEntities !== 4 ? "grid-cols-[1fr_2px_70px] md:grid-cols-[1fr_2px_100px]" : "grid-rows-[1fr_2px_1fr]"} items-center rounded-xl`}
             >
               <button
@@ -172,10 +166,11 @@ function RoomPage() {
               </div>
               <div
                 onClick={() => {
-                  entity
-                    ? useLightsStore
-                        .getState()
-                        .handleLightToggle(String(entity?.id))
+                  entity && activeEntityPageId
+                    ? stompService.sendToggleEntityFromEntitiesPage(
+                        activeEntityPageId,
+                        roomEntity,
+                      )
                     : "";
                 }}
                 className={`flex h-full bg-black/20 justify-center items-center ${totalEntities !== 4 ? "rounded-r-xl" : "rounded-b-xl"} ${entity ? "cursor-pointer" : ""}`}

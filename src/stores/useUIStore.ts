@@ -12,6 +12,7 @@ interface UIState {
   setMainPageMode: (mode: MainPageMode) => void;
   resetMainPagemode: () => void;
   setOrientation: (orientation: Orientation) => void;
+  setIsRoomSelectorOpen: (isOpen: boolean) => void;
 }
 
 export const useUIStore = create<UIState>()(
@@ -31,6 +32,8 @@ export const useUIStore = create<UIState>()(
         set({ mainPageMode: "roomLights" }, false, "resetMainPagemode"),
       setOrientation: (orientation: Orientation) =>
         set({ orientation: orientation }, false, "setOrientation"),
+      setIsRoomSelectorOpen: (isOpen: boolean) =>
+        set({ isRoomSelectorOpen: isOpen }, false, "setIsRoomSelectorOpen"),
     }),
     { name: "UIStore" },
   ),

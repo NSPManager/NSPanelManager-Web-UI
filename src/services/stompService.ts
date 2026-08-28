@@ -1,13 +1,6 @@
 import { Client, type StompSubscription } from "@stomp/stompjs";
 import { convertProtbuf } from "@/services/protoService";
-// import {
-//   NSPanelMQTTManagerCommand,
-//   type INSPanelConfig,
-//   type INSPanelEntityState,
-//   type NSPanelEntityState,
-//   type NSPanelRoomEntitiesPage,
-//   type NSPanelRoomStatus,
-// } from "@/proto/bundle";
+
 import {
   useConfigStore,
   useEntityPagesStore,
@@ -22,6 +15,7 @@ import {
   NSPanelMQTTManagerCommand,
   NSPanelMQTTManagerCommand_FirstPageTurnLightOn,
   NSPanelMQTTManagerCommand_LightCommand,
+  NSPanelMQTTManagerCommand_ToggleEntityFromEntitiesPage,
   NSPanelRoomEntitiesPage,
   NSPanelRoomEntitiesPage_EntitySlot_EntityType,
   NSPanelRoomStatus,
@@ -462,6 +456,17 @@ export const stompService = {
       hasSaturation: saturation !== undefined,
     };
     stompService.sendNspanelMqttManagerCommand({ lightCommand: command });
+  },
+
+  //ToggleEntityFromEntitiesPage
+  sendToggleEntityFromEntitiesPage(entityPageId: number, entitySlot: number) {
+    const command: NSPanelMQTTManagerCommand_ToggleEntityFromEntitiesPage = {
+      entityPageId,
+      entitySlot,
+    };
+    stompService.sendNspanelMqttManagerCommand({
+      toggleEntityFromEntitiesPage: command,
+    });
   },
 
   sendNspanelMqttManagerCommand(commandPayload: ManagerCommandPayload) {

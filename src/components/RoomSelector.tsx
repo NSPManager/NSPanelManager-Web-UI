@@ -8,10 +8,8 @@ import { useLongPress } from "@/hooks/useLongPress";
 import { useNavigate } from "react-router-dom";
 
 function RoomSelector() {
-  const open = useUIStore((state) => state.isRoomSelectorOpen);
-  function setOpen(isOpen: boolean): void {
-    useUIStore.setState({ isRoomSelectorOpen: isOpen });
-  }
+  const isOpen = useUIStore((state) => state.isRoomSelectorOpen);
+  const setIsOpen = useUIStore((state) => state.setIsRoomSelectorOpen);
 
   // 1. Grab the reactive rooms map directly
   const rooms = useRoomsStore((state) => state.rooms);
@@ -21,12 +19,6 @@ function RoomSelector() {
     useShallow((state) => Object.keys(state.rooms)),
   );
 
-  // const roomIds = useRoomsStore(
-  //   useShallow((state) => Object.values(state.rooms).map((room) => room.id)),
-  // );
-  // const roomNames = useRoomsStore(
-  //   useShallow((state) => Object.values(state.rooms).map((room) => room.name)),
-  // );
   const mainPagemode = useUIStore((state) => state.mainPageMode);
   const currentRoomId = useConfigStore((state) => state.currentRoomId);
   const setCurrentRoom = useConfigStore((state) => state.setCurrentRoom);
@@ -40,12 +32,12 @@ function RoomSelector() {
   const roomButtonHandlers = useLongPress({
     onShortPress: () => navigate("/webapp/roompage"),
     onLongPress: () => {
-      setOpen(true);
+      setIsOpen(true);
     },
   });
 
   return (
-    <Dialog.Root open={open} onOpenChange={setOpen}>
+    <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
       {/* <Dialog.Trigger asChild> */}
       <button
         {...roomButtonHandlers}
@@ -77,7 +69,7 @@ function RoomSelector() {
                   onClick={() => {
                     setCurrentRoom(String(id));
                     setTimeout(() => {
-                      setOpen(false);
+                      setIsOpen(false);
                     }, 0);
                   }}
                   className={`flex h-[50px] md:h-[80px] justify-between items-center p-1 pl-2 md:p-2 md:pl-4 rounded-md transition-all duration-100 transform cursor-pointer ${
