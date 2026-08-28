@@ -24,7 +24,6 @@ import { stompService } from "@/services/stompService";
 import {
   useConfigStore,
   useEntityPagesStore,
-  useLightsStore,
   useRoomsStore,
   useUIStore,
 } from "@/stores";
