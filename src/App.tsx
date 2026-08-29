@@ -43,10 +43,12 @@ function App() {
     >
       {/*Background Layer*/}
       <div
-        className="absolute inset-0 z-0 bg-cover bg-center opacity-100 bg-[linear-gradient(66.5deg,rgba(161,204,165,1)_-11.3%,rgba(12,146,180,1)_100.1%)]"
-        // style={{
-        //   backgroundImage: `url('default-bg.jpg')`,
-        // }}
+        className="absolute inset-0 z-0 bg-cover bg-center opacity-100"
+        style={{
+          // backgroundImage: `url('default-bg.jpg')`,
+          background:
+            "linear-gradient(180deg, #673c3c 0.000%, #875355 16.667%, #8d6060 33.333%, #765d56 50.000%, #504c3e 66.667%, #313423 83.333%, #2b1d16 100.000%)",
+        }}
       />
       <Outlet />
     </div>

@@ -13,25 +13,22 @@ function CeilingLightIcon({ className, isOn }: Props) {
       xmlns="http://www.w3.org/2000/svg"
       preserveAspectRatio="xMidYMid meet"
     >
-      <g transform="translate(-55.82, -91.01)">
-        <path
-          id="mount"
-          fill="currentColor"
-          d="m 101.98,125.17 h -2.25 v -2.74 c -14.16,-2.44 -17.39,-14.82 -17.39,-14.82 v -16.6 h 0.36 l 20.4,0 20.4,0 h 0.36 v 16.6 c 0,0 -3.23,12.37 -17.39,14.82 v 2.74 h -2.52"
-        />
-        <path
-          id="stem"
-          fill="currentColor"
-          d="m 101.14,202.9 h 3.95 v -77.73 h -3.95 z"
-        />
-
-        <path
-          id="glass"
-          fill={isOn ? "#ffc101" : "currentColor"}
-          className="transition-colors duration-300 ease-in-out"
-          d="m 105.09,202.9 v 0 h 2.7 v 2.48 c 0,0 37.39,-3.92 36.86,44.66 v 0.53 h 2.79 c 0,0 2.97,0.31 2.97,3.28 v 23.64 l 0.12,4.89 H 103.18 55.82 v -4.89 -23.64 c 0,-2.97 2.97,-3.28 2.97,-3.28 h 2.79 v -0.53 c -0.53,-48.58 36.86,-44.66 36.86,-44.66 v -2.48 h 2.7 v 0"
-        />
-      </g>
+      <path
+        id="mount"
+        fill="currentColor"
+        d="m 68.055,0 v 12.46564 c 0,0 -1.058178,19.022711 -20.775,19.022711 L 47.295,0 Z M 26.52,0 v 12.46564 c 0,0 1.058178,19.022711 20.775,19.022711 L 47.28,0 Z"
+      />
+      <path
+        fill="currentColor"
+        d="M 45.32,114.01564 V 31.421973 h 3.95 v 82.593667 z"
+        id="stem"
+      />
+      <path
+        id="glass"
+        fill={isOn ? "#ffc101" : "currentColor"}
+        className="transition-colors duration-300 ease-in-out"
+        d="m 47.36,114.01564 c 0,0 41.535,-6.16302 41.535,45.54436 0,0 5.76,-0.0523 5.76,5.76 v 21.16 c 0,0 -0.50439,4.9 -6.557071,4.9 L 47.295,191.37 Z m -0.065,0 c 0,0 -41.535,-6.16302 -41.535,45.54436 0,0 -5.76,-0.0523 -5.76,5.76 v 21.16 c 0,0 0.50439006,4.9 6.5570708,4.9 L 47.36,191.37 Z"
+      />
     </svg>
   );
 }

@@ -52,44 +52,6 @@ function RoomPage() {
   }, [light?.light?.currentLightMode]);
   console.log(lightMode);
   console.log(light?.light?.currentLightMode);
-  // const entityPageIds = useRoomsStore((state) =>
-  //   currentRoomId ? state.rooms[currentRoomId]?.entityPageIds : undefined,
-  // );
-  // const [entityIndex, setEntityIndex] = useState(0);
-
-  // const activeEntityPageId = entityPageIds?.[entityIndex];
-  // const activeEntityPage = useEntityPagesStore((state) =>
-  //   activeEntityPageId ? state.entityPages[activeEntityPageId] : undefined,
-  // );
-
-  // useEffect(() => {
-  //   if (useConfigStore.getState().roomChangeDirection === "NEXT") {
-  //     setEntityIndex(0);
-  //   } else {
-  //     if (entityPageIds) {
-  //       setEntityIndex(entityPageIds?.length - 1);
-  //     }
-  //   }
-  // }, [currentRoomId]);
-
-  // function handleNextPage() {
-  //   if (entityPageIds) {
-  //     if (entityIndex + 1 < entityPageIds.length) {
-  //       setEntityIndex(entityIndex + 1);
-  //     } else {
-  //       console.log("nextroom");
-  //     }
-  //   }
-  // }
-
-  // function handlePrevPage() {
-  //   if (entityPageIds) {
-  //     if (entityIndex !== 0) {
-  //       setEntityIndex(entityIndex - 1);
-  //     } else {
-  //     }
-  //   }
-  // }
 
   const cardStyles = "rounded-xl bg-black/20";
 
@@ -125,7 +87,8 @@ function RoomPage() {
           // onClick={() => handlePrevPage()}
           className="flex p-5 h-full items-center bg-black/20 justify-center select-none cursor-pointer active:opacity-60 duration-50 transition-all"
         >
-          <ChevronLeft />
+          {/* TODO activate next prev button so go to next light in room*/}
+          {/* <ChevronLeft /> */}
         </div>
         <div
           className={`flex h-full items-center justify-center bg-black/20 select-none gap-2 ${light.light?.canColor ? "" : "col-span-2"}`}
@@ -138,7 +101,7 @@ function RoomPage() {
             onClick={() =>
               setLightMode(lightMode === "COLORTEMP" ? "RGB" : "COLORTEMP")
             }
-            className="flex w-20 pr-5 pl-5 items-center bg-black/20 justify-center select-none cursor-pointer active:opacity-60 duration-50 transition-all"
+            className="flex w-13 pr-2 pl-2 items-center bg-black/20 justify-center select-none cursor-pointer active:opacity-60 duration-50 transition-all"
           >
             {lightMode === "COLORTEMP" ? <ColorIcon /> : <ColorTempIcon />}
           </button>
@@ -149,7 +112,8 @@ function RoomPage() {
           // onClick={() => handleNextPage()}
           className={`flex p-5 h-full items-center rounded-r-xl bg-black/20 justify-center select-none cursor-pointer active:opacity-60 duration-50 transition-all`}
         >
-          <ChevronRight />
+          {/* TODO activate next prev button so go to next light in room*/}
+          {/* <ChevronRight /> */}
         </div>
       </div>
       {/* Buttons */}
