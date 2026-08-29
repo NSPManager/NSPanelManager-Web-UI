@@ -21,7 +21,7 @@ import ColorIcon from "@/components/ColorIcon";
 import { NSPanelEntityState_Light_LightMode } from "@/generated/src/proto/protobuf_nspanel_entity";
 import { useLightsStore, useUIStore } from "@/stores";
 import { SliderType } from "@/types";
-import { ChevronLeft, ChevronRight, Sun } from "lucide-react";
+import { ChevronLeft, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
 import { TbDropletHalf2Filled } from "react-icons/tb";
 import { useNavigate, useParams } from "react-router-dom";
