@@ -1,4 +1,4 @@
-import { ChevronDown, SlidersVertical, Sun } from "lucide-react";
+import { ChevronDown, SlidersVertical } from "lucide-react";
 import { useConfigStore, useRoomsStore, useUIStore } from "@/stores";
 import {
   CeilingLightIcon,
@@ -10,6 +10,7 @@ import {
 import { LightType, SliderType } from "@/types";
 import { useLongPress } from "@/hooks/useLongPress";
 import { useLongPressLock } from "@/hooks/useLongPressLock";
+import { IoSunny } from "react-icons/io5";
 
 function MainPage() {
   const mainPagemode = useUIStore((state) => state.mainPageMode);
@@ -133,7 +134,9 @@ function MainPage() {
         <div className="flex flex-1 items-center justify-center h-full">
           <SlidersVertical />
         </div>
-        <div className="flex flex-[7] items-center justify-center h-full"></div>
+        <div className="flex flex-[7] items-center justify-end h-full p-5">
+          {/* TODO add time here 14:56 */}
+        </div>
       </div>
       {/* ROW 2 Buttons: ceiling, table, brightness, colortemp */}
       <div
@@ -189,7 +192,7 @@ function MainPage() {
             }
             sliderType={SliderType.BRIGHTNESS}
             orientation={sliderOrientation}
-            icon={<Sun size={"100%"} className="w-full" />}
+            icon={<IoSunny size={"100%"} className="w-full" />}
             resetLockTimeout={activeLockBrightnessSlider?.reset}
             lockLightType={activeLockBrightnessSlider?.type}
           />
