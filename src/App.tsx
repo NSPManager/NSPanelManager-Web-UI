@@ -46,8 +46,18 @@ function App() {
         className="absolute inset-0 z-0 bg-cover bg-center opacity-100"
         style={{
           // backgroundImage: `url('default-bg.jpg')`,
+
+          /* https://grabient.com/_gHGgHIgGEgDGgDCgC7gIRgJ-gIYgYDhJIgrr */
+          /* https://grabient.com/_gUUgL9gfhgULgMwgd5gCfgCqgBhgIMgJtgIs */
+          /* https://grabient.com/_gJ6gAQfpkgJOgK2gg2gFMgDlgBlgH0gMIgOQ */
+          /* https://grabient.com/_gVSgDUgH1gUGgBUgExgBpgH8gDdgHZgIOgJq */
+          /* https://grabient.com/_gAAgHEgHNgAAgFFgKSgBkgF1gBkgAAgIWgLI */
+          /* https://grabient.com/_gLAfRrgLAgEog-WgEogKQgBogKTgIrgObgMb */
+
+          /* https://grabient.com/_gbfgDmgDbgZPgCXgBvgBmgHKgKTgIQgJTgIY */
+          /* https://grabient.com/_gCHf6Ef9wgEqgRNgMfgDegBngBogKegM1gMX */
           background:
-            "linear-gradient(180deg, #673c3c 0.000%, #875355 16.667%, #8d6060 33.333%, #765d56 50.000%, #504c3e 66.667%, #313423 83.333%, #2b1d16 100.000%)",
+            "linear-gradient(to top, #5c7852, #9fa0a8)" /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */,
         }}
       />
       <Outlet />
