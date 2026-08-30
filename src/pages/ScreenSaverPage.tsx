@@ -1,0 +1,30 @@
+import { useDateTime } from "@/components";
+import { NSPanelConfig_NSPanelScreensaverMode } from "@/generated/src/proto/protobuf_nspanel";
+import { useConfigStore } from "@/stores";
+import { useNavigate } from "react-router-dom";
+
+function ScreenSaverPage() {
+  const navigate = useNavigate();
+  const { currentDate, currentTime } = useDateTime();
+  const hasBackground = useConfigStore(
+    (state) =>
+      state.config?.screensaverMode ===
+        NSPanelConfig_NSPanelScreensaverMode.DATETIME_WITH_BACKGROUND ||
+      state.config?.screensaverMode ===
+        NSPanelConfig_NSPanelScreensaverMode.WEATHER_WITH_BACKGROUND,
+  );
+
+  return (
+    <div
+      onPointerDownCapture={() => navigate("/webapp/")}
+      onMouseMoveCapture={() => navigate("/webapp/")}
+      className={`relative z-10 h-full ${hasBackground ? "" : "bg-black"} flex flex-col justify-center items-center`}
+    >
+      <div className="text-8xl">{currentTime}</div>
+
+      <div className="capitalize">{currentDate}</div>
+    </div>
+  );
+}
+
+export default ScreenSaverPage;

@@ -6,6 +6,7 @@ import {
   RoomSelector,
   Slider,
   TableLightIcon,
+  useDateTime,
 } from "@/components";
 import { LightType, SliderType } from "@/types";
 import { useLongPress } from "@/hooks/useLongPress";
@@ -14,6 +15,7 @@ import { IoSunny } from "react-icons/io5";
 
 function MainPage() {
   const mainPagemode = useUIStore((state) => state.mainPageMode);
+  const { currentTime } = useDateTime();
 
   const currentRoomId = useConfigStore((state) => state.currentRoomId);
   const isLoaded = useRoomsStore((state) => state.isLoaded);
@@ -135,7 +137,7 @@ function MainPage() {
           <SlidersVertical />
         </div>
         <div className="flex flex-[7] items-center justify-end h-full p-5">
-          {/* TODO add time here 14:56 */}
+          {currentTime}
         </div>
       </div>
       {/* ROW 2 Buttons: ceiling, table, brightness, colortemp */}

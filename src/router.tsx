@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
-import { LightPage, MainPage, RoomPage } from "./pages";
+import { LightPage, MainPage, RoomPage, ScreenSaverPage } from "./pages";
 
 export const router = createBrowserRouter([
   {
@@ -10,6 +10,7 @@ export const router = createBrowserRouter([
       { index: true, element: <MainPage /> },
       { path: "roompage", element: <RoomPage /> },
       { path: "lightpage/:id", element: <LightPage /> },
+      { path: "screensaver", element: <ScreenSaverPage /> },
     ],
   },
 ]);
