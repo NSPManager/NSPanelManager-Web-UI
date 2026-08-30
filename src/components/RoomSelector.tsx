@@ -85,7 +85,7 @@ function RoomSelector() {
                       }}
                       className={`flex h-full aspect-square rounded-md p-2 items-center justify-center cursor-pointer  border-1 border-white/30 ${
                         isActive
-                          ? "bg-teal-900 hover:bg-teal-800"
+                          ? "bg-[#5c7852] hover:bg-[#5c7852]/90"
                           : "hover:bg-white/10"
                       }`}
                     >
@@ -101,7 +101,7 @@ function RoomSelector() {
                       }}
                       className={`flex h-full aspect-square rounded-md p-2 items-center justify-center cursor-pointer  border-1 border-white/30 ${
                         isActive
-                          ? "bg-teal-900 hover:bg-teal-800"
+                          ? "bg-[#5c7852] hover:bg-[#5c7852]/90"
                           : "hover:bg-white/10"
                       }`}
                     >
