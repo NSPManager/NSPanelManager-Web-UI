@@ -14,10 +14,16 @@ function ScreenSaverPage() {
         NSPanelConfig_NSPanelScreensaverMode.WEATHER_WITH_BACKGROUND,
   );
 
+  function handleWakeUp(e: React.MouseEvent) {
+    e.stopPropagation();
+    e.preventDefault();
+    navigate("/webapp/");
+  }
+
   return (
     <div
-      onPointerDownCapture={() => navigate("/webapp/")}
-      onMouseMoveCapture={() => navigate("/webapp/")}
+      onClick={handleWakeUp}
+      onMouseMove={handleWakeUp}
       className={`relative z-10 h-full ${hasBackground ? "" : "bg-black"} flex flex-col justify-center items-center`}
     >
       <div className="text-8xl">{currentTime}</div>
