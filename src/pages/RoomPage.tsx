@@ -95,7 +95,7 @@ function RoomPage() {
   }
 
   return (
-    <div className="relative z-10 h-full grid grid-rows-[auto_1fr] gap-1 p-2 md:gap-2">
+    <div className="relative z-10 h-full grid grid-rows-[auto_1fr] gap-1 p-1 md:p-2 md:gap-2">
       {/* ROW 1 NAVIGATION AND HEADER TEXT*/}
       <div
         className={`grid grid-cols-[auto_2px_auto_1fr_auto] md:grid-cols-[auto_4px_auto_1fr_auto] rounded-xl ${orientation === "landscape" ? "h-20 max-lg:[@media(min-aspect-ratio:2/1)]:h-10" : "h-20"}`}

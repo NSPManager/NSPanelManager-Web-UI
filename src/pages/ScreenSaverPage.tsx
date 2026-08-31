@@ -1,5 +1,5 @@
-import { useDateTime } from "@/components";
 import { NSPanelConfig_NSPanelScreensaverMode } from "@/generated/src/proto/protobuf_nspanel";
+import { useDateTime } from "@/hooks";
 import { useConfigStore } from "@/stores";
 import { useNavigate } from "react-router-dom";
 

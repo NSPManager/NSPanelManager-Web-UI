@@ -6,12 +6,12 @@ import {
   RoomSelector,
   Slider,
   TableLightIcon,
-  useDateTime,
 } from "@/components";
 import { LightType, SliderType } from "@/types";
 import { useLongPress } from "@/hooks/useLongPress";
 import { useLongPressLock } from "@/hooks/useLongPressLock";
 import { IoSunny } from "react-icons/io5";
+import { useDateTime } from "@/hooks";
 
 function MainPage() {
   const mainPagemode = useUIStore((state) => state.mainPageMode);
@@ -127,7 +127,7 @@ function MainPage() {
       //Setting this onlick in the top div makes all button clicks except ceiling, table, brightness and colortemp clear active ceiling/table lock.
       //e.preventPropagation that is used on the ceiling, table, brightness, colortemp buttons prevent clearalllocks to be called.
       onClick={() => clearAllLocks()}
-      className="relative z-10 grid h-full grid-rows-[auto_1fr_auto] gap-1 p-2 md:gap-2"
+      className="relative z-10 grid h-full grid-rows-[auto_1fr_auto] gap-1 p-1 md:p-2 md:gap-2"
     >
       {/* ROW 1 */}
       <div

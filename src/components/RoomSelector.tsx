@@ -50,10 +50,10 @@ function RoomSelector() {
       <Dialog.Portal>
         <Dialog.Overlay className="z-50 fixed inset-0 backdrop-blur data-[state=open]:animate-overlayShow" />
         <div className="fixed inset-0 z-50 flex items-end justify-center p-2">
-          <Dialog.Title className="m-0 text-[17px] font-medium text-mauve12"></Dialog.Title>
+          <Dialog.Title className="m-0"></Dialog.Title>
           <Dialog.Description />
           <Dialog.Content
-            className={`z-50 no-select ${orientation === "landscape" ? "grid grid-cols-2" : "flex flex-col"} gap-[4px] grow rounded-xl text-white p-4 md:p-8 shadow-[var(--shadow-6)] focus:outline-none data-[state=open]:animate-contentShow`}
+            className={`z-50 no-select ${orientation === "landscape" ? "grid grid-cols-2" : "flex flex-col"} gap-[4px] grow rounded-xl text-white p-1 md:p-4 shadow-[var(--shadow-6)] focus:outline-none data-[state=open]:animate-contentShow`}
           >
             {roomIds.map((id) => {
               // const id = roomIds[index];
@@ -68,11 +68,9 @@ function RoomSelector() {
                   key={id}
                   onClick={() => {
                     setCurrentRoom(String(id));
-                    setTimeout(() => {
-                      setIsOpen(false);
-                    }, 0);
+                    setIsOpen(false);
                   }}
-                  className={`flex h-[50px] md:h-[80px] justify-between items-center p-1 pl-2 md:p-2 md:pl-4 rounded-md transition-all duration-100 transform cursor-pointer ${
+                  className={`flex h-[55px] md:h-[80px] justify-between items-center p-1 pl-2 md:p-2 md:pl-4 rounded-md transition-all duration-100 transform cursor-pointer ${
                     isActive ? "bg-[#ffc101]" : "bg-black/70 hover:bg-black/50"
                   }`}
                 >

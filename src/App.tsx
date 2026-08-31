@@ -31,13 +31,13 @@ function App() {
 
     useConfigStore.getState().setDefaultRoom();
     useUIStore.getState().setMainPageMode("roomLights");
+    useUIStore.setState({ isRoomSelectorOpen: false });
     if (
       screenSaverMode !== NSPanelConfig_NSPanelScreensaverMode.NO_SCREENSAVER
     ) {
       navigate("/webapp/screensaver");
     } else {
       if (currentPath === "/webapp" || currentPath === "/webapp/") {
-        useUIStore.setState({ isRoomSelectorOpen: false });
       } else {
         navigate("/webapp/");
       }
