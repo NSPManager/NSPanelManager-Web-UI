@@ -28,7 +28,13 @@ import {
   useUIStore,
 } from "@/stores";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
+import {
+  BsFillQuestionOctagonFill,
+  BsLightbulbFill,
+  BsToggleOn,
+} from "react-icons/bs";
+
 import { useNavigate } from "react-router-dom";
 
 function RoomPage() {
@@ -62,6 +68,33 @@ function RoomPage() {
     { length: totalEntities },
     (_, index) => index,
   );
+
+  const iconMap: Record<
+    NSPanelRoomEntitiesPage_EntitySlot_EntityType,
+    ReactNode
+  > = {
+    [NSPanelRoomEntitiesPage_EntitySlot_EntityType.ENTITY_TYPE_BUTTON]: (
+      <BsFillQuestionOctagonFill />
+    ),
+    [NSPanelRoomEntitiesPage_EntitySlot_EntityType.ENTITY_TYPE_LIGHT]: (
+      <BsLightbulbFill />
+    ),
+    [NSPanelRoomEntitiesPage_EntitySlot_EntityType.ENTITY_TYPE_SCENE]: (
+      <BsFillQuestionOctagonFill />
+    ),
+    [NSPanelRoomEntitiesPage_EntitySlot_EntityType.ENTITY_TYPE_SWITCH]: (
+      <BsToggleOn />
+    ),
+    [NSPanelRoomEntitiesPage_EntitySlot_EntityType.ENTITY_TYPE_THERMOSTAT]: (
+      <BsFillQuestionOctagonFill />
+    ),
+    [NSPanelRoomEntitiesPage_EntitySlot_EntityType.ENTITY_TYPE_UNSPECIFIED]: (
+      <BsFillQuestionOctagonFill />
+    ),
+    [NSPanelRoomEntitiesPage_EntitySlot_EntityType.UNRECOGNIZED]: (
+      <BsFillQuestionOctagonFill />
+    ),
+  };
 
   useEffect(() => {
     if (useConfigStore.getState().roomChangeDirection === "DIRECT" || "NEXT") {
@@ -137,6 +170,10 @@ function RoomPage() {
         {roomEntities.map((roomEntity) => {
           const entity = roomViewMap.get(roomEntity);
           const isOn = entity?.icon === "s";
+          const entityType = entity?.type;
+
+          const icon = entityType ? iconMap[entityType] : null;
+
           return (
             <div
               key={entity?.id}
@@ -152,9 +189,14 @@ function RoomPage() {
                       : "";
                   }
                 }
-                className={`flex h-full bg-black/20 items-center ${totalEntities !== 4 ? "justify-start rounded-l-xl p-3" : "justify-center rounded-t-xl"} select-none cursor-pointer active:opacity-60 duration-50 transition-all`}
+                className={`relative flex h-full bg-black/20 items-center ${totalEntities !== 4 ? "justify-start rounded-l-xl p-3" : "justify-center rounded-t-xl"} md:text-xl select-none cursor-pointer active:opacity-60 duration-50 transition-all`}
               >
                 {entity?.name}
+                {entity && icon ? (
+                  <div className="absolute top-3 left-3">{icon}</div>
+                ) : (
+                  ""
+                )}
               </button>
               <div
                 className={`grid ${totalEntities !== 4 ? "grid-rows-[1fr_60%_1fr]" : "grid-cols-[1fr_60%_1fr]"} h-full`}

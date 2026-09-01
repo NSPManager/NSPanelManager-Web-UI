@@ -1,8 +1,8 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
+import { useConfigStore } from "./useConfigStore";
 
 interface IdleState {
-  idleTimeoutMs: number;
   timerId: ReturnType<typeof setTimeout> | null;
   lastResetTime: number;
   resetIdleTimer: (onTimeout: () => void) => void;
@@ -11,12 +11,11 @@ interface IdleState {
 export const useIdleStore = create<IdleState>()(
   devtools(
     (set, get) => ({
-      idleTimeoutMs: 10000,
       timerId: null,
       lastResetTime: 0,
 
       resetIdleTimer: (onTimeout) => {
-        const { timerId, idleTimeoutMs, lastResetTime } = get();
+        const { timerId, lastResetTime } = get();
         const now = Date.now();
         if (timerId && now - lastResetTime < 500) {
           return;
@@ -25,6 +24,9 @@ export const useIdleStore = create<IdleState>()(
         if (timerId) {
           clearTimeout(timerId);
         }
+        const idleTimeoutMs =
+          useConfigStore.getState().config?.screensaverActivationTimeout ??
+          60000;
         const newTimer = setTimeout(() => {
           onTimeout();
         }, idleTimeoutMs);

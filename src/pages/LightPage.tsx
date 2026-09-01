@@ -21,8 +21,9 @@ import ColorIcon from "@/components/ColorIcon";
 import { NSPanelEntityState_Light_LightMode } from "@/generated/src/proto/protobuf_nspanel_entity";
 import { useLightsStore, useUIStore } from "@/stores";
 import { SliderType } from "@/types";
-import { ChevronLeft, Sun } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { useEffect, useState } from "react";
+import { IoSunny } from "react-icons/io5";
 import { TbDropletHalf2Filled } from "react-icons/tb";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -128,7 +129,7 @@ function RoomPage() {
             value={light.light?.brightness ?? 0}
             orientation={sliderOrientation}
             sliderType={SliderType.BRIGHTNESS}
-            icon={<Sun size={"100%"} className="w-full" />}
+            icon={<IoSunny size={"100%"} className="w-full" />}
             lightId={lightId}
           />
         </div>

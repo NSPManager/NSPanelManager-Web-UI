@@ -33,7 +33,8 @@ function App() {
     useUIStore.getState().setMainPageMode("roomLights");
     useUIStore.setState({ isRoomSelectorOpen: false });
     if (
-      screenSaverMode !== NSPanelConfig_NSPanelScreensaverMode.NO_SCREENSAVER
+      screenSaverMode !== NSPanelConfig_NSPanelScreensaverMode.NO_SCREENSAVER &&
+      useConfigStore.getState().config?.screensaverActivationTimeout !== 0
     ) {
       navigate("/webapp/screensaver");
     } else {
