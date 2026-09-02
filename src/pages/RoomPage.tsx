@@ -77,13 +77,13 @@ function RoomPage() {
       <BsFillQuestionOctagonFill />
     ),
     [NSPanelRoomEntitiesPage_EntitySlot_EntityType.ENTITY_TYPE_LIGHT]: (
-      <BsLightbulbFill />
+      <BsLightbulbFill size={22} />
     ),
     [NSPanelRoomEntitiesPage_EntitySlot_EntityType.ENTITY_TYPE_SCENE]: (
       <BsFillQuestionOctagonFill />
     ),
     [NSPanelRoomEntitiesPage_EntitySlot_EntityType.ENTITY_TYPE_SWITCH]: (
-      <BsToggleOn />
+      <BsToggleOn size={22} />
     ),
     [NSPanelRoomEntitiesPage_EntitySlot_EntityType.ENTITY_TYPE_THERMOSTAT]: (
       <BsFillQuestionOctagonFill />
@@ -218,10 +218,10 @@ function RoomPage() {
               >
                 {entity ? (
                   <div
-                    className={`relative inline-flex h-7 w-12 rounded-full ${isOn ? "bg-[#ffc101] justify-end" : "bg-white/40 justify-start"}  p-1 transition-colors duration-200 ease-in-out select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400`}
+                    className={`relative inline-flex h-6 w-10 md:h-7 md:w-12 rounded-full ${isOn ? "bg-[#ffc101] justify-end" : "bg-white/40 justify-start"}  p-1 transition-colors duration-200 ease-in-out select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400`}
                   >
                     <span
-                      className={`h-5 w-5 inline-block rounded-full bg-white shadow-md transform transition-transform duration-200 ease-in-out`}
+                      className={`h-4 w-4 md:h-5 md:w-5 inline-block rounded-full bg-white shadow-md transform transition-transform duration-200 ease-in-out`}
                     ></span>
                   </div>
                 ) : (

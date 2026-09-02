@@ -42,9 +42,10 @@ function RoomSelector() {
       <button
         {...roomButtonHandlers}
         disabled={mainPagemode !== "roomLights"}
-        className="no-select text-md flex justify-center items-center w-full h-full cursor-pointer"
+        className="relative no-select text-md flex flex-col items-center justify-center w-full h-full cursor-pointer"
       >
-        {mainPagemode === "roomLights" ? currentRoomName : "All"}
+        <div className="text-white/30">Room</div>
+        <div>{mainPagemode === "roomLights" ? currentRoomName : "All"}</div>
       </button>
       {/* </Dialog.Trigger> */}
       <Dialog.Portal>

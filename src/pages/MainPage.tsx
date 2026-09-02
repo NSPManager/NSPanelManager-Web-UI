@@ -136,7 +136,7 @@ function MainPage() {
         <div className="flex flex-1 items-center justify-center h-full">
           <SlidersVertical />
         </div>
-        <div className="flex flex-[7] items-center justify-end h-full p-5">
+        <div className="flex flex-[7] items-center justify-end h-full p-5 text-lg md:text-xl">
           {currentTime}
         </div>
       </div>
@@ -248,11 +248,12 @@ function MainPage() {
           </div>
           <button
             onClick={() => toggleMainPageMode()}
-            className={`relative flex items-center justify-center cursor-pointer ${cardStyles} active:opacity-60 duration-50 transition-all`}
+            className={`relative flex flex-col items-center justify-center w-full h-full cursor-pointer ${cardStyles} active:opacity-60 duration-50 transition-all`}
           >
             <div className="absolute left-0 top-0 bottom-0 w-[25%] flex items-center justify-center">
               <ChevronDown />
             </div>
+            <div className="text-white/30">Mode</div>
             <span className="no-select text-md flex justify-center cursor-pointer">
               {mainPagemode === "roomLights" ? "Room Lights" : "All Lights"}
             </span>
