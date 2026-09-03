@@ -51,8 +51,6 @@ function RoomPage() {
       );
     }
   }, [light?.light?.currentLightMode]);
-  console.log(lightMode);
-  console.log(light?.light?.currentLightMode);
 
   const cardStyles = "rounded-xl bg-black/20";
 

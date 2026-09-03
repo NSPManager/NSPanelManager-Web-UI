@@ -1,21 +1,3 @@
-//Need to update roomsStore: change setCurrenRoom to only take care of id and add prevRoom and nextRoom as separate functions
-// -- DONE
-//Should use storedata currentroom to display data
-//With currentroom its possible to get entity pages data and entities for each page.
-//It should be possible to press prev/next to get to next entity page.
-//if last entitypage current room should next room and the same if going backwards and youre on the first entitypage
-//When exiting and going back to main page currentroom should be set to default again
-//It should be possible to swipe
-//Cool if swipe animation is implemented
-
-//varje sida har en entity pages array ex: [2,3,6] id över resp page
-//den behöver hämtas när sidan laddas sätts entityIndex till 0 dvs data för första sidan visas.
-//Sedan ändrar vi index för att byta sida. den logiken tar vi sen.
-//kolla entity page type 4/8/12
-//skapa new map över entities som finns. 1: bord 3: tak osv
-//skapa ny array med length = page type 4/8/12
-//mappa över denna för varje kolla map:en och skriv ut entiteten om den finns annars lämna tomt.
-
 import {
   NSPanelRoomEntitiesPage_EntitySlot,
   NSPanelRoomEntitiesPage_EntitySlot_EntityType,
@@ -193,7 +175,9 @@ function RoomPage() {
               >
                 {entity?.name}
                 {entity && icon ? (
-                  <div className="absolute top-3 left-3">{icon}</div>
+                  <div className="absolute top-2 left-2 md:top-3 md:left-3">
+                    {icon}
+                  </div>
                 ) : (
                   ""
                 )}

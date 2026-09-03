@@ -3,6 +3,7 @@ import { useConfigStore, useRoomsStore, useUIStore } from "@/stores";
 import {
   CeilingLightIcon,
   ColorTempIcon,
+  LoadingAnimation,
   RoomSelector,
   Slider,
   TableLightIcon,
@@ -87,8 +88,13 @@ function MainPage() {
   //Todo move this if statment down!
   if (!isLoaded || !room) {
     return (
-      <div className="relative z-10 flex h-full items-center justify-center">
-        Waiting for config from manager...
+      <div className={`relative z-10 h-full flex justify-center items-center`}>
+        <div className="relative flex w-[80%] max-w-[455px] md:w-[40%] bg-black rounded-xl border text-white/60 shadow-lg justify-center p-1">
+          <LoadingAnimation />
+          <span className="absolute bottom-5 text-white text-xs md:text-sm">
+            Waiting for config from manager...
+          </span>
+        </div>
       </div>
     );
   }
