@@ -6,6 +6,7 @@ import {
   NSPanelRoomEntitiesPage,
   NSPanelRoomStatus,
   NSPanelStatusReport,
+  NSPanelWeatherUpdate,
 } from "@/generated/src/proto/protobuf_nspanel";
 
 import { NSPanelEntityState } from "@/generated/src/proto/protobuf_nspanel_entity";
@@ -16,6 +17,7 @@ const messageRegistry = {
   NSPanelRoomEntitiesPage,
   NSPanelRoomStatus,
   NSPanelStatusReport,
+  NSPanelWeatherUpdate,
 };
 
 export type protoMessage = keyof typeof messageRegistry;

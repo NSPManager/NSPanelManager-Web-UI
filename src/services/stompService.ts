@@ -19,8 +19,10 @@ import {
   NSPanelRoomEntitiesPage,
   NSPanelRoomEntitiesPage_EntitySlot_EntityType,
   NSPanelRoomStatus,
+  NSPanelWeatherUpdate,
 } from "@/generated/src/proto/protobuf_nspanel";
 import type { NSPanelEntityState } from "@/generated/src/proto/protobuf_nspanel_entity";
+import { useWeatherStore } from "@/stores/useWeatherStore";
 
 //This variable gets an address when we receive register accept from manager
 let MANAGER_ADDRESS = import.meta.env.DEV ? "192.168.32.201" : "";
@@ -32,6 +34,7 @@ type ManagerCommandPayload = Omit<NSPanelMQTTManagerCommand, "nspanelId">;
 type SubLevel =
   | "registerAccept"
   | "config"
+  | "weather"
   | "globalRoom"
   | "rooms"
   | "entityPages"
@@ -41,6 +44,7 @@ type SubLevel =
 const subscriptions: Record<SubLevel, Record<string, StompSubscription>> = {
   registerAccept: {},
   config: {},
+  weather: {},
   globalRoom: {},
   rooms: {},
   entityPages: {},
@@ -187,12 +191,14 @@ export const stompService = {
 
   newConfigCleanUp: () => {
     //Every time new config arrives remove all dependant subscriptions and reset stores
+    stompService.cleanup("weather");
     stompService.cleanup("globalRoom");
     stompService.cleanup("rooms");
     stompService.cleanup("entityPages");
     stompService.cleanup("lights");
     stompService.cleanup("scenePages");
 
+    useWeatherStore.getState().resetWeather();
     useRoomsStore.getState().resetRooms();
     useEntityPagesStore.getState().resetEntityPages();
     useLightsStore.getState().resetLights();
@@ -219,7 +225,7 @@ export const stompService = {
 
             //Parse the plain text into a JS object
             const registerAccept = JSON.parse(decodedString);
-            // console.log("Register accept message:", registerAccept);
+            console.log("Register accept message:", registerAccept);
             console.log(
               `Setting manager address to: ${registerAccept.address}`,
             );
@@ -251,8 +257,9 @@ export const stompService = {
         useConfigStore.getState().setConfig(configData);
 
         console.log(
-          "Starting subscriptions to global room, rooms, entityPages and ScenePages",
+          "Starting subscriptions to weather, global room, rooms, entityPages and ScenePages",
         );
+        stompService.subscribeToWeather();
         stompService.subscribeToGlobalRoom();
         //Loop through roomInfo object containing entityPages, scenesPages and room ids to start subscriptions
         for (const room of configData.roomInfos) {
@@ -274,6 +281,28 @@ export const stompService = {
       }
     });
     subscriptions.config["main"] = sub;
+  },
+
+  subscribeToWeather: () => {
+    if (!client?.connected || subscriptions.weather["main"])
+      return console.log(
+        "Client not connected or weather subscription exists since before.",
+      );
+
+    const sub = client.subscribe(
+      `mqtt/nspanel/mqttmanager_${MANAGER_ADDRESS}/status/weather`,
+      (message) => {
+        const weather = convertProtbuf<NSPanelWeatherUpdate>(
+          message,
+          "NSPanelWeatherUpdate",
+        );
+        if (weather) {
+          useWeatherStore.getState().setWeather(weather);
+          // useRoomsStore.getState().setGlobalRoom(weather);
+        }
+      },
+    );
+    subscriptions.weather["main"] = sub;
   },
 
   subscribeToGlobalRoom: () => {
