@@ -22,7 +22,7 @@ function useDateTime() {
   });
 
   const currentDate = time.toLocaleDateString([], {
-    weekday: "long",
+    weekday: "short",
     year: "numeric",
     month: "numeric",
     day: "numeric",
