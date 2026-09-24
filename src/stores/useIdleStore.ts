@@ -24,6 +24,7 @@ export const useIdleStore = create<IdleState>()(
         if (timerId) {
           clearTimeout(timerId);
         }
+
         const idleTimeoutMs =
           useConfigStore.getState().config?.screensaverActivationTimeout ??
           60000;

@@ -12,17 +12,26 @@ function App() {
     (state) => state.config?.screensaverMode,
   );
 
+  const screensaverActivationTimeout = useConfigStore(
+    (state) => state.config?.screensaverActivationTimeout,
+  );
   const resetIdleTimer = useIdleStore.getState().resetIdleTimer;
 
   useEffect(() => {
     stompService.init();
-    resetIdleTimer(handleIdleTimeout);
+    // resetIdleTimer(handleIdleTimeout);
 
     return () => {
       console.log("Cleaning up");
       stompService.cleanup(); // Total cleanup on unmount
     };
   }, []);
+
+  useEffect(() => {
+    if (screensaverActivationTimeout) {
+      resetIdleTimer(handleIdleTimeout);
+    }
+  }, [screensaverActivationTimeout]);
 
   useScreenOrientation();
 

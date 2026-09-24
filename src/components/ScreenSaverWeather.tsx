@@ -1,6 +1,7 @@
 import { useDateTime } from "@/hooks";
 import { useUIStore } from "@/stores";
 import { useWeatherStore } from "@/stores/useWeatherStore";
+import DynamicWeatherIcon from "@/icons/DynamicWeatherIcon";
 
 function ScreenSaverWeather() {
   const { currentDate, currentTime } = useDateTime();
@@ -11,6 +12,34 @@ function ScreenSaverWeather() {
   const weather = useWeatherStore((state) => state.weather);
 
   const orientation = useUIStore((state) => state.orientation);
+
+  const weatherIconMap: Record<string, string> = {
+    A: "clear-day",
+    B: "clear-night",
+    C: "partly-cloudy-day",
+    D: "partly-cloudy-night",
+    E: "haze",
+    F: "cloudy",
+    G: "fog",
+    H: "hail",
+    I: "rain",
+    J: "drizzle",
+    K: "partly-cloudy-day-rain",
+    L: "snow",
+    M: "overcast-snow",
+    N: "sleet",
+    O: "partly-cloudy-day-snow",
+    P: "partly-cloudy-day-sleet",
+    Q: "thunderstorms",
+    R: "thunderstorms-rain",
+    S: "thunderstorms-day",
+    T: "wind",
+    U: "extreme",
+    V: "extreme-day",
+    W: "umbrella",
+    X: "sunset",
+    Y: "sunrise",
+  };
 
   if (!weather) {
     return (
@@ -62,11 +91,15 @@ function ScreenSaverWeather() {
 
         {orientation === "landscape" ? (
           <>
-            <div className="flex items-center md:pt-10">
-              <div className="flex font-nspm text-9xl md:text-[200px]">
-                {weather.currentWeatherIcon}
+            <div className="flex w-full h-full items-center">
+              <div className="flex flex-1">
+                {/* {weatherIconMap[weather.currentWeatherIcon]} */}
+                <DynamicWeatherIcon
+                  slug={weatherIconMap[weather.currentWeatherIcon]}
+                  size={"100%"}
+                />
               </div>
-              <div className="flex flex-col items-center">
+              <div className="flex flex-col flex-1 items-center">
                 <div className="flex text-6xl md:text-8xl">
                   {weather.currentTemperatureString}
                 </div>
@@ -92,7 +125,10 @@ function ScreenSaverWeather() {
             {/* First column weather icon and temp */}
             <div className="flex items-center">
               <div className="flex font-nspm text-9xl md:text-[200px]">
-                {weather.currentWeatherIcon}
+                <DynamicWeatherIcon
+                  slug={weatherIconMap[weather.currentWeatherIcon]}
+                  size={"100%"}
+                />
               </div>
               <div className="flex flex-col items-center">
                 <div className="flex text-6xl md:text-8xl">
@@ -130,7 +166,10 @@ function ScreenSaverWeather() {
             <div className="flex font-nspm text-2xl justify-center">T</div>
           </div>
           {weather.forecastItems.map((day) => (
-            <div className="grid grid-rows-5 items-center justify-center text">
+            <div
+              key={day.displayString}
+              className="grid grid-rows-5 items-center justify-center text"
+            >
               <div className="flex justify-center">{day.displayString}</div>
               <div className="flex justify-center font-nspm text-2xl">
                 {day.weatherIcon}
