@@ -2,6 +2,16 @@ import { useDateTime } from "@/hooks";
 import { useUIStore } from "@/stores";
 import { useWeatherStore } from "@/stores/useWeatherStore";
 import DynamicWeatherIcon from "@/icons/DynamicWeatherIcon";
+import { Icon } from "@mdi/react";
+import {
+  mdiHomeThermometerOutline,
+  mdiThermometer,
+  mdiUmbrellaOutline,
+  mdiWeatherCloudyAlert,
+  mdiWeatherSunsetDown,
+  mdiWeatherSunsetUp,
+  mdiWeatherWindy,
+} from "@mdi/js";
 
 function ScreenSaverWeather() {
   const { currentDate, currentTime } = useDateTime();
@@ -44,8 +54,8 @@ function ScreenSaverWeather() {
   if (!weather) {
     return (
       <div className="flex flex-col w-full h-full justify-center items-center">
-        <div className="font-nspm text-7xl">U</div>
-        <div>Could net get weather...</div>
+        <Icon path={mdiWeatherCloudyAlert} size={"100px"} />
+        <div>Could not get weather...</div>
       </div>
     );
   }
@@ -59,7 +69,10 @@ function ScreenSaverWeather() {
         {/* First row TEMP and DATE */}
         <div className="flex justify-between">
           <div className="flex">
-            <div className="flex font-nspm text-3xl items-center">i</div>
+            <div className="flex items-center">
+              <Icon path={mdiHomeThermometerOutline} size={"30px"} />
+            </div>
+
             <div className="flex items-center">
               {weather.currentTemperatureString}
             </div>
@@ -76,11 +89,11 @@ function ScreenSaverWeather() {
         {/* Third row SUNRISE SUNSET */}
         <div className="flex w-full">
           <div className="flex flex-1 items-center justify-center">
-            <span className="font-nspm text-3xl">Y</span>
+            <Icon path={mdiWeatherSunsetUp} size={"30px"} />
             <span className="">{weather.sunriseString}</span>
           </div>
           <div className="flex flex-1 items-center justify-center">
-            <span className="font-nspm text-3xl">X</span>
+            <Icon path={mdiWeatherSunsetDown} size={"30px"} />
             <span className="">{weather.sunsetString}</span>
           </div>
         </div>
@@ -93,9 +106,9 @@ function ScreenSaverWeather() {
           <>
             <div className="flex w-full h-full items-center">
               <div className="flex flex-1">
-                {/* {weatherIconMap[weather.currentWeatherIcon]} */}
                 <DynamicWeatherIcon
                   slug={weatherIconMap[weather.currentWeatherIcon]}
+                  autoplay
                   size={"100%"}
                 />
               </div>
@@ -111,11 +124,11 @@ function ScreenSaverWeather() {
             {/* Second row precipitation and wind */}
             <div className="flex w-full">
               <div className="flex flex-1 items-center justify-center">
-                <div className="font-nspm text-3xl">W</div>
+                <Icon path={mdiUmbrellaOutline} size={"30px"} />
                 <div className="">{weather.currentPrecipitationString}</div>
               </div>
               <div className="flex flex-1 items-center justify-center">
-                <div className="font-nspm text-3xl ">T</div>
+                <Icon path={mdiWeatherWindy} size={"30px"} />
                 <div className="">{weather.currentWindString}</div>
               </div>
             </div>
@@ -128,6 +141,7 @@ function ScreenSaverWeather() {
                 <DynamicWeatherIcon
                   slug={weatherIconMap[weather.currentWeatherIcon]}
                   size={"100%"}
+                  autoplay={true}
                 />
               </div>
               <div className="flex flex-col items-center">
@@ -158,21 +172,25 @@ function ScreenSaverWeather() {
         className={`grid ${orientation === "landscape" ? "col-span-2" : ""} rounded-xl bg-black/20 border border-gray-500/20 shadow-md`}
       >
         <div className="grid grid-cols-[min-content_repeat(5,minmax(0,1fr))] p-2">
-          <div className="grid grid-rows-5 justify-center items-center">
+          <div className="grid grid-rows-[1fr_50px_1fr_1fr_1fr] justify-center items-center">
             <div></div>
             <div></div>
-            <div className="flex font-nspm text-2xl justify-center">j</div>
-            <div className="flex font-nspm text-2xl justify-center">W</div>
-            <div className="flex font-nspm text-2xl justify-center">T</div>
+            <Icon path={mdiThermometer} size={"24px"} />
+            <Icon path={mdiUmbrellaOutline} size={"24px"} />
+            <Icon path={mdiWeatherWindy} size={"24px"} />
           </div>
           {weather.forecastItems.map((day) => (
             <div
               key={day.displayString}
-              className="grid grid-rows-5 items-center justify-center text"
+              className="grid grid-rows-[1fr_50px_1fr_1fr_1fr] items-center justify-center"
             >
               <div className="flex justify-center">{day.displayString}</div>
-              <div className="flex justify-center font-nspm text-2xl">
-                {day.weatherIcon}
+              <div className="flex justify-center">
+                <DynamicWeatherIcon
+                  slug={weatherIconMap[day.weatherIcon]}
+                  size={"70px"}
+                  autoplay={false}
+                />
               </div>
               <div className="flex justify-center">
                 {day.temperatureMaxminString}
