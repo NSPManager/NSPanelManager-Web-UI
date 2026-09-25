@@ -36,6 +36,7 @@ function App() {
 
   useEffect(() => {
     if (redirectTo) {
+      console.log("redirecting to", redirectTo);
       navigate(redirectTo);
       setRedirectTo(null);
     }

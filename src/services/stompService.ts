@@ -121,7 +121,7 @@ export const stompService = {
         stompService.cleanup();
         stompService.cleanUpTimers();
         //TODO feels like this can be done better. Quick solution to make it work for release.
-        useConfigStore.setState({ config: null });
+        useConfigStore.setState({ config: null, isLoaded: false });
         useUIStore.setState({ redirectTo: "/webapp/" });
       },
       onStompError: (frame) => {
