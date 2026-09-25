@@ -120,6 +120,7 @@ export const stompService = {
       onWebSocketClose: () => {
         stompService.cleanup();
         stompService.cleanUpTimers();
+        useRoomsStore.setState({ isLoaded: false });
       },
       onStompError: (frame) => {
         console.error("Broker reported error: " + frame.headers["message"]);

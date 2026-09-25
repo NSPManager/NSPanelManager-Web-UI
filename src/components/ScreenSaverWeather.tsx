@@ -104,15 +104,15 @@ function ScreenSaverWeather() {
 
         {orientation === "landscape" ? (
           <>
-            <div className="flex w-full h-full items-center">
-              <div className="flex flex-1">
+            <div className="flex h-full w-full justify-center overflow-hidden">
+              <div className="flex flex-1 items-center justify-center">
                 <DynamicWeatherIcon
                   slug={weatherIconMap[weather.currentWeatherIcon]}
                   autoplay
                   size={"100%"}
                 />
               </div>
-              <div className="flex flex-col flex-1 items-center">
+              <div className="flex flex-col flex-1 items-center justify-center">
                 <div className="flex text-6xl md:text-8xl">
                   {weather.currentTemperatureString}
                 </div>
@@ -137,7 +137,7 @@ function ScreenSaverWeather() {
           <div className="flex h-full w-full items-center justify-center gap-6">
             {/* First column weather icon and temp */}
             <div className="flex items-center">
-              <div className="flex font-nspm text-9xl md:text-[200px]">
+              <div className="flex">
                 <DynamicWeatherIcon
                   slug={weatherIconMap[weather.currentWeatherIcon]}
                   size={"100%"}
@@ -156,11 +156,11 @@ function ScreenSaverWeather() {
             {/* Second column precipitation and wind */}
             <div className="flex flex-col items-start">
               <div className="flex flex-1 items-center justify-center">
-                <div className="font-nspm text-3xl">W</div>
+                <Icon path={mdiUmbrellaOutline} size={"30px"} />
                 <div className="">{weather.currentPrecipitationString}</div>
               </div>
               <div className="flex flex-1 items-center justify-center">
-                <div className="font-nspm text-3xl ">T</div>
+                <Icon path={mdiWeatherWindy} size={"30px"} />
                 <div className="">{weather.currentWindString}</div>
               </div>
             </div>
@@ -175,9 +175,9 @@ function ScreenSaverWeather() {
           <div className="grid grid-rows-[1fr_50px_1fr_1fr_1fr] justify-center items-center">
             <div></div>
             <div></div>
-            <Icon path={mdiThermometer} size={"24px"} />
-            <Icon path={mdiUmbrellaOutline} size={"24px"} />
-            <Icon path={mdiWeatherWindy} size={"24px"} />
+            <Icon path={mdiThermometer} size={"20px"} />
+            <Icon path={mdiUmbrellaOutline} size={"20px"} />
+            <Icon path={mdiWeatherWindy} size={"20px"} />
           </div>
           {weather.forecastItems.map((day) => (
             <div

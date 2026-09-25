@@ -44,7 +44,7 @@ function DynamicWeatherIcon({
   }, [autoplay]);
 
   if (!animationData) {
-    return <div style={{ width: size, height: size }} />;
+    return <div style={{ width: size }} />;
   }
 
   return (
