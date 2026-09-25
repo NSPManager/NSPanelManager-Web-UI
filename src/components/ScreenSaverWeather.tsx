@@ -1,7 +1,6 @@
 import { useDateTime } from "@/hooks";
 import { useUIStore } from "@/stores";
 import { useWeatherStore } from "@/stores/useWeatherStore";
-import DynamicWeatherIcon from "@/icons/DynamicWeatherIcon";
 import { Icon } from "@mdi/react";
 import {
   mdiHomeThermometerOutline,
@@ -12,6 +11,7 @@ import {
   mdiWeatherSunsetUp,
   mdiWeatherWindy,
 } from "@mdi/js";
+import { DynamicWeatherIcon } from "@/icons";
 
 function ScreenSaverWeather() {
   const { currentDate, currentTime } = useDateTime();

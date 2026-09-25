@@ -120,7 +120,9 @@ export const stompService = {
       onWebSocketClose: () => {
         stompService.cleanup();
         stompService.cleanUpTimers();
-        useRoomsStore.setState({ isLoaded: false });
+        //TODO feels like this can be done better. Quick solution to make it work for release.
+        useConfigStore.setState({ config: null });
+        useUIStore.setState({ redirectTo: "/webapp/" });
       },
       onStompError: (frame) => {
         console.error("Broker reported error: " + frame.headers["message"]);

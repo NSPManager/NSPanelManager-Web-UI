@@ -5,9 +5,11 @@ type MainPageMode = "roomLights" | "allLights";
 type Orientation = "landscape" | "portrait";
 
 interface UIState {
+  redirectTo: string | null;
   mainPageMode: MainPageMode;
   orientation: Orientation;
   isRoomSelectorOpen: boolean;
+  setRedirectTo: (path: string | null) => void;
   toggleMainPageMode: () => void;
   setMainPageMode: (mode: MainPageMode) => void;
   resetMainPagemode: () => void;
@@ -18,9 +20,13 @@ interface UIState {
 export const useUIStore = create<UIState>()(
   devtools(
     (set, get) => ({
+      redirectTo: null,
       mainPageMode: "roomLights",
       orientation: "landscape",
       isRoomSelectorOpen: false,
+      setRedirectTo: (path) => {
+        set({ redirectTo: path });
+      },
       toggleMainPageMode: () => {
         get().mainPageMode === "roomLights"
           ? set({ mainPageMode: "allLights" })

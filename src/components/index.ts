@@ -6,3 +6,4 @@ export { default as RoomSelector } from "./RoomSelector";
 export { default as LoadingAnimation } from "./LoadingAnimation";
 export { default as ScreenSaverSimple } from "./ScreenSaverSimple";
 export { default as ScreenSaverWeather } from "./ScreenSaverWeather";
+export { default as RoomSelectorList } from "./RoomSelectorList";

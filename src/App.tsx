@@ -8,6 +8,7 @@ import { NSPanelConfig_NSPanelScreensaverMode } from "./generated/src/proto/prot
 
 function App() {
   const navigate = useNavigate();
+  const { redirectTo, setRedirectTo } = useUIStore();
   const screenSaverMode = useConfigStore(
     (state) => state.config?.screensaverMode,
   );
@@ -32,6 +33,13 @@ function App() {
       resetIdleTimer(handleIdleTimeout);
     }
   }, [screensaverActivationTimeout]);
+
+  useEffect(() => {
+    if (redirectTo) {
+      navigate(redirectTo);
+      setRedirectTo(null);
+    }
+  }, [redirectTo]);
 
   useScreenOrientation();
 
