@@ -21,6 +21,7 @@ function RoomSelector() {
     onLongPress: () => {
       setIsOpen(true);
     },
+    disabled: mainPagemode !== "roomLights",
   });
 
   return (

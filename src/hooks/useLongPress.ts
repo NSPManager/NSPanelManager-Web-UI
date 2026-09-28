@@ -4,12 +4,14 @@ interface useLongPressConfig {
   onShortPress(): void;
   onLongPress(): void;
   delay?: number;
+  disabled?: boolean;
 }
 
 export function useLongPress({
   onShortPress,
   onLongPress,
   delay = 200,
+  disabled = false,
 }: useLongPressConfig) {
   useEffect(() => {
     return () => {
@@ -33,6 +35,7 @@ export function useLongPress({
   // const longPressTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   function startPress(e: React.MouseEvent | React.TouchEvent) {
+    if (disabled) return;
     if (isFromInteractiveChild(e)) return;
     if (e && e.type === "touchstart") {
       e.preventDefault();
@@ -44,6 +47,7 @@ export function useLongPress({
   }
 
   function endPress(e?: React.MouseEvent | React.TouchEvent) {
+    if (disabled) return;
     if (e && isFromInteractiveChild(e)) return;
     if (e && e.type === "touchend") {
       e.preventDefault();
