@@ -69,13 +69,15 @@ function ScreenSaverWeather() {
         {/* First row TEMP and DATE */}
         <div className="flex justify-between">
           <div className="flex">
-            <div className="flex items-center">
+            {/* //TODO find out how to get the chosen room temp sensor for the
+            specific room the panel is in. */}
+            {/* <div className="flex items-center">
               <Icon path={mdiHomeThermometerOutline} size={"30px"} />
             </div>
 
             <div className="flex items-center">
               {weather.currentTemperatureString}
-            </div>
+            </div> */}
           </div>
 
           <div className="flex items-center capitalize">
