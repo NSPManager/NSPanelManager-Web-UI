@@ -9,7 +9,9 @@ interface UIState {
   mainPageMode: MainPageMode;
   orientation: Orientation;
   isRoomSelectorOpen: boolean;
+  pointerEventsLocked: boolean;
   setRedirectTo: (path: string | null) => void;
+  lockPointerEvents: () => void;
   toggleMainPageMode: () => void;
   setMainPageMode: (mode: MainPageMode) => void;
   resetMainPagemode: () => void;
@@ -24,8 +26,13 @@ export const useUIStore = create<UIState>()(
       mainPageMode: "roomLights",
       orientation: "landscape",
       isRoomSelectorOpen: false,
+      stopPointerEvents: false, //Used together with long press before navigating to a new page to avoid ghost clicks when the new page renders
       setRedirectTo: (path) => {
         set({ redirectTo: path });
+      },
+      lockPointerEvents: () => {
+        set({ pointerEventsLocked: true });
+        setTimeout(() => set({ pointerEventsLocked: false }), 300);
       },
       toggleMainPageMode: () => {
         get().mainPageMode === "roomLights"

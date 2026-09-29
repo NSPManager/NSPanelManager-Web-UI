@@ -9,6 +9,7 @@ import TableLightIcon from "./TableLightIcon";
 function RoomSelectorList() {
   const navigate = useNavigate();
   const setIsOpen = useUIStore((state) => state.setIsRoomSelectorOpen);
+  const lockPointerEvents = useUIStore((state) => state.lockPointerEvents);
 
   // 1. Grab the reactive rooms map directly
   const rooms = useRoomsStore((state) => state.rooms);
@@ -41,6 +42,7 @@ function RoomSelectorList() {
           onLongPress: () => {
             setCurrentRoom(String(id));
             setIsOpen(false);
+            lockPointerEvents();
             navigate("/webapp/roompage");
           },
         });

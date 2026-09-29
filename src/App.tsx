@@ -8,7 +8,7 @@ import { NSPanelConfig_NSPanelScreensaverMode } from "./generated/src/proto/prot
 
 function App() {
   const navigate = useNavigate();
-  const { redirectTo, setRedirectTo } = useUIStore();
+  const { pointerEventsLocked, redirectTo, setRedirectTo } = useUIStore();
   const screenSaverMode = useConfigStore(
     (state) => state.config?.screensaverMode,
   );
@@ -67,8 +67,11 @@ function App() {
     <div
       onPointerDownCapture={() => resetIdleTimer(handleIdleTimeout)}
       onPointerMoveCapture={() => resetIdleTimer(handleIdleTimeout)}
-      className="relative h-[100dvh] w-full overflow-hidden bg-black text-white"
+      className={`relative h-[100dvh] w-full overflow-hidden bg-black text-white`}
     >
+      {pointerEventsLocked && (
+        <div className="fixed inset-0 z-[9999]" aria-hidden="true" />
+      )}
       {/*Background Layer*/}
       <div
         className="absolute inset-0 z-0 bg-cover bg-center opacity-100"
