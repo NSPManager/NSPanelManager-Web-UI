@@ -3,7 +3,7 @@ import { useUIStore } from "@/stores";
 import { useWeatherStore } from "@/stores/useWeatherStore";
 import { Icon } from "@mdi/react";
 import {
-  mdiHomeThermometerOutline,
+  // mdiHomeThermometerOutline,
   mdiThermometer,
   mdiUmbrellaOutline,
   mdiWeatherCloudyAlert,
