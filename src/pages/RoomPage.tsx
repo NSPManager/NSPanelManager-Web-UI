@@ -10,7 +10,7 @@ import {
   useUIStore,
 } from "@/stores";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import {
   BsFillQuestionOctagonFill,
   BsLightbulbFill,
@@ -18,6 +18,8 @@ import {
 } from "react-icons/bs";
 
 import { useNavigate } from "react-router-dom";
+import MainPage from "./MainPage";
+import { animate, motion, useMotionValue, type PanInfo } from "framer-motion";
 
 function RoomPage() {
   const navigate = useNavigate();
@@ -110,7 +112,7 @@ function RoomPage() {
   }
 
   return (
-    <div className="relative z-10 h-full grid grid-rows-[auto_1fr] gap-1 p-1 md:p-2 md:gap-2">
+    <div className="absolute inset-0 bg-green-500 h-full grid grid-rows-[auto_1fr] gap-1 p-1 md:p-2 md:gap-2">
       {/* ROW 1 NAVIGATION AND HEADER TEXT*/}
       <div
         className={`grid grid-cols-[auto_2px_auto_1fr_auto] md:grid-cols-[auto_4px_auto_1fr_auto] rounded-xl ${orientation === "landscape" ? "h-20 max-lg:[@media(min-aspect-ratio:2/1)]:h-10" : "h-20"}`}

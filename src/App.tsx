@@ -5,6 +5,7 @@ import { useScreenOrientation } from "./hooks";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useConfigStore, useIdleStore, useUIStore } from "./stores";
 import { NSPanelConfig_NSPanelScreensaverMode } from "./generated/src/proto/protobuf_nspanel";
+import SwipeStack from "./components/SwipeStack";
 
 function App() {
   const navigate = useNavigate();
@@ -79,7 +80,7 @@ function App() {
           background: "linear-gradient(to top, #5c7852, #9fa0a8)",
         }}
       />
-      <Outlet />
+      <SwipeStack />
     </div>
   );
 }

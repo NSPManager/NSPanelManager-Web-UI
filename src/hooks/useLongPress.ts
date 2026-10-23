@@ -7,12 +7,26 @@ interface useLongPressConfig {
   disabled?: boolean;
 }
 
+const MOVE_TOLERANCE = 8; // px, same as the swipe axis lock
+
+type PressEvent = React.MouseEvent | React.TouchEvent;
+
+function getPoint(e: PressEvent) {
+  if ("touches" in e) {
+    const t = e.touches[0] ?? e.changedTouches[0];
+    return { x: t.clientX, y: t.clientY };
+  }
+  return { x: e.clientX, y: e.clientY };
+}
 export function useLongPress({
   onShortPress,
   onLongPress,
   delay = 200,
   disabled = false,
 }: useLongPressConfig) {
+  const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const startPos = useRef({ x: 0, y: 0 });
+
   useEffect(() => {
     return () => {
       if (longPressTimerRef.current) {
@@ -31,18 +45,16 @@ export function useLongPress({
     );
   }
 
-  const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   // const longPressTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  function startPress(e: React.MouseEvent | React.TouchEvent) {
+  function startPress(e: PressEvent) {
     if (disabled) return;
     if (isFromInteractiveChild(e)) return;
-    if (e && e.type === "touchstart") {
-      e.preventDefault();
-    }
+    startPos.current = getPoint(e);
+    cancelPress();
     longPressTimerRef.current = setTimeout(() => {
-      onLongPress();
       longPressTimerRef.current = null;
+      onLongPress();
     }, delay);
   }
 
@@ -71,12 +83,21 @@ export function useLongPress({
     longPressTimerRef.current = null;
   }
 
+  function movePress(e: PressEvent) {
+    if (!longPressTimerRef.current) return;
+    const p = getPoint(e);
+    const dist = Math.hypot(p.x - startPos.current.x, p.y - startPos.current.y);
+    if (dist > MOVE_TOLERANCE) cancelPress(); // it's a drag, not a press
+  }
+
   return {
     onMouseDown: startPress,
+    onMouseMove: movePress,
     onMouseUp: endPress,
     onMouseLeave: cancelPress,
     onTouchStart: startPress,
+    onTouchMove: movePress,
     onTouchEnd: endPress,
-    onTouchMove: cancelPressOnScroll,
+    onTouchCancel: cancelPress,
   };
 }

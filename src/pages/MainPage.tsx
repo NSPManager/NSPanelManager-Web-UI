@@ -133,7 +133,7 @@ function MainPage() {
       //Setting this onlick in the top div makes all button clicks except ceiling, table, brightness and colortemp clear active ceiling/table lock.
       //e.preventPropagation that is used on the ceiling, table, brightness, colortemp buttons prevent clearalllocks to be called.
       onClick={() => clearAllLocks()}
-      className="relative z-10 grid h-full grid-rows-[auto_1fr_auto] gap-1 p-1 md:p-2 md:gap-2"
+      className="absolute inset-0 bg-red-500 grid h-full grid-rows-[auto_1fr_auto] gap-1 p-1 md:p-2 md:gap-2"
     >
       {/* ROW 1 */}
       <div
@@ -189,6 +189,7 @@ function MainPage() {
           </div>
         </div>
         <div
+          data-no-swipe
           onClick={(e) => e.stopPropagation()}
           className={`flex flex-col ${cardStyles} ${sliderStyles}`}
         >
@@ -206,6 +207,7 @@ function MainPage() {
           />
         </div>
         <div
+          data-no-swipe
           onClick={(e) => e.stopPropagation()}
           className={`flex flex-col ${cardStyles} ${sliderStyles}`}
         >
