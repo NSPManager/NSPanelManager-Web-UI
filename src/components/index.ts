@@ -8,3 +8,4 @@ export { default as ScreenSaverSimple } from "./ScreenSaverSimple";
 export { default as ScreenSaverWeather } from "./ScreenSaverWeather";
 export { default as RoomSelectorList } from "./RoomSelectorList";
 export { default as Screen } from "./Screen";
+export { default as Background } from "./Background";

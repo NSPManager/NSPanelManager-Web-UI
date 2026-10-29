@@ -74,12 +74,6 @@ function App() {
         <div className="fixed inset-0 z-[9999]" aria-hidden="true" />
       )}
       {/*Background Layer*/}
-      <div
-        className="absolute inset-0 z-0 bg-cover bg-center opacity-100"
-        style={{
-          background: "linear-gradient(to top, #5c7852, #9fa0a8)",
-        }}
-      />
       <SwipeStack />
     </div>
   );

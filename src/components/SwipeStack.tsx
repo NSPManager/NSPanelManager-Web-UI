@@ -1,14 +1,15 @@
-import { useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { animate, motion, useMotionValue, type PanInfo } from "framer-motion";
 import Screen from "./Screen";
+import Background from "./Background";
 
 const BASE_URL = "/webapp";
 
 const swipePages: Record<string, { parentPage: string; dropDownPage: string }> =
   {
     [`${BASE_URL}/mainpage`]: {
-      parentPage: "",
+      parentPage: `${BASE_URL}/screensaver`,
       dropDownPage: `${BASE_URL}/dropdown`,
     },
     [`${BASE_URL}/roompage`]: {
@@ -45,6 +46,11 @@ function SwipeStack() {
   const [open, setOpen] = useState(false);
   const axis = useRef<"x" | "y" | "blocked" | null>(null);
 
+  useLayoutEffect(() => {
+    pageY.jump(0); // like set(), but also stops any running animation
+    setOpen(false);
+  }, [pathname, pageY]);
+
   //   const onPanStart = (e: PointerEvent | MouseEvent | TouchEvent) => {
   //     const blocked = (e.target as HTMLElement).closest("[data-no-swipe]");
   //     axis.current = blocked ? "blocked" : null;
@@ -59,14 +65,14 @@ function SwipeStack() {
       axis.current = Math.abs(y) > Math.abs(x) ? "y" : "x";
       didDrag.current = true;
     }
-    if (axis.current !== "y") return; // horizontal belongs to the carousel
+    if (axis.current !== "y") return; // drag is not vertical return
 
     const dy = info.offset.y;
-    if (open) {
+    if (open && dropDownPage) {
       dropY.set(Math.min(0, dy)); // dropdown open: dragging up closes it
-    } else if (dy > 0) {
+    } else if (dy > 0 && dropDownPage) {
       dropY.set(Math.min(0, -H + dy)); // pull down: dropdown follows finger
-    } else if (parentPage) {
+    } else if (parentPage && dy < 0) {
       pageY.set(dy); // swipe up: page moves away
     }
   };
@@ -76,11 +82,11 @@ function SwipeStack() {
     const { y: dy } = info.offset;
     const vy = info.velocity.y;
 
-    if (open) {
+    if (open && dropDownPage) {
       if (-dy > H * 0.25 || -vy > 500) {
         animate(dropY, -H, SLIDE).then(() => setOpen(false));
       } else animate(dropY, 0, SLIDE);
-    } else if (dy > 0) {
+    } else if (dy > 0 && dropDownPage) {
       if (dy > H * 0.25 || vy > 500) {
         animate(dropY, 0, SLIDE).then(() => setOpen(true));
       } else animate(dropY, -H, SLIDE);
@@ -107,13 +113,13 @@ function SwipeStack() {
     }
   };
 
-  const lastPath = useRef(pathname);
-  if (lastPath.current !== pathname) {
-    lastPath.current = pathname;
-    pageY.set(0);
-    setOpen(false);
-  }
-  console.log(pathname);
+  // const lastPath = useRef(pathname);
+  // if (lastPath.current !== pathname) {
+  //   lastPath.current = pathname;
+  //   // pageY.set(0);
+  //   // setOpen(false);
+  // }
+  console.log(dropDownPage);
 
   return (
     <motion.div
@@ -131,15 +137,19 @@ function SwipeStack() {
           className="absolute inset-0"
           style={{ zIndex: 0 }}
         >
+          {" "}
+          <Background />
           <Screen path={parentPage} />
         </motion.div>
       )}
 
       <motion.div
         key={pathname}
-        className="absolute inset-0 bg-black"
+        className="absolute inset-0"
         style={{ y: pageY, zIndex: 1 }}
       >
+        {" "}
+        <Background />
         <Screen path={pathname} />
       </motion.div>
 
@@ -148,6 +158,7 @@ function SwipeStack() {
           className="absolute inset-0 bg-black"
           style={{ y: dropY, zIndex: 2 }}
         >
+          {" "}
           {/* Lightpage just as test */}
           <Screen path={dropDownPage} />
         </motion.div>

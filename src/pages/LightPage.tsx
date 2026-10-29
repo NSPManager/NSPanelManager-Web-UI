@@ -120,6 +120,7 @@ function RoomPage() {
         className={`grid ${orientation === "landscape" ? "grid-cols-3" : "grid-rows-3"}  gap-1 md:gap-2`}
       >
         <div
+          data-no-swipe
           onClick={(e) => e.stopPropagation()}
           className={`flex ${cardStyles}`}
         >
@@ -132,6 +133,7 @@ function RoomPage() {
           />
         </div>
         <div
+          data-no-swipe
           onClick={(e) => e.stopPropagation()}
           className={`flex flex-col ${cardStyles}`}
         >
@@ -162,6 +164,7 @@ function RoomPage() {
           )}
         </div>
         <div
+          data-no-swipe={lightMode === "RGB" ? "" : undefined}
           onClick={(e) => e.stopPropagation()}
           className={`relative flex flex-col ${cardStyles}`}
         >

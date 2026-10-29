@@ -6,6 +6,12 @@
     height: 100dvh; /* 2. Modern phones override with this */
   }
 }
+html,
+body,
+#root {
+  touch-action: none;
+  overscroll-behavior: none;
+}
 
 @font-face {
   font-family: "MDSH_Custom";
