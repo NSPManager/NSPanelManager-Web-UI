@@ -5,6 +5,7 @@ import {
   LightPage,
   LoadingPage,
   MainPage,
+  NewRoomPage,
   RoomPage,
   ScreenSaverPage,
 } from "./pages";
@@ -12,7 +13,7 @@ import {
 export const pageRoutes: RouteObject[] = [
   { index: true, element: <LoadingPage /> },
   { path: "mainpage", element: <MainPage /> },
-  { path: "roompage", element: <RoomPage /> },
+  { path: "roompage", element: <NewRoomPage /> },
   { path: "lightpage/:id", element: <LightPage /> },
   { path: "screensaver", element: <ScreenSaverPage /> },
   { path: "dropdown", element: <DropDownPage /> },

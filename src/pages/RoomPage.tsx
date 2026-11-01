@@ -10,7 +10,7 @@ import {
   useUIStore,
 } from "@/stores";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import {
   BsFillQuestionOctagonFill,
   BsLightbulbFill,
@@ -18,8 +18,6 @@ import {
 } from "react-icons/bs";
 
 import { useNavigate } from "react-router-dom";
-import MainPage from "./MainPage";
-import { animate, motion, useMotionValue, type PanInfo } from "framer-motion";
 
 function RoomPage() {
   const navigate = useNavigate();

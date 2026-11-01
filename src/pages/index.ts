@@ -4,3 +4,4 @@ export { default as LightPage } from "./LightPage";
 export { default as ScreenSaverPage } from "./ScreenSaverPage";
 export { default as LoadingPage } from "./LoadingPage";
 export { default as DropDownPage } from "./DropDownPage";
+export { default as NewRoomPage } from "./NewRoomPage";

@@ -10,13 +10,14 @@ interface ConfigState {
   isLoaded: boolean;
   roomOrder: string[];
   currentRoomId: string | null;
+  currentEntityPageIndex: number | 0;
   roomChangeDirection: "DIRECT" | "PREV" | "NEXT";
   resetDefaultRoom: boolean;
 
   initialize: () => void;
   setConfig: (newConfig: NSPanelConfig) => void;
   setDefaultRoom: () => void;
-  setCurrentRoom: (id: string) => void;
+  setCurrentRoom: (id: string, entityPageIndex?: number) => void;
   nextRoom: () => void;
   prevRoom: () => void;
   resetConfig: () => void;
@@ -32,6 +33,7 @@ export const useConfigStore = create<ConfigState>()(
         isLoaded: false,
         roomOrder: [],
         currentRoomId: null,
+        currentEntityPageIndex: 0,
         roomChangeDirection: "DIRECT",
         resetDefaultRoom: false,
 
@@ -72,8 +74,15 @@ export const useConfigStore = create<ConfigState>()(
             false,
             "setDefaultRoom",
           ),
-        setCurrentRoom: (id: string) => {
-          set({ currentRoomId: id }, false, "setCurrentRoom");
+        setCurrentRoom: (roomId: string, entityPageIndex?: number) => {
+          set(
+            {
+              currentRoomId: roomId,
+              currentEntityPageIndex: entityPageIndex || 0,
+            },
+            false,
+            "setCurrentRoom",
+          );
         },
         nextRoom: () => {
           const roomOrder = get().roomOrder;
