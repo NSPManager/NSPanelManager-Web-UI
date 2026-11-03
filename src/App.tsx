@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import { stompService } from "@/services/stompService";
 import { useScreenOrientation } from "./hooks";
-import { Outlet, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useConfigStore, useIdleStore, useUIStore } from "./stores";
 import { NSPanelConfig_NSPanelScreensaverMode } from "./generated/src/proto/protobuf_nspanel";
 import SwipeStack from "./components/SwipeStack";

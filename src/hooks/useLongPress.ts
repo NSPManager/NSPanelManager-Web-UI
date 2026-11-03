@@ -78,10 +78,10 @@ export function useLongPress({
     }
   }
 
-  function cancelPressOnScroll() {
-    clearTimeout(longPressTimerRef.current || undefined);
-    longPressTimerRef.current = null;
-  }
+  // function cancelPressOnScroll() {
+  //   clearTimeout(longPressTimerRef.current || undefined);
+  //   longPressTimerRef.current = null;
+  // }
 
   function movePress(e: PressEvent) {
     if (!longPressTimerRef.current) return;

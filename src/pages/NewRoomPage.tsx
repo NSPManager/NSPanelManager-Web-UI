@@ -10,6 +10,7 @@ import { useLayoutEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { animate, motion, useMotionValue, type PanInfo } from "framer-motion";
 import { EntityGrid } from "@/components";
+import LoadingPage from "./LoadingPage";
 
 //Room page
 // Room page should have state on currentroom and currententitypage
@@ -155,7 +156,7 @@ function NewRoomPage() {
     { offset: 1, ref: sequence[nextSequenceIndex] },
   ];
 
-  if (!sequence[currentSequenceIndex]) return;
+  if (!sequence[currentSequenceIndex]) return <LoadingPage />;
 
   return (
     <div className="relative h-full w-full overflow-hidden">

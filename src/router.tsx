@@ -6,7 +6,6 @@ import {
   LoadingPage,
   MainPage,
   NewRoomPage,
-  RoomPage,
   ScreenSaverPage,
 } from "./pages";
 
