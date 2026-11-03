@@ -9,3 +9,4 @@ export { default as ScreenSaverWeather } from "./ScreenSaverWeather";
 export { default as RoomSelectorList } from "./RoomSelectorList";
 export { default as Screen } from "./Screen";
 export { default as Background } from "./Background";
+export { default as EntityGrid } from "./EntityGrid";

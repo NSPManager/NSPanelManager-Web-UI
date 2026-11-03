@@ -3,21 +3,13 @@
 // also add setCurrent function to set currentroom and currententitypage
 //DONE used setCurrentRoom and added parameter entityPageId as optional
 
-import {
-  NSPanelRoomEntitiesPage_EntitySlot,
-  NSPanelRoomEntitiesPage_EntitySlot_EntityType,
-  type NSPanelConfig_RoomInfo,
-} from "@/generated/src/proto/protobuf_nspanel";
-import { stompService } from "@/services/stompService";
+import { type NSPanelConfig_RoomInfo } from "@/generated/src/proto/protobuf_nspanel";
 import { useConfigStore, useEntityPagesStore, useUIStore } from "@/stores";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import type { ReactNode } from "react";
-import {
-  BsFillQuestionOctagonFill,
-  BsLightbulbFill,
-  BsToggleOn,
-} from "react-icons/bs";
+import { useLayoutEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { animate, motion, useMotionValue, type PanInfo } from "framer-motion";
+import { EntityGrid } from "@/components";
 
 //Room page
 // Room page should have state on currentroom and currententitypage
@@ -33,33 +25,6 @@ import { useNavigate } from "react-router-dom";
 //every entitypage gets its data with the help of entutypage id and entitypagestore
 //</motion.div>
 //
-
-const iconMap: Record<
-  NSPanelRoomEntitiesPage_EntitySlot_EntityType,
-  ReactNode
-> = {
-  [NSPanelRoomEntitiesPage_EntitySlot_EntityType.ENTITY_TYPE_BUTTON]: (
-    <BsFillQuestionOctagonFill />
-  ),
-  [NSPanelRoomEntitiesPage_EntitySlot_EntityType.ENTITY_TYPE_LIGHT]: (
-    <BsLightbulbFill size={22} />
-  ),
-  [NSPanelRoomEntitiesPage_EntitySlot_EntityType.ENTITY_TYPE_SCENE]: (
-    <BsFillQuestionOctagonFill />
-  ),
-  [NSPanelRoomEntitiesPage_EntitySlot_EntityType.ENTITY_TYPE_SWITCH]: (
-    <BsToggleOn size={22} />
-  ),
-  [NSPanelRoomEntitiesPage_EntitySlot_EntityType.ENTITY_TYPE_THERMOSTAT]: (
-    <BsFillQuestionOctagonFill />
-  ),
-  [NSPanelRoomEntitiesPage_EntitySlot_EntityType.ENTITY_TYPE_UNSPECIFIED]: (
-    <BsFillQuestionOctagonFill />
-  ),
-  [NSPanelRoomEntitiesPage_EntitySlot_EntityType.UNRECOGNIZED]: (
-    <BsFillQuestionOctagonFill />
-  ),
-};
 
 type entityPageRef = { roomId: number; index: number; entityPageId: number };
 
@@ -98,135 +63,158 @@ function NewRoomPage() {
   const prevSequenceIndex =
     currentSequenceIndex === 0 ? sequence.length - 1 : currentSequenceIndex - 1;
 
-  const activeEntityPageId = sequence[currentSequenceIndex].entityPageId;
-  const activeEntityPage = useEntityPagesStore((state) =>
-    activeEntityPageId ? state.entityPages[activeEntityPageId] : undefined,
-  );
-  const totalEntities = activeEntityPage?.pageType || 8;
-  const headerText = activeEntityPage?.headerText || undefined;
-  const entities = activeEntityPage?.entities || [];
-
-  const roomViewMap: Map<number, NSPanelRoomEntitiesPage_EntitySlot> =
-    new Map();
-  entities.forEach((entity) => {
-    roomViewMap.set(entity.roomViewPosition, entity);
-  });
-
-  const roomEntities = Array.from(
-    { length: totalEntities },
-    (_, index) => index,
+  const currentEntityPageId = sequence?.[currentSequenceIndex]?.entityPageId;
+  const headerText = useEntityPagesStore(
+    (state) => state.entityPages[currentEntityPageId]?.headerText,
   );
 
   function changeEntityPage(target: entityPageRef) {
     setCurrentRoom(String(target.roomId), target.index);
   }
 
+  function changeEntityPageClick(dir: "prev" | "next") {
+    if (dir == "prev") {
+      animate(pageX, W, SLIDE).then(() =>
+        changeEntityPage(sequence[prevSequenceIndex]),
+      );
+    }
+    if (dir == "next") {
+      animate(pageX, -W, SLIDE).then(() =>
+        changeEntityPage(sequence[nextSequenceIndex]),
+      );
+    }
+  }
+
+  const didDrag = useRef(false);
+
+  const SLIDE = { duration: 0.22, ease: "easeOut" } as const;
+
+  const W = window.innerWidth;
+  const pageX = useMotionValue(0);
+  const axis = useRef<"x" | "y" | "blocked" | null>(null);
+
+  const onPan = (_: unknown, info: PanInfo) => {
+    if (sequence.length === 1) return;
+    if (axis.current === "blocked") return;
+    if (!axis.current) {
+      // decide axis after 8px
+      const { x, y } = info.offset;
+      if (Math.abs(x) < 8 && Math.abs(y) < 8) return;
+      axis.current = Math.abs(y) > Math.abs(x) ? "y" : "x";
+      didDrag.current = true;
+    }
+    if (axis.current !== "x") return; // drag is not horizontal return
+
+    const dx = info.offset.x;
+    pageX.set(dx);
+  };
+
+  const onPanEnd = (_: unknown, info: PanInfo) => {
+    if (axis.current !== "x") return;
+    const { x: dx } = info.offset;
+    const vx = info.velocity.x;
+
+    //RIGHT (PREV)
+    // console.log(dx, W, vx);
+    if (dx > W * 0.25 || vx > 500) {
+      animate(pageX, W, SLIDE).then(() =>
+        changeEntityPage(sequence[prevSequenceIndex]),
+      );
+    }
+    //LEFT (NEXT)
+    else if (-dx > W * 0.25 || -vx > 500) {
+      animate(pageX, -W, SLIDE).then(() =>
+        changeEntityPage(sequence[nextSequenceIndex]),
+      );
+    }
+    //RESTORE TO CENTER
+    else animate(pageX, 0, SLIDE);
+  };
+
+  useLayoutEffect(() => {
+    pageX.jump(0);
+  }, [currentSequenceIndex, pageX]);
+
+  const onPointerDownCapture = (e: React.PointerEvent) => {
+    didDrag.current = false;
+    const blocked = (e.target as HTMLElement).closest("[data-no-swipe]");
+    axis.current = blocked ? "blocked" : null;
+  };
+
+  const onClickCapture = (e: React.MouseEvent) => {
+    if (didDrag.current) {
+      e.stopPropagation(); // React handlers on buttons never run
+      e.preventDefault(); // Links don't navigate
+      didDrag.current = false;
+    }
+  };
+
+  const slides = [
+    { offset: -1, ref: sequence[prevSequenceIndex] },
+    { offset: 0, ref: sequence[currentSequenceIndex] },
+    { offset: 1, ref: sequence[nextSequenceIndex] },
+  ];
+
+  if (!sequence[currentSequenceIndex]) return;
+
   return (
-    <div className="absolute inset-0 h-full grid grid-rows-[auto_1fr] gap-1 p-1 md:p-2 md:gap-2">
-      {/* ROW 1 NAVIGATION AND HEADER TEXT*/}
-      <div
-        className={`grid grid-cols-[auto_2px_auto_1fr_auto] md:grid-cols-[auto_4px_auto_1fr_auto] rounded-xl ${orientation === "landscape" ? "h-20 max-lg:[@media(min-aspect-ratio:2/1)]:h-10" : "h-20"}`}
-      >
+    <div className="relative h-full w-full overflow-hidden">
+      <div className="absolute inset-0 grid grid-rows-[auto_1fr] gap-1 p-1 md:p-2 md:gap-2">
+        {/* ROW 1 NAVIGATION AND HEADER TEXT*/}
         <div
-          onClick={() =>
-            // (useConfigStore.setState({ resetDefaultRoom: true }),
-            navigate("/webapp/")
-          }
-          className="flex p-5 h-full rounded-l-xl items-center bg-black/20 justify-center select-none cursor-pointer active:opacity-60 duration-50 transition-all"
+          className={`grid grid-cols-[auto_2px_auto_1fr_auto] md:grid-cols-[auto_4px_auto_1fr_auto] rounded-xl ${orientation === "landscape" ? "h-20 max-lg:[@media(min-aspect-ratio:2/1)]:h-10" : "h-20"}`}
         >
-          <ChevronLeft />
+          <div
+            onClick={() =>
+              // (useConfigStore.setState({ resetDefaultRoom: true }),
+              navigate("/webapp/")
+            }
+            className="flex p-5 h-full rounded-l-xl items-center bg-black/20 justify-center select-none cursor-pointer active:opacity-60 duration-50 transition-all"
+          >
+            <ChevronLeft />
+          </div>
+          <div className="grid grid-rows-[1fr_60%_1fr]">
+            <div className="bg-black/20"></div>
+            <div className="bg-transparent"></div>
+            <div className="bg-black/20"></div>
+          </div>
+          <div
+            onClick={() => changeEntityPageClick("prev")}
+            className="flex p-5 h-full items-center bg-black/20 justify-center select-none cursor-pointer active:opacity-60 duration-50 transition-all"
+          >
+            <ChevronLeft />
+          </div>
+          <div className="flex h-full items-center justify-center bg-black/20 select-none">
+            {headerText}
+          </div>
+          <div
+            onClick={() => changeEntityPageClick("next")}
+            className="flex p-5 h-full rounded-r-xl items-center bg-black/20 justify-center select-none cursor-pointer active:opacity-60 duration-50 transition-all"
+          >
+            <ChevronRight />
+          </div>
         </div>
-        <div className="grid grid-rows-[1fr_60%_1fr]">
-          <div className="bg-black/20"></div>
-          <div className="bg-transparent"></div>
-          <div className="bg-black/20"></div>
-        </div>
-        <div
-          onClick={() => changeEntityPage(sequence[prevSequenceIndex])}
-          className="flex p-5 h-full items-center bg-black/20 justify-center select-none cursor-pointer active:opacity-60 duration-50 transition-all"
-        >
-          <ChevronLeft />
-        </div>
-        <div className="flex h-full items-center justify-center bg-black/20 select-none">
-          {headerText}
-        </div>
-        <div
-          onClick={() => changeEntityPage(sequence[nextSequenceIndex])}
-          className="flex p-5 h-full rounded-r-xl items-center bg-black/20 justify-center select-none cursor-pointer active:opacity-60 duration-50 transition-all"
-        >
-          <ChevronRight />
-        </div>
-      </div>
-      {/* Entity buttons */}
-      <div
-        className={`grid grid-cols-2 gap-1 md:gap-2 ${totalEntities === 4 ? "grid-rows-2" : totalEntities === 8 ? "grid-rows-4" : "grid-rows-6"}`}
-      >
-        {roomEntities.map((roomEntity) => {
-          const entity = roomViewMap.get(roomEntity);
-          const isOn = entity?.icon === "s";
-          const entityType = entity?.type;
-
-          const icon = entityType ? iconMap[entityType] : null;
-
-          return (
-            <div
-              key={roomEntity}
-              className={`grid ${totalEntities !== 4 ? "grid-cols-[1fr_2px_70px] md:grid-cols-[1fr_2px_100px]" : "grid-rows-[1fr_2px_1fr]"} items-center rounded-xl`}
-            >
-              <button
-                onClick={() =>
-                  // (useConfigStore.setState({ resetDefaultRoom: true }),
-                  {
-                    entity?.type ===
-                    NSPanelRoomEntitiesPage_EntitySlot_EntityType.ENTITY_TYPE_LIGHT
-                      ? navigate(`/webapp/lightpage/${entity?.id}`)
-                      : "";
-                  }
-                }
-                className={`relative flex h-full bg-black/20 items-center ${totalEntities !== 4 ? "justify-start rounded-l-xl p-3" : "justify-center rounded-t-xl"} md:text-xl select-none cursor-pointer active:opacity-60 duration-50 transition-all`}
-              >
-                {entity?.name}
-                {entity && icon ? (
-                  <div className="absolute top-2 left-2 md:top-3 md:left-3">
-                    {icon}
-                  </div>
-                ) : (
-                  ""
-                )}
-              </button>
+        {/* Entity buttons */}
+        <div className="relative min-h-0 -mx-1 md:-mx-2 overflow-hidden">
+          <motion.div
+            style={{ touchAction: "none", x: pageX }}
+            onPointerDownCapture={onPointerDownCapture}
+            onClickCapture={onClickCapture}
+            onPan={onPan}
+            onPanEnd={onPanEnd}
+            className="absolute inset-0"
+          >
+            {slides.map(({ offset, ref }) => (
               <div
-                className={`grid ${totalEntities !== 4 ? "grid-rows-[1fr_60%_1fr]" : "grid-cols-[1fr_60%_1fr]"} h-full`}
+                key={ref.entityPageId}
+                className={`absolute inset-0 px-1 md:px-2`}
+                style={{ transform: `translateX(${offset * 100}%)` }}
               >
-                <div className="bg-black/20"></div>
-                <div className="bg-transparent"></div>
-                <div className="bg-black/20"></div>
+                <EntityGrid EntityPageId={ref.entityPageId} />
               </div>
-              <div
-                onClick={() => {
-                  entity && activeEntityPageId
-                    ? stompService.sendToggleEntityFromEntitiesPage(
-                        activeEntityPageId,
-                        roomEntity,
-                      )
-                    : "";
-                }}
-                className={`flex h-full bg-black/20 justify-center items-center ${totalEntities !== 4 ? "rounded-r-xl" : "rounded-b-xl"} ${entity ? "cursor-pointer" : ""}`}
-              >
-                {entity ? (
-                  <div
-                    className={`relative inline-flex h-6 w-10 md:h-7 md:w-12 rounded-full ${isOn ? "bg-[#ffc101] justify-end" : "bg-white/40 justify-start"}  p-1 transition-colors duration-200 ease-in-out select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400`}
-                  >
-                    <span
-                      className={`h-4 w-4 md:h-5 md:w-5 inline-block rounded-full bg-white shadow-md transform transition-transform duration-200 ease-in-out`}
-                    ></span>
-                  </div>
-                ) : (
-                  ""
-                )}
-              </div>
-            </div>
-          );
-        })}
+            ))}
+          </motion.div>
+        </div>
       </div>
     </div>
   );

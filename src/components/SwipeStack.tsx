@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { animate, motion, useMotionValue, type PanInfo } from "framer-motion";
 import Screen from "./Screen";
