@@ -137,7 +137,6 @@ function SwipeStack() {
           className="absolute inset-0"
           style={{ zIndex: 0 }}
         >
-          {" "}
           <Background />
           <Screen path={parentPage} />
         </motion.div>
@@ -148,7 +147,6 @@ function SwipeStack() {
         className="absolute inset-0"
         style={{ y: pageY, zIndex: 1 }}
       >
-        {" "}
         <Background />
         <Screen path={pathname} />
       </motion.div>
@@ -158,8 +156,6 @@ function SwipeStack() {
           className="absolute inset-0 bg-black"
           style={{ y: dropY, zIndex: 2 }}
         >
-          {" "}
-          {/* Lightpage just as test */}
           <Screen path={dropDownPage} />
         </motion.div>
       )}

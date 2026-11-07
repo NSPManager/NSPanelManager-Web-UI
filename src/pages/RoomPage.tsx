@@ -121,9 +121,7 @@ function RoomPage() {
             navigate("/webapp/")
           }
           className="flex p-5 h-full rounded-l-xl items-center bg-black/20 justify-center select-none cursor-pointer active:opacity-60 duration-50 transition-all"
-        >
-          <ChevronLeft />
-        </div>
+        ></div>
         <div className="grid grid-rows-[1fr_60%_1fr]">
           <div className="bg-black/20"></div>
           <div className="bg-transparent"></div>

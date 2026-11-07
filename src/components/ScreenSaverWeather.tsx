@@ -12,6 +12,7 @@ import {
   mdiWeatherWindy,
 } from "@mdi/js";
 import { DynamicWeatherIcon } from "@/icons";
+import { cardBg, cardBorderShadow } from "@/styles";
 
 function ScreenSaverWeather() {
   const { currentDate, currentTime } = useDateTime();
@@ -65,7 +66,9 @@ function ScreenSaverWeather() {
       className={`grid w-full h-full ${orientation === "landscape" ? "grid-cols-2 grid-rows-2" : "grid-cols-1 grid-rows-[1fr_1fr_2fr]"} p-1 md:p2 gap-1 md:gap-2`}
     >
       {/* Top left contatiner */}
-      <div className="flex flex-col w-full h-full rounded-xl bg-black/20 border border-gray-500/20 shadow-md justify-between p-1">
+      <div
+        className={`flex flex-col w-full h-full rounded-xl ${cardBg} border ${cardBorderShadow} justify-between p-1`}
+      >
         {/* First row TEMP and DATE */}
         <div className="flex justify-between">
           <div className="flex">
@@ -101,7 +104,9 @@ function ScreenSaverWeather() {
         </div>
       </div>
       {/* Top right container */}
-      <div className="flex flex-col w-full h-full rounded-xl bg-black/20 border border-gray-500/20 shadow-md p-1 items-center justify-between">
+      <div
+        className={`flex flex-col w-full h-full rounded-xl ${cardBg} border ${cardBorderShadow} p-1 items-center justify-between`}
+      >
         {/* First row weather icon and current max min temp */}
 
         {orientation === "landscape" ? (
@@ -171,7 +176,7 @@ function ScreenSaverWeather() {
       </div>
       {/* Bottom container */}
       <div
-        className={`grid ${orientation === "landscape" ? "col-span-2" : ""} rounded-xl bg-black/20 border border-gray-500/20 shadow-md`}
+        className={`grid ${orientation === "landscape" ? "col-span-2" : ""} rounded-xl ${cardBg} border ${cardBorderShadow} `}
       >
         <div className="grid grid-cols-[min-content_repeat(5,minmax(0,1fr))] p-2">
           <div className="grid grid-rows-[1fr_50px_1fr_1fr_1fr] justify-center items-center">

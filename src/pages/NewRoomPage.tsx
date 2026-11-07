@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { animate, motion, useMotionValue, type PanInfo } from "framer-motion";
 import { EntityGrid } from "@/components";
 import LoadingPage from "./LoadingPage";
+import { cardBg, cardBorderShadow } from "@/styles";
 
 //Room page
 // Room page should have state on currentroom and currententitypage
@@ -163,34 +164,36 @@ function NewRoomPage() {
       <div className="absolute inset-0 grid grid-rows-[auto_1fr] gap-1 p-1 md:p-2 md:gap-2">
         {/* ROW 1 NAVIGATION AND HEADER TEXT*/}
         <div
-          className={`grid grid-cols-[auto_2px_auto_1fr_auto] md:grid-cols-[auto_4px_auto_1fr_auto] rounded-xl ${orientation === "landscape" ? "h-20 max-lg:[@media(min-aspect-ratio:2/1)]:h-10" : "h-20"}`}
+          className={`grid grid-cols-[auto_2px_auto_1fr_auto] md:grid-cols-[auto_4px_auto_1fr_auto] border ${cardBorderShadow} rounded-xl ${orientation === "landscape" ? "h-20 max-lg:[@media(min-aspect-ratio:2/1)]:h-10" : "h-20"}`}
         >
           <div
             onClick={() =>
               // (useConfigStore.setState({ resetDefaultRoom: true }),
               navigate("/webapp/")
             }
-            className="flex p-5 h-full rounded-l-xl items-center bg-black/20 justify-center select-none cursor-pointer active:opacity-60 duration-50 transition-all"
+            className={`flex p-5 h-full ${cardBg} rounded-l-xl items-center justify-center select-none cursor-pointer active:opacity-60 duration-50 transition-all`}
           >
             <ChevronLeft />
           </div>
           <div className="grid grid-rows-[1fr_60%_1fr]">
-            <div className="bg-black/20"></div>
+            <div className={`${cardBg}`}></div>
             <div className="bg-transparent"></div>
-            <div className="bg-black/20"></div>
+            <div className={`${cardBg}`}></div>
           </div>
           <div
             onClick={() => changeEntityPageClick("prev")}
-            className="flex p-5 h-full items-center bg-black/20 justify-center select-none cursor-pointer active:opacity-60 duration-50 transition-all"
+            className={`flex p-5 h-full ${cardBg} items-center justify-center select-none cursor-pointer active:opacity-60 duration-50 transition-all`}
           >
             <ChevronLeft />
           </div>
-          <div className="flex h-full items-center justify-center bg-black/20 select-none">
+          <div
+            className={`flex h-full ${cardBg} items-center justify-center select-none`}
+          >
             {headerText}
           </div>
           <div
             onClick={() => changeEntityPageClick("next")}
-            className="flex p-5 h-full rounded-r-xl items-center bg-black/20 justify-center select-none cursor-pointer active:opacity-60 duration-50 transition-all"
+            className={`flex p-5 h-full ${cardBg} rounded-r-xl items-center justify-center select-none cursor-pointer active:opacity-60 duration-50 transition-all`}
           >
             <ChevronRight />
           </div>

@@ -13,6 +13,7 @@ import { useLongPress } from "@/hooks/useLongPress";
 import { useLongPressLock } from "@/hooks/useLongPressLock";
 import { IoSunny } from "react-icons/io5";
 import { useDateTime } from "@/hooks";
+import { card, specialCard } from "@/styles";
 
 function MainPage() {
   const mainPagemode = useUIStore((state) => state.mainPageMode);
@@ -79,8 +80,6 @@ function MainPage() {
     tableLock.clearLock();
   }
 
-  const cardStyles = "rounded-xl bg-black/20";
-
   const sliderStyles = `p-2 ${orientation === "landscape" ? "col-span-1" : "col-span-2"}`;
 
   const ceilingTableStyles = "w-[30px] md:w-[50px]";
@@ -137,7 +136,7 @@ function MainPage() {
     >
       {/* ROW 1 */}
       <div
-        className={`flex rounded-xl bg-black/20 ${orientation === "landscape" ? "h-20 max-lg:[@media(min-aspect-ratio:2/1)]:h-10" : "h-20"}`}
+        className={`flex ${card} ${orientation === "landscape" ? "h-20 max-lg:[@media(min-aspect-ratio:2/1)]:h-10" : "h-20"}`}
       >
         <div className="flex flex-1 items-center justify-center h-full">
           <SlidersVertical />
@@ -153,7 +152,7 @@ function MainPage() {
         <div
           {...ceilingButtonHandlers}
           onClick={(e) => e.stopPropagation()}
-          className={`grid grid-rows-[1fr_auto_1fr] cursor-pointer ${cardStyles}`}
+          className={`grid grid-rows-[1fr_auto_1fr] cursor-pointer ${card}`}
         >
           <div className="flex items-end justify-center"></div>
           <div className={`flex flex-col items-center justify-center`}>
@@ -172,7 +171,7 @@ function MainPage() {
         <div
           {...tableButtonHandlers}
           onClick={(e) => e.stopPropagation()}
-          className={`grid grid-rows-[1fr_auto_1fr] cursor-pointer ${cardStyles}`}
+          className={`grid grid-rows-[1fr_auto_1fr] cursor-pointer ${card}`}
         >
           <div className="flex items-end justify-center"></div>
           <div className={`flex flex-col items-center justify-center`}>
@@ -191,7 +190,7 @@ function MainPage() {
         <div
           data-no-swipe
           onClick={(e) => e.stopPropagation()}
-          className={`flex flex-col ${cardStyles} ${sliderStyles}`}
+          className={`flex flex-col ${card} ${sliderStyles}`}
         >
           <Slider
             value={
@@ -209,7 +208,7 @@ function MainPage() {
         <div
           data-no-swipe
           onClick={(e) => e.stopPropagation()}
-          className={`flex flex-col ${cardStyles} ${sliderStyles}`}
+          className={`flex flex-col ${card} ${sliderStyles}`}
         >
           <Slider
             value={
@@ -232,7 +231,7 @@ function MainPage() {
         >
           <div className="grid grid-cols-[1fr_2px_3fr] md:grid-cols-[1fr_4px_3fr]">
             <div
-              className={`flex rounded-l-xl items-center justify-center bg-black/20 active:opacity-60 duration-50 transition-all`}
+              className={`${specialCard} flex rounded-l-xl border-y border-l items-center justify-center active:opacity-60 duration-50 transition-all`}
             >
               <button
                 onClick={
@@ -244,19 +243,19 @@ function MainPage() {
               </button>
             </div>
             <div className="grid grid-rows-[1fr_60%_1fr]">
-              <div className="bg-black/20"></div>
+              <div className={`${specialCard} border-t`}></div>
               <div className="bg-transparent"></div>
-              <div className="bg-black/20"></div>
+              <div className={`${specialCard} border-b`}></div>
             </div>
             <div
-              className={`flex rounded-r-xl items-center justify-center bg-black/20 active:opacity-60 duration-50 transition-all`}
+              className={`${specialCard} flex rounded-r-xl border-y border-r items-center justify-center active:opacity-60 duration-50 transition-all`}
             >
               <RoomSelector />
             </div>
           </div>
           <button
             onClick={() => toggleMainPageMode()}
-            className={`relative flex flex-col items-center justify-center w-full h-full cursor-pointer ${cardStyles} active:opacity-60 duration-50 transition-all`}
+            className={`relative flex flex-col items-center justify-center w-full h-full cursor-pointer ${card} active:opacity-60 duration-50 transition-all`}
           >
             <div className="absolute left-0 top-0 bottom-0 w-[25%] flex items-center justify-center">
               <ChevronDown />

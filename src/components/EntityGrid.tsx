@@ -4,6 +4,7 @@ import {
 } from "@/generated/src/proto/protobuf_nspanel";
 import { stompService } from "@/services/stompService";
 import { useEntityPagesStore } from "@/stores";
+import { cardBg, cardBorderShadow } from "@/styles";
 import type { ReactNode } from "react";
 import {
   BsFillQuestionOctagonFill,
@@ -78,7 +79,7 @@ function EntityGrid({ EntityPageId }: Props) {
         return (
           <div
             key={roomEntity}
-            className={`grid ${totalEntities !== 4 ? "grid-cols-[1fr_2px_70px] md:grid-cols-[1fr_2px_100px]" : "grid-rows-[1fr_2px_1fr]"} items-center rounded-xl`}
+            className={`grid border ${cardBorderShadow} ${totalEntities !== 4 ? "grid-cols-[1fr_2px_70px] md:grid-cols-[1fr_2px_100px]" : "grid-rows-[1fr_2px_1fr]"} items-center rounded-xl`}
           >
             <button
               onClick={() =>
@@ -90,7 +91,7 @@ function EntityGrid({ EntityPageId }: Props) {
                     : "";
                 }
               }
-              className={`relative flex h-full bg-black/20 items-center ${totalEntities !== 4 ? "justify-start rounded-l-xl p-3" : "justify-center rounded-t-xl"} md:text-xl select-none cursor-pointer active:opacity-60 duration-50 transition-all`}
+              className={`relative flex h-full ${cardBg} items-center ${totalEntities !== 4 ? "justify-start rounded-l-xl p-3" : "justify-center rounded-t-xl"} md:text-xl select-none cursor-pointer active:opacity-60 duration-50 transition-all`}
             >
               {entity?.name}
               {entity && icon ? (
@@ -104,9 +105,9 @@ function EntityGrid({ EntityPageId }: Props) {
             <div
               className={`grid ${totalEntities !== 4 ? "grid-rows-[1fr_60%_1fr]" : "grid-cols-[1fr_60%_1fr]"} h-full`}
             >
-              <div className="bg-black/20"></div>
-              <div className="bg-transparent"></div>
-              <div className="bg-black/20"></div>
+              <div className={`${cardBg}`}></div>
+              <div className={entity ? "bg-transparent" : cardBg}></div>
+              <div className={`${cardBg}`}></div>
             </div>
             <div
               onClick={() => {
@@ -117,7 +118,7 @@ function EntityGrid({ EntityPageId }: Props) {
                     )
                   : "";
               }}
-              className={`flex h-full bg-black/20 justify-center items-center ${totalEntities !== 4 ? "rounded-r-xl" : "rounded-b-xl"} ${entity ? "cursor-pointer" : ""}`}
+              className={`flex h-full ${cardBg} justify-center items-center ${totalEntities !== 4 ? "rounded-r-xl" : "rounded-b-xl"} ${entity ? "cursor-pointer" : ""}`}
             >
               {entity ? (
                 <div
